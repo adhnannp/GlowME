@@ -4,6 +4,8 @@ import Login from "@/pages/user/auth/Login";
 import Register from "@/pages/user/auth/Register";
 import Otp from "@/pages/user/auth/Otp";
 import BreadIllustration from "@/pages/NotFound/NotFound";
+import ProfilePage from "@/pages/user/profile/Profile";
+import QuestionsPage from "@/pages/user/home/Home";
 
 const UserRoutes:React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +35,8 @@ const UserRoutes:React.FC = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/otp" element={<Otp />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/home" element={<QuestionsPage />} />
       <Route path="*" element={<BreadIllustration />} />
     </Routes>
   );

@@ -12,8 +12,6 @@ const container = new Container();
 container.bind<IUserRepository>('IUserRepository').to(UserRepository);
 container.bind<IUserService>('IUserService').to(UserService);
 container.bind<IOTPService>('IOTPService').to(OTPService);
-container.bind<IUserRepository>('IUserRepository').to(UserRepository);
-container.bind<IUserService>('IUserService').to(UserService);
 container.bind<UserController>('UserController').to(UserController);
 
 export default container;

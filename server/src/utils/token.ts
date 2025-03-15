@@ -15,3 +15,12 @@ export const signRefreshToken = (payload: object): string => {
 
   return jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET!, { expiresIn });
 };
+
+export const verifyRefreshToken = (token: string): { userId: string } | null => {
+  try {
+    const payload = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET!) as { userId: string };
+    return payload;
+  } catch (error) {
+    return null;
+  }
+};

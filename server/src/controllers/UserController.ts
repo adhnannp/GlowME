@@ -37,6 +37,12 @@ export class UserController {
     res.status(200).json({ isValid });
   }
 
+  async resendOTP(req: Request, res: Response){
+    const {email} = req.body
+    await this.userService.resendOTP(email)
+    res.status(200).json({message:'OTP resend successfully'});
+  }
+
   async logout(req: Request, res: Response) {
     res.clearCookie('accessToken');
     res.clearCookie('refreshToken');

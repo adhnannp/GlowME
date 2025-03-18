@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { IUserService } from '../../core/interfaces/services/IUserService';
+import { IAuthService} from '../../core/interfaces/services/IAuthService';
 import { IUserRepository } from '../../core/interfaces/repositeries/IUserRepository';
 import { IUser } from '../../models/User';
 import { IOTPService } from '../../core/interfaces/services/IOTPService';
@@ -7,7 +7,7 @@ import { signJWT, signRefreshToken,verifyRefreshToken  } from '../../utils/token
 import { redisClient } from "../../config/redis";
 
 @injectable()
-export class UserService implements IUserService {
+export class AuthService implements IAuthService {
   constructor(
     @inject('IUserRepository') private userRepository: IUserRepository,
     @inject('IOTPService') private otpService: IOTPService

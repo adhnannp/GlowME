@@ -24,3 +24,12 @@ export const verifyRefreshToken = (token: string): { userId: string } | null => 
     return null;
   }
 };
+
+export const verifyAccessToken = (token: string): { userId: string } | null => {
+  try {
+    const payload = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
+    return payload;
+  } catch (error) {
+    return null;
+  }
+};

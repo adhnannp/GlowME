@@ -1,6 +1,6 @@
 // src/routes/adminRoutes.ts
 import express from 'express';
-import { UserController } from '../controllers/UserController';
+import { UserController } from '../controllers/auth.controller';
 import container from '../di/container';
 
 const router = express.Router();

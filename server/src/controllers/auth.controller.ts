@@ -1,23 +1,35 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
-import { IUserService } from '../core/interfaces/services/IUserService';
+import { IAuthService } from '../core/interfaces/services/IAuthService';
 
 @injectable()
-export class UserController {
-  constructor(@inject('IUserService') private userService: IUserService) {}
+export class AuthController {
+  constructor(@inject('IAuthService') private authService: IAuthService) {}
 
   async register(req: Request, res: Response) {
     const user = req.body;
-    const newUser = await this.userService.register(user);
-    res.status(201).json(newUser);
+    const newUser = await this.authService.register(user);
+    res.status(201).json({message:newUser});
   }
 
+  async verifyOTP(req: Request, res: Response) {
+    const { email, otp } = req.body;
+    const isValid = await this.authService.verifyOTP(email, otp);
+    res.status(200).json({ isValid });
+  }
+  
+  async resendOTP(req: Request, res: Response){
+    const {email} = req.body
+    await this.authService.resendOTP(email)
+    res.status(200).json({message:'OTP resend successfully'});
+  }
+  
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
-    const { accessToken, refreshToken } = await this.userService.login(email, password);
+    const { accessToken, refreshToken } = await this.authService.login(email, password);
 
     res.cookie('accessToken', accessToken, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === 'production',
       maxAge: 60 * 60 * 1000,
     });
@@ -29,18 +41,6 @@ export class UserController {
     });
 
     res.status(200).json({ message: 'Login successful' });
-  }
-
-  async verifyOTP(req: Request, res: Response) {
-    const { email, otp } = req.body;
-    const isValid = await this.userService.verifyOTP(email, otp);
-    res.status(200).json({ isValid });
-  }
-
-  async resendOTP(req: Request, res: Response){
-    const {email} = req.body
-    await this.userService.resendOTP(email)
-    res.status(200).json({message:'OTP resend successfully'});
   }
 
   async logout(req: Request, res: Response) {
@@ -56,9 +56,9 @@ export class UserController {
       return
     }
     try {
-      const newAccessToken = await this.userService.refreshToken(refreshToken);
+      const newAccessToken = await this.authService.refreshToken(refreshToken);
       res.cookie('accessToken', newAccessToken, {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 60 * 60 * 1000,
       });

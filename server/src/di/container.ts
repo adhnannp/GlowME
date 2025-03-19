@@ -17,7 +17,7 @@ container.bind<IUserRepository>('IUserRepository').to(UserRepository);
 
 container.bind<IAuthService>('IAuthService').to(AuthService);
 container.bind<IOTPService>('IOTPService').to(OTPService);
-container.bind<IUserService>('UserService').to(UserService)
+container.bind<IUserService>('IUserService').to(UserService)
 
 container.bind<AuthController>('AuthController').to(AuthController);
 container.bind<UserController>('UserController').to(UserController)

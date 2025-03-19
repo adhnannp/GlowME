@@ -26,21 +26,26 @@ export class AuthController {
   
   async login(req: Request, res: Response) {
     const { email, password } = req.body;
-    const { accessToken, refreshToken } = await this.authService.login(email, password);
-
-    res.cookie('accessToken', accessToken, {
-      httpOnly: false,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 1000,
-    });
-
-    res.cookie('refreshToken', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-    res.status(200).json({ message: 'Login successful' });
+    const data = await this.authService.login(email, password);
+    if(typeof data == "string"){
+      res.status(400).json({ message: 'Login Failed' });
+    }
+    else{
+      const {accessToken,refreshToken} = data
+      res.cookie('accessToken', accessToken, {
+        httpOnly: false,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 60 * 60 * 1000,
+      });
+  
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+  
+      res.status(200).json({ message: 'Login successful' });
+    }
   }
 
   async logout(req: Request, res: Response) {

@@ -17,7 +17,7 @@ const UserRoutes:React.FC = () => {
     // Simulate a 3-second loading time
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+    }, 1500);
 
     return () => clearTimeout(timer);
   }, [location]);
@@ -32,11 +32,11 @@ const UserRoutes:React.FC = () => {
 
   return (
     <Routes>
+      <Route path="/" element={<QuestionsPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/otp" element={<Otp />} />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/home" element={<QuestionsPage />} />
       <Route path="*" element={<BreadIllustration />} />
     </Routes>
   );

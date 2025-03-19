@@ -23,13 +23,21 @@ export class AuthService implements IAuthService {
     return "Please check your email for the OTP.";
   }
 
-  async login(email: string, password: string): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.userRepository.findUserByEmail(email);
-    if (!user || user.password !== password) throw new Error('Invalid credentials');
-    const accessToken = signJWT({ userId: user.id });
-    const refreshToken = signRefreshToken({ userId: user.id });
-
-    return { accessToken, refreshToken };
+  async login(email: string, password: string): Promise<{ accessToken: string; refreshToken: string } | string> {
+    try {
+      console.log(email,password)
+      const user = await this.userRepository.findUserByEmail(email);
+      if (!user || user.password !== password) {
+        console.log("Invalid credentials");
+        return "cannot find user"
+      }
+      const accessToken = signJWT({ userId: user._id });
+      const refreshToken = signRefreshToken({ userId: user._id });
+      return { accessToken, refreshToken };
+    } catch (error:any) {
+      console.error("Login Error:", error.message);
+      return 'error';
+    }
   }
 
   async resendOTP(email: string): Promise<string> {

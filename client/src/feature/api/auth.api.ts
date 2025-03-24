@@ -1,25 +1,32 @@
 import api from "@/utils/axios";
-import { UserCredentials, RegisterUserData } from "@/interfaces/auth.interface";
+import { UserCredentials, RegisterUserData, Otp } from "@/interfaces/auth.interface";
 
 export const loginUserAPI = async (credentials: UserCredentials) => {
-  console.log(credentials)
   const response = await api.post("/login", credentials);
-  localStorage.setItem("authToken", response.data.token);
+  localStorage.setItem("accessToken", response.data.accessToken);
   return response.data;
 };
 
 export const loginAdminAPI = async (credentials: UserCredentials) => {
   const response = await api.post("/admin/login", credentials);
-  localStorage.setItem("authToken", response.data.token);
+  localStorage.setItem("accessToken", response.data.accessToken);
   return response.data;
 };
 
 export const registerUserAPI = async (userDetails: RegisterUserData) => {
   await api.post("/register", userDetails);
-  return loginUserAPI({ email: userDetails.email, password: userDetails.password });
+  return { message: "Please check your email", email: userDetails.email };
 };
 
-export const fetchUserAPI = async () => {
-  const response = await api.get("/user");
+export const verifyOtpAPI = async (credentials: Otp) => {
+  const response = await api.post("/verify-otp", credentials);
+  localStorage.setItem("accessToken", response.data.accessToken);
+  return response.data;
+};
+
+export const fetchUserAPI = async (email:string) => {
+  const response = await api.get("/user", {
+    params: { email },
+  });
   return response.data;
 };

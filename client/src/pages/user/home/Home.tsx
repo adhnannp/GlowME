@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input"
 import SidebarItem from "@/components/user/Profile/SideBarItem"
 import TabButton from "@/components/home/TabButton"
 import QuestionCard from "@/components/home/QuestionCard"
+import { Link } from "react-router-dom"
 
 // Sample question data
 const questions = [
@@ -77,24 +78,35 @@ export default function QuestionsPage() {
 
         <div className="flex-1">
           <nav className="space-y-1 py-2">
-            <SidebarItem icon={<Home className="h-5 w-5" />} label="Home" active={false} expanded={sidebarExpanded} />
-            <SidebarItem
-              icon={<HelpCircle className="h-5 w-5" />}
-              label="Questions"
-              active={true}
-              expanded={sidebarExpanded}
-            />
+            <Link to="/home">
+              <SidebarItem icon={<Home className="h-5 w-5" />} label="Home" active={false} expanded={sidebarExpanded} />
+            </Link>
+            <Link to="/questions">
+              <SidebarItem icon={<HelpCircle className="h-5 w-5" />} label="Questions" active={true} expanded={sidebarExpanded} />
+            </Link>
             <SidebarItem icon={<Bell className="h-5 w-5" />} label="Notifications" active={false} expanded={sidebarExpanded} />
-            <SidebarItem icon={<Users className="h-5 w-5" />} label="Connect" active={false} expanded={sidebarExpanded} />
-            <SidebarItem icon={<MessageSquare className="h-5 w-5" />} label="Social" active={false} expanded={sidebarExpanded} />
-            <SidebarItem icon={<Bookmark className="h-5 w-5" />} label="saved" active={false} expanded={sidebarExpanded} />
-            <SidebarItem icon={<PlusCircle className="h-5 w-5" />} label="Ask Question" active={false} expanded={sidebarExpanded} />
+            <Link to="/connect">
+              <SidebarItem icon={<Users className="h-5 w-5" />} label="Connect" active={false} expanded={sidebarExpanded} />
+            </Link>
+            <Link to="/social">
+              <SidebarItem icon={<MessageSquare className="h-5 w-5" />} label="Social" active={false} expanded={sidebarExpanded} />
+            </Link>
+            <Link to="/saved">
+              <SidebarItem icon={<Bookmark className="h-5 w-5" />} label="Saved" active={false} expanded={sidebarExpanded} />
+            </Link>
+            <Link to="/ask-question">
+              <SidebarItem icon={<PlusCircle className="h-5 w-5" />} label="Ask Question" active={false} expanded={sidebarExpanded} />
+            </Link>
           </nav>
         </div>
 
         <div className="mt-auto border-t">
-          <SidebarItem icon={<User className="h-5 w-5" />} label="Profile" active={false} expanded={sidebarExpanded} />
-          <SidebarItem icon={<About className="h-5 w-5" />} label="more" active={false} expanded={sidebarExpanded} />
+          <Link to="/profile">
+            <SidebarItem icon={<User className="h-5 w-5" />} label="Profile" active={false} expanded={sidebarExpanded} />
+          </Link>
+          <Link to="/more">
+            <SidebarItem icon={<About className="h-5 w-5" />} label="more" active={false} expanded={sidebarExpanded} />
+          </Link>
         </div>
       </div>
 

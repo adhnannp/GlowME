@@ -9,11 +9,11 @@ export class UserRepository implements IUserRepository {
     return await newUser.save();
   }
 
-  async findUserByEmail(email: string): Promise<IUser | null> {
+  async findUserByEmail(email: string): Promise<IUser| null> {
     return await UserModel.findOne({ email });
   }
 
-  async findUserById(id: string): Promise<IUser | null> {
-    return await UserModel.findById(id);
+  async findUserById(id: string): Promise<IUser| null> {
+      return await UserModel.findById(id).select("-password");
   }
 }

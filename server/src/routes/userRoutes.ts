@@ -1,14 +1,14 @@
-// src/routes/userRoutes.ts
 import express from 'express';
 import container from '../di/container';
-import { AuthController } from '../controllers/auth.controller';
-import { UserController } from '../controllers/userController/user.controller';
+import { IAuthController } from '../core/interfaces/controllers/IAuthController';
+import { IUserController } from '../core/interfaces/controllers/IUserController';
+import { TYPES } from '../di/types';
 
 const router = express.Router();
 
 
-const authController = container.get<AuthController>('AuthController');
-const userController = container.get<UserController>('UserController')
+const authController = container.get<IAuthController>(TYPES.AuthController);
+const userController = container.get<IUserController>(TYPES.UserController)
 
 router.post('/register', authController.register.bind(authController));
 router.post('/login', authController.login.bind(authController));

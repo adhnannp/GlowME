@@ -4,11 +4,12 @@ import { redisClient } from "../../config/redis";
 import { generateOTP, sendOTPEmail } from '../../utils/otp';
 import { IUserRepository } from '../../core/interfaces/repositeries/IUserRepository';
 import { IUser } from '../../models/User';
+import { TYPES } from '../../di/types';
 
 @injectable()
 export class OTPService implements IOTPService {
   constructor(
-    @inject('IUserRepository') private userRepository: IUserRepository
+    @inject(TYPES.UserRepository) private userRepository: IUserRepository
   ) {}
 
   generateOTP(): string {

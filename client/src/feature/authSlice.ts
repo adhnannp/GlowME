@@ -26,6 +26,7 @@ const authSlice = createSlice({
       state.user = null;
       state.isAuthenticated = false;
       state.isAdmin = false;
+      state.error = null;
     },
     updateUser(state, action) {
       state.user = { ...state.user, ...action.payload };
@@ -40,6 +41,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.user = action.payload.user;
         state.isAdmin = action.payload.user.isAdmin;
+        state.error = null;
       })
       .addCase(userLogin.rejected, (state, action) => { 
         state.loading = false; 
@@ -53,6 +55,7 @@ const authSlice = createSlice({
         state.isAuthenticated = true;
         state.user = action.payload.user;
         state.isAdmin = action.payload.user.isAdmin;
+        state.error = null;
       })
       .addCase(adminLogin.rejected, (state, action) => { 
         state.loading = false; 
@@ -61,7 +64,11 @@ const authSlice = createSlice({
 
       // User registration
       .addCase(registerUser.pending, (state) => { state.loading = true; })
-      .addCase(registerUser.fulfilled, (state,action) => { state.loading = false; state.user = action.payload.user})
+      .addCase(registerUser.fulfilled, (state,action) => { 
+        state.loading = false; 
+        state.error = null;
+        state.user = action.payload.user
+      })
       .addCase(registerUser.rejected, (state, action) => { 
         state.loading = false; 
         state.error = action.payload as string; 
@@ -73,6 +80,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.isAuthenticated = true;
         state.user = action.payload.user;
+        state.error = null;
         state.isAdmin = action.payload.user.isAdmin;
       })
       .addCase(verifyOtp.rejected, (state, action) => { 

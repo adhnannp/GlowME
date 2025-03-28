@@ -42,8 +42,16 @@ export class AuthController implements IAuthController{
       const {email} = req.body
       await this.authService.resendOTP(email)
       res.status(200).json({message:'OTP resend successfully'});
-    } catch (error) {
-      res.status(400).json({ message:"Resend OTP failed" });
+    } catch (error:any) {
+      if (error.message.includes("expired") || error.message.includes("does not exist")) {
+        res.status(410).json({ message: "User data expired or not found. Please restart the verification process." });
+      } else if (error.message.includes("Redis")) {
+        res.status(500).json({ message: "Internal server error: Redis issue. Please try again later." });
+      }else if(error.message.includes("resent")){
+        res.status(400).json({ message:error.message });
+      }else {
+        res.status(400).json({ message: "Resend OTP failed. Please try again." });
+      }
     }
   }
   

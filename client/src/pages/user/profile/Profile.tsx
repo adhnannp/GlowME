@@ -32,7 +32,7 @@ export default function ProfilePage() {
       <div
         className={`${sidebarExpanded ? "w-[186px]" : "w-[60px]"} border-r flex flex-col transition-all duration-300 ease-in-out relative`}
       >
-        <div className="p-5 border-b flex items-center justify-between">
+        <div className="p-5 flex items-center justify-between">
           <h1 className={`text-xl font-bold ${sidebarExpanded ? "block" : "hidden"}`}>GlowME</h1>
           <button
             onClick={toggleSidebar}
@@ -105,91 +105,64 @@ export default function ProfilePage() {
 
             {/* Tabs */}
             <Tabs defaultValue="profile" className="mb-6">
-              <TabsList className="bg-transparent border-b w-full justify-start rounded-none p-0 h-auto">
+              <TabsList className="bg-transparent w-1/3 justify-start rounded-none p-0 h-auto gap-3">
                 <TabsTrigger
                   value="profile"
-                  className="rounded-none px-6 py-2 data-[state=active]:bg-black data-[state=active]:text-white"
+                  className="px-6 py-1.5 rounded-full data-[state=active]:bg-black data-[state=active]:text-white transition"
                 >
                   Profile
                 </TabsTrigger>
                 <TabsTrigger
                   value="activity"
-                  className="rounded-none px-6 py-2 data-[state=active]:bg-black data-[state=active]:text-white"
+                  className="px-6 py-1.5 rounded-full data-[state=active]:bg-black data-[state=active]:text-white transition"
                 >
                   Activity
                 </TabsTrigger>
               </TabsList>
-
               <TabsContent value="profile" className="pt-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Stats Section */}
-                  <div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Stats & Communities Section - 1/3 */}
+                  <div className="md:col-span-1">
+                    {/* Stats Section */}
                     <h2 className="text-xl font-semibold mb-4">Stats</h2>
                     <div className="border rounded-md p-4">
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                          <div className="text-2xl font-bold">8,450</div>
+                          <div className="text-xl">8,450</div>
                           <div className="flex items-center text-green-500">
-                            <svg
-                              className="w-4 h-4 mr-1"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                                fill="currentColor"
-                              />
-                            </svg>
+                          <img src="/simple_icons/trouphy.png" alt="Trophy Icon" className="w-5 h-5 mr-1" />
                             XP
                           </div>
                         </div>
                         <div>
-                          <div className="text-2xl font-bold">5,450</div>
+                          <div className="text-xl">5,450</div>
                           <div className="flex items-center text-yellow-500">
-                            <svg
-                              className="w-4 h-4 mr-1"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <circle cx="12" cy="12" r="10" fill="currentColor" />
-                            </svg>
-                            coins
+                          <img src="/simple_icons/coin.png" alt="Trophy Icon" className="w-5 h-5 mr-1" />
+                            Coins
                           </div>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                          <div className="text-2xl font-bold">720</div>
+                          <div className="text-xl">720</div>
                           <div className="flex items-center text-blue-500">
-                            <svg
-                              className="w-4 h-4 mr-1"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                                fill="currentColor"
-                              />
-                            </svg>
+                          <img src="/simple_icons/brain.png" alt="Trophy Icon" className="w-5 h-5 mr-1" />
                             QE
                           </div>
                         </div>
                         <div>
-                          <div className="text-2xl font-bold">12</div>
-                          <div className="text-gray-500">questions</div>
+                          <div className="text-xl">12</div>
+                          <div className="text-gray-500">Questions</div>
                         </div>
                       </div>
 
                       <div className="mt-4">
                         <div className="flex justify-between mb-1">
                           <span>Sorcerer</span>
-                          <span>75%</span>
+                          <span>1%</span>
                         </div>
-                        <Progress value={75} className="h-2" />
+                        <Progress value={1} className="h-2" />
                       </div>
                     </div>
 
@@ -202,13 +175,13 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  {/* Badges Section */}
-                  <div>
+                  {/* Badges Section - 2/3 */}
+                  <div className="md:col-span-2">
                     <h2 className="text-xl font-semibold mb-4">Badges</h2>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                       <BadgeCard
                         title="Supreme"
-                        imageUrl="/placeholder.svg?height=80&width=80"
+                        imageUrl="/badges/level9.png"
                         color="from-yellow-500 to-amber-600"
                         required="4000 required"
                         requiredColor="text-green-500"
@@ -217,7 +190,7 @@ export default function ProfilePage() {
                       />
                       <BadgeCard
                         title="Master"
-                        imageUrl="/placeholder.svg?height=80&width=80"
+                        imageUrl="/badges/level 7.png"
                         color="from-purple-500 to-violet-600"
                         required="2000 required"
                         requiredColor="text-green-500"
@@ -226,28 +199,28 @@ export default function ProfilePage() {
                       />
                       <BadgeCard
                         title="Skilled"
-                        imageUrl="/placeholder.svg?height=80&width=80"
+                        imageUrl="/badges/level 4.png"
                         color="from-cyan-400 to-blue-500"
                         required=""
-                        requiredColor = ""
+                        requiredColor=""
                         current={true}
                         acquired={false}
                       />
                       <BadgeCard
                         title="Beginner"
-                        imageUrl="/placeholder.svg?height=80&width=80"
+                        imageUrl="/badges/level 2.png"
                         color="from-lime-400 to-green-500"
                         required=""
-                        requiredColor = ""
+                        requiredColor=""
                         current={false}
                         acquired={true}
                       />
                       <BadgeCard
                         title="Bot"
-                        imageUrl="/placeholder.svg?height=80&width=80"
+                        imageUrl="/badges/level 1.png"
                         color="from-yellow-300 to-amber-400"
                         required=""
-                        requiredColor = ""
+                        requiredColor=""
                         current={false}
                         acquired={true}
                       />
@@ -255,6 +228,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </TabsContent>
+
 
               <TabsContent value="activity">
                 <div className="py-8 text-center text-gray-500">Activity content would go here</div>

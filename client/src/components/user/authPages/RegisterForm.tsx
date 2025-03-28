@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { registerUser } from "@/feature/authThunks";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch } from "@/store/store"; 
-
+import { toast } from 'react-hot-toast';
 
 const RegisterForm: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -22,10 +22,12 @@ const RegisterForm: React.FC = () => {
     try {
       const response = await dispatch(registerUser(form)).unwrap();
       if (response?.email) {
-        localStorage.setItem("email",response.email)
+        localStorage.setItem("otp_email",response.email)
+        toast.success('Please check you Email for OTP');
         navigate(`/otp`);
       }
     } catch (error) {
+      toast.error('registration failed');
       console.error("Registration failed:", error);
     }
   };

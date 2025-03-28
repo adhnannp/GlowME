@@ -28,7 +28,7 @@ export class AuthService implements IAuthService {
   async login(email: string, password: string): Promise<{ accessToken: string; refreshToken: string } | string> {
     const user = await this.userRepository.findUserByEmail(email);
     if (!user || !user.password) {
-      throw new Error("cannot invalid credential.");
+      throw new Error("invalid credential.");
     }
     const validPass = await comparePassword(password, user.password);
     if(!validPass){

@@ -27,11 +27,15 @@ export class OTPService implements IOTPService {
     if (!storedData) {
       throw new Error("User data expired or does not exist in Redis.");
     }
+    const ttl = await redisClient.ttl(email)
+    if(!ttl || ttl<=50){
+      throw new Error("Resent OTP limit exceeds")
+    }
     const userData = JSON.parse(storedData);
     const newOTP = this.generateOTP();
     sendOTPEmail(email, newOTP);
     userData.otp = newOTP;
-    await redisClient.set(email, JSON.stringify(userData), { EX: 300 });
+    await redisClient.set(email, JSON.stringify(userData), { EX: ttl });
   }
 
   async verifyOTP(email: string, otp: string): Promise<boolean> {

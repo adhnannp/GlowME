@@ -8,7 +8,6 @@ export const userLogin = createAsyncThunk<any, UserCredentials, { rejectValue: s
   async (credentials, thunkAPI) => {
     try {
       const loginResponse = await loginUserAPI(credentials);
-      console.log(loginResponse)
       const userData = await fetchUserAPI(credentials.email);
       return { ...loginResponse, user: userData.user };
     } catch (error: any) {

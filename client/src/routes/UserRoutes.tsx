@@ -32,24 +32,21 @@ const UserRoutes: React.FC = () => {
 
   return (
     <Routes>
-      {/* Protected Routes (Only Logged-in Users) */}
+
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<QuestionsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Route>
 
-      {/* Public Routes (Only Guests) */}
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Route>
 
-      {/* OTP Route (Only if Email Exists in LocalStorage) */}
       <Route element={<OtpRoute />}>
         <Route path="/otp" element={<Otp />} />
       </Route>
 
-      {/* Catch-all Route */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

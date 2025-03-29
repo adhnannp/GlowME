@@ -74,4 +74,10 @@ export class AuthService implements IAuthService {
       refreshToken: newRefreshToken,
     };
   }
+
+  async verifyUser(userId:string): Promise<Omit<IUser, "password"> |null>{
+    const userData = await this.userRepository.findUserById(userId)
+    if(!userData) throw new Error("Invalid User Id");
+    return userData;
+  }
 }

@@ -80,9 +80,7 @@ const OtpForm: React.FC = () => {
   useEffect(() => {
     if (expired) {
       const redirectTimeout = setTimeout(() => {
-        localStorage.removeItem("otp_email");
-        localStorage.removeItem("otpExpiryTime");
-        localStorage.removeItem("otpResendTime");
+        localStorage.clear();
         navigate("/register");
       }, 5000);
       return () => clearTimeout(redirectTimeout);
@@ -122,7 +120,7 @@ const OtpForm: React.FC = () => {
       navigate("/");
     } catch(error:any) {
       setErrorMessage("Invalid OTP. Please try again.");
-      toast.error(error||errorMessage)
+      toast.error(error.message||errorMessage)
     }
   };
 

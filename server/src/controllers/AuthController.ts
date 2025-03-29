@@ -96,4 +96,18 @@ export class AuthController implements IAuthController{
     }
   }
 
+  async verifyUser(req:Request,res:Response){
+    const userId = req.userId
+    if(!userId){
+      res.status(400).json({ message: 'no credentials added' });
+      return
+    }
+    try {
+      const userData = await this.authService.verifyUser(userId)
+      res.status(200).json({message:"got user by id successfully",user:userData});
+      return;
+    } catch (error) {
+      res.status(400).json({ message: 'Invalid token' });
+    }
+  }
 }

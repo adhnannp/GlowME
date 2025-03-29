@@ -27,9 +27,15 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.isAdmin = false;
       state.error = null;
+      state.loading = false
+      localStorage.clear();
     },
     updateUser(state, action) {
-      state.user = { ...state.user, ...action.payload };
+      state.user = action.payload.user;
+      state.error = null;
+      state.isAdmin = action.payload.user.isAdmin
+      state.isAuthenticated = true
+      state.loading = false
     },
   },
   extraReducers: (builder) => {

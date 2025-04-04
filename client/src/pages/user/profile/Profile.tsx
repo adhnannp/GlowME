@@ -1,26 +1,29 @@
 import { useState } from "react"
-import {
-  ChevronLeft,
-  ChevronRight,
-  Edit3,
-  Home,
-  HelpCircle,
-  Bell,
-  Users,
-  MessageSquare,
-  Bookmark,
-  PlusCircle,
-  User,
-  InfoIcon as About,
-} from "lucide-react"
+import {Edit3, Coins, Brain, Trophy, Star} from "lucide-react"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Header from "@/components/user/Header/Header"
 import CommunityItem from "@/components/user/Profile/CommunityItem"
-import SidebarItem from "@/components/user/Profile/SideBarItem"
 import BadgeCard from "@/components/user/Profile/BadgeCard"
+import Sidebar from "@/components/user/SideBar/SideBar"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/store/store"
+
 
 export default function ProfilePage() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
+  const user = useSelector((state: RootState) => state.auth.user)
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ]
+  let memberSince = "N/A"
+  if (user?.created_at) {
+    const date = new Date(user.created_at)
+    const month = monthNames[date.getMonth()]
+    const year = date.getFullYear()
+    memberSince = ` ${year} ${month}`
+  }
 
   const toggleSidebar = () => {
     setSidebarExpanded(!sidebarExpanded)
@@ -29,69 +32,33 @@ export default function ProfilePage() {
   return (
     <div className="flex h-screen bg-white">
       {/* Left Sidebar */}
-      <div
-        className={`${sidebarExpanded ? "w-[186px]" : "w-[60px]"} border-r flex flex-col transition-all duration-300 ease-in-out relative`}
-      >
-        <div className="p-5 flex items-center justify-between">
-          <h1 className={`text-xl font-bold ${sidebarExpanded ? "block" : "hidden"}`}>GlowME</h1>
-          <button
-            onClick={toggleSidebar}
-            className={`absolute ${sidebarExpanded ? "right-2" : "right-1/2 translate-x-1/2"} top-5 p-1 rounded-full hover:bg-gray-100`}
-          >
-            {sidebarExpanded ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          </button>
-        </div>
-
-        <div className="flex-1">
-          <nav className="space-y-1 py-2">
-            <SidebarItem icon={<Home className="h-5 w-5" />} label="Home" active={false} expanded={sidebarExpanded} />
-            <SidebarItem icon={<HelpCircle className="h-5 w-5" />} label="Questions" active={false} expanded={sidebarExpanded} />
-            <SidebarItem icon={<Bell className="h-5 w-5" />} label="Notifications" active={false} expanded={sidebarExpanded} />
-            <SidebarItem icon={<Users className="h-5 w-5" />} label="Connect" active={false} expanded={sidebarExpanded} />
-            <SidebarItem icon={<MessageSquare className="h-5 w-5" />} label="Social" active={false} expanded={sidebarExpanded} />
-            <SidebarItem icon={<Bookmark className="h-5 w-5" />} label="saved" active={false} expanded={sidebarExpanded} />
-            <SidebarItem icon={<PlusCircle className="h-5 w-5" />} label="Ask Question" active={false} expanded={sidebarExpanded} />
-          </nav>
-        </div>
-
-        <div className="mt-auto border-t">
-          <SidebarItem icon={<User className="h-5 w-5" />} label="Profile" active expanded={sidebarExpanded} />
-          <SidebarItem icon={<About className="h-5 w-5" />} label="About" active={false} expanded={sidebarExpanded} />
-        </div>
-      </div>
-
+      <Sidebar
+        sidebarExpanded={sidebarExpanded}
+        activePage="Profile"
+      />
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="border-b p-3 flex items-center">
-          <button className="p-2 rounded-full hover:bg-gray-100 mr-2">
-            <ChevronLeft className="h-5 w-5" />
-          </button>
-          <div className="flex-1">
-            <input type="text" placeholder="Search..." className="w-full border rounded-md px-3 py-2" />
-          </div>
-          <div className="ml-4">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600"></div>
-          </div>
-        </header>
-
+        <Header
+          sidebarExpanded={sidebarExpanded}
+          toggleSidebar={toggleSidebar}
+        />
         {/* Profile Content */}
         <div className="flex-1 overflow-auto">
           <div className="max-w-5xl mx-auto p-6">
             {/* Profile Header */}
             <div className="flex items-start mb-6">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 mr-6"></div>
+              <img
+                src={user?.profile_image || "/browserIcons/person_icon.png"}
+                alt="Profile"
+                className="w-32 h-32 rounded-full object-cover mr-6 border border-gray-300"
+              />              
               <div className="flex-1 pt-4">
-                <h1 className="text-3xl font-bold">Adhnan P</h1>
+                <h1 className="text-3xl font-bold">{user?.username||"Anonymous"}</h1>
                 <div className="flex items-center text-gray-500 mt-1">
                   <span className="flex items-center">
-                    <svg className="w-4 h-4 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path
-                        d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                        fill="currentColor"
-                      />
-                    </svg>
-                    Member for 6 months
+                    <Star className="w-4 h-4 mr-1 fill-gray-500" />
+                    Member since {memberSince}
                   </span>
                   <span className="mx-2">•</span>
                   <span>66 connection</span>
@@ -130,14 +97,14 @@ export default function ProfilePage() {
                         <div>
                           <div className="text-xl">8,450</div>
                           <div className="flex items-center text-green-500">
-                          <img src="/simple_icons/trouphy.png" alt="Trophy Icon" className="w-5 h-5 mr-1" />
+                            <Trophy className="w-5 h-5 mr-1" />
                             XP
                           </div>
                         </div>
                         <div>
                           <div className="text-xl">5,450</div>
                           <div className="flex items-center text-yellow-500">
-                          <img src="/simple_icons/coin.png" alt="Trophy Icon" className="w-5 h-5 mr-1" />
+                            <Coins className="w-5 h-5 mr-1" />
                             Coins
                           </div>
                         </div>
@@ -147,7 +114,7 @@ export default function ProfilePage() {
                         <div>
                           <div className="text-xl">720</div>
                           <div className="flex items-center text-blue-500">
-                          <img src="/simple_icons/brain.png" alt="Trophy Icon" className="w-5 h-5 mr-1" />
+                            <Brain className="w-5 h-5 mr-1" />
                             QE
                           </div>
                         </div>

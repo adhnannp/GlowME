@@ -114,9 +114,6 @@ const OtpForm: React.FC = () => {
 
     try {
       await dispatch(verifyOtp({ email, otp: enteredOtp })).unwrap();
-      localStorage.removeItem("otp_email");
-      localStorage.removeItem("otpExpiryTime");
-      localStorage.removeItem("otpResendTime");
       navigate("/");
     } catch(error:any) {
       setErrorMessage("Invalid OTP. Please try again.");

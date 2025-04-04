@@ -1,24 +1,11 @@
 import { useState } from "react"
-import {
-  ChevronLeft,
-  ChevronRight,
-  Home,
-  HelpCircle,
-  Bell,
-  Users,
-  MessageSquare,
-  Bookmark,
-  PlusCircle,
-  User,
-  InfoIcon as About,
-} from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import SidebarItem from "@/components/user/Profile/SideBarItem"
 import TabButton from "@/components/home/TabButton"
 import QuestionCard from "@/components/home/QuestionCard"
-import { Link } from "react-router-dom"
+import Sidebar from "@/components/user/SideBar/SideBar"
+import Header from "@/components/user/Header/Header"
 
 // Sample question data
 const questions = [
@@ -63,65 +50,17 @@ export default function QuestionsPage() {
   return (
     <div className="flex h-screen bg-white">
       {/* Left Sidebar */}
-      <div
-        className={`${sidebarExpanded ? "w-[186px]" : "w-[60px]"} border-r flex flex-col transition-all duration-300 ease-in-out relative`}
-      >
-        <div className="p-5 border-b flex items-center justify-between">
-          <h1 className={`text-xl font-bold ${sidebarExpanded ? "block" : "hidden"}`}>GlowME</h1>
-          <button
-            onClick={toggleSidebar}
-            className={`absolute ${sidebarExpanded ? "right-2" : "right-1/2 translate-x-1/2"} top-5 p-1 rounded-full hover:bg-gray-100`}
-          >
-            {sidebarExpanded ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-          </button>
-        </div>
-
-        <div className="flex-1">
-          <nav className="space-y-1 py-2">
-            <Link to="/home">
-              <SidebarItem icon={<Home className="h-5 w-5" />} label="Home" active={false} expanded={sidebarExpanded} />
-            </Link>
-            <Link to="/questions">
-              <SidebarItem icon={<HelpCircle className="h-5 w-5" />} label="Questions" active={true} expanded={sidebarExpanded} />
-            </Link>
-            <SidebarItem icon={<Bell className="h-5 w-5" />} label="Notifications" active={false} expanded={sidebarExpanded} />
-            <Link to="/connect">
-              <SidebarItem icon={<Users className="h-5 w-5" />} label="Connect" active={false} expanded={sidebarExpanded} />
-            </Link>
-            <Link to="/social">
-              <SidebarItem icon={<MessageSquare className="h-5 w-5" />} label="Social" active={false} expanded={sidebarExpanded} />
-            </Link>
-            <Link to="/saved">
-              <SidebarItem icon={<Bookmark className="h-5 w-5" />} label="Saved" active={false} expanded={sidebarExpanded} />
-            </Link>
-            <Link to="/ask-question">
-              <SidebarItem icon={<PlusCircle className="h-5 w-5" />} label="Ask Question" active={false} expanded={sidebarExpanded} />
-            </Link>
-          </nav>
-        </div>
-
-        <div className="mt-auto border-t">
-          <Link to="/profile">
-            <SidebarItem icon={<User className="h-5 w-5" />} label="Profile" active={false} expanded={sidebarExpanded} />
-          </Link>
-          <Link to="/more">
-            <SidebarItem icon={<About className="h-5 w-5" />} label="more" active={false} expanded={sidebarExpanded} />
-          </Link>
-        </div>
-      </div>
-
+      <Sidebar
+        sidebarExpanded={sidebarExpanded}
+        activePage="Home"
+      />
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="border-b p-3 flex items-center">
-          <div className="flex-1">
-            <input type="text" placeholder="Search..." className="w-full border rounded-md px-3 py-2" />
-          </div>
-          <div className="ml-4">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600"></div>
-          </div>
-        </header>
-
+        <Header
+          sidebarExpanded={sidebarExpanded}
+          toggleSidebar={toggleSidebar}
+        />
         {/* Questions Content */}
         <div className="flex-1 overflow-auto">
           <div className="max-w-6xl mx-auto p-6">

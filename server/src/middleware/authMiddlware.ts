@@ -11,7 +11,6 @@ declare global {
 
 const verifyToken = (req: Request, res: Response, next: NextFunction):void => {
   const authHeader = req.headers.authorization;
-  
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     res.status(400).json({ error: "No token provided" });
     return 

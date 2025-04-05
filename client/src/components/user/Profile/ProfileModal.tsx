@@ -1,9 +1,8 @@
 import { useRef, useEffect } from "react";
 import { LogOut, Coins, Brain, Trophy } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { logout } from "@/feature/authSlice";
+import { logout } from "@/feature/authThunks";
 import { AppDispatch } from "@/store/store";
-import { logoutUser } from "@/feature/api/auth.api";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -35,7 +34,6 @@ export function ProfileModal({isOpen,onClose,user,profileImage,}: ProfileModalPr
   }, [isOpen, onClose]);
 
   function logOut(){
-    logoutUser()
     dispatch(logout());
   }
 

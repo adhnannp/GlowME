@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { userLogin, adminLogin, registerUser ,verifyOtp} from "./authThunks";
+import { userLogin, adminLogin, registerUser ,verifyOtp, logout} from "./authThunks";
 import { User } from "../interfaces/auth.interface";
 
 interface AuthState {
@@ -22,14 +22,6 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout: (state) => {
-      state.user = null;
-      state.isAuthenticated = false;
-      state.isAdmin = false;
-      state.error = null;
-      state.loading = false
-      localStorage.clear();
-    },
     updateUser(state, action) {
       state.user = action.payload.user;
       state.error = null;
@@ -68,6 +60,21 @@ const authSlice = createSlice({
         state.error = action.payload as string; 
       })
 
+      //logout
+      .addCase(logout.pending, (state) => { state.loading = true; })
+      .addCase(logout.fulfilled, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+        state.isAdmin = false;
+        state.error = null;
+        state.loading = false;
+        localStorage.clear();
+      })
+      .addCase(logout.rejected, (state, action) => {
+        state.error = action.payload as string;
+        state.loading = false; 
+      })
+
       // User registration
       .addCase(registerUser.pending, (state) => { state.loading = true; })
       .addCase(registerUser.fulfilled, (state,action) => { 
@@ -96,5 +103,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout, updateUser } = authSlice.actions;
+export const { updateUser } = authSlice.actions;
 export default authSlice.reducer;

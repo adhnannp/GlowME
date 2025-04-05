@@ -15,7 +15,7 @@ export default function LoginPage() {
           <div className="mb-8">
             <div className="flex items-center">
               <div className="mr-2 h-6 w-6 rounded-full bg-[#FF9838]"></div>
-              <span className="text-lg font-medium">Elegent</span>
+              <span className="text-lg font-medium">GlowME</span>
             </div>
           </div>
 
@@ -65,18 +65,10 @@ export default function LoginPage() {
               </div>
 
               <Button className="w-full rounded-full bg-[#FF9838] hover:bg-[#e88a2f] text-white">Log in</Button>
-
-              <div className="text-center text-sm">
-                Don't have an account?{" "}
-                <a href="#" className="text-[#FF9838] hover:underline">
-                  Sign up
-                </a>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Right side - Orange background with welcome message */}
         <div className="hidden relative bg-[#FF9838] md:flex md:w-1/2 flex-col justify-center items-center text-white p-8">
           <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-[#ffb06b] opacity-50 -mr-20 -mt-20"></div>
           <div className="absolute bottom-0 right-0 w-32 h-32 rounded-full bg-[#ffb06b] opacity-50 -mr-10 -mb-10"></div>

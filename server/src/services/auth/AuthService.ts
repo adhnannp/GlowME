@@ -34,8 +34,8 @@ export class AuthService implements IAuthService {
     if(!validPass){
       throw new Error("incorrect password")
     }
-    const accessToken = signJWT({ userId: user._id });
-    const refreshToken = signRefreshToken({ userId: user._id });
+    const accessToken = signJWT({ userId: user._id , isAdmin:user.isAdmin});
+    const refreshToken = signRefreshToken({ userId: user._id, isAdmin:user.isAdmin });
     return { accessToken, refreshToken };
   }
 
@@ -55,8 +55,8 @@ export class AuthService implements IAuthService {
     }
     const {user} = JSON.parse(storedData);
     const savedUser = await this.userRepository.createUser(user);
-    const accessToken = signJWT({ userId: savedUser._id });
-    const refreshToken = signRefreshToken({ userId: savedUser._id });
+    const accessToken = signJWT({ userId: savedUser._id, isAdmin:user.isAdmin });
+    const refreshToken = signRefreshToken({ userId: savedUser._id , isAdmin:user.isAdmin});
     await redisClient.del(email);
     return {accessToken,refreshToken}
   }
@@ -66,8 +66,8 @@ export class AuthService implements IAuthService {
     if (!payload) throw new Error('Invalid refresh token');
     const user = await this.userRepository.findUserById(payload.userId);
     if (!user) throw new Error('User not found');
-    const accessToken = signJWT({ userId: user.id });
-    const newRefreshToken = signRefreshToken({ userId: user.id });
+    const accessToken = signJWT({ userId: user.id, isAdmin:user.isAdmin });
+    const newRefreshToken = signRefreshToken({ userId: user.id , isAdmin:user.isAdmin});
 
     return {
       accessToken,

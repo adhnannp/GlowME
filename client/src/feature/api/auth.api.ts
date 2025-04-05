@@ -34,7 +34,19 @@ export const fetchUserAPI = async (email:string) => {
   return response.data;
 };
 
+export const fetchAdminAPI = async (email:string) => {
+  const response = await api.get("/admin/get-admin", {
+    params: { email },
+  });
+  return response.data;
+};
+
 export const logoutUser = async()=>{
   const response = await api.post("/logout")
+  return response
+}
+
+export const logoutAdmin = async()=>{
+  const response = await api.post("/admin/logout")
   return response
 }

@@ -1,5 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { loginUserAPI, registerUserAPI, fetchUserAPI, loginAdminAPI, verifyOtpAPI } from "./api/auth.api";
+import { 
+  loginUserAPI, 
+  registerUserAPI, 
+  fetchUserAPI,
+  fetchAdminAPI, 
+  loginAdminAPI, 
+  verifyOtpAPI, 
+  logoutUser, 
+} from "./api/auth.api";
 import { UserCredentials, RegisterUserData, Otp } from "@/interfaces/auth.interface";
 
 // User login thunk
@@ -22,7 +30,7 @@ export const adminLogin = createAsyncThunk<any, UserCredentials, { rejectValue: 
   async (credentials, thunkAPI) => {
     try {
       const loginResponse = await loginAdminAPI(credentials);
-      const userData = await fetchUserAPI(credentials.email);
+      const userData = await fetchAdminAPI(credentials.email);
       return { ...loginResponse, user: userData };
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
@@ -52,6 +60,18 @@ export const verifyOtp = createAsyncThunk<any, Otp, { rejectValue: string }>(
       return { ...verifyResponse, user: userData.user };
     } catch (error: any) {
       return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
+//logout
+export const logout = createAsyncThunk<void, void, { rejectValue: string }>(
+  "auth/logout",
+  async (_, thunkAPI) => {
+    try {
+      await logoutUser();
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(error.message || "Logout failed");
     }
   }
 );

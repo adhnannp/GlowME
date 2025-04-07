@@ -24,7 +24,7 @@ const PublicRoute: React.FC = () => {
         dispatch(updateUser({ user: userResponse.data.user }));
       } catch (userErr) {
         try {
-          const adminResponse = await api.get("/verify-admin");
+          const adminResponse = await api.get("/admin/verify-admin");
           dispatch(updateUser({ user: adminResponse.data.user }));
         } catch (adminErr) {
           await dispatch(logout());

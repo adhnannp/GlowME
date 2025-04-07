@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import { IAdminService } from '../../core/interfaces/services/IAdminService';
+import { IAdminService } from '../../core/interfaces/services/admin/IAdminService';
 import { IUserRepository } from '../../core/interfaces/repositeries/IUserRepository';
 import { IUser } from '../../models/User';
 import { TYPES } from '../../di/types';
@@ -12,8 +12,8 @@ export class AdminService implements IAdminService {
 
     async getAdminByEmail(email: string): Promise<Partial<IUser>| null> {
         const user = await this.userRepository.findUserByEmail(email);
-        if (!user) {
-            throw new Error(`User with email ${email} not found`);
+        if (!user || !user.isAdmin) {
+            return null;
         }
         const { password, ...userWithoutPassword } = user.toObject ? user.toObject() : user;
         return userWithoutPassword;

@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
-import { IAuthService } from '../core/interfaces/services/IAuthService';
-import { setRefreshTokens } from '../utils/setRefreshToken';
-import { IAuthController } from '../core/interfaces/controllers/IAuthController';
-import { TYPES } from '../di/types';
+import { IAuthService } from '../../core/interfaces/services/auth/IAuthService';
+import { setRefreshTokens } from '../../utils/setRefreshToken';
+import { IAuthController } from '../../core/interfaces/controllers/auth/IAuthController';
+import { TYPES } from '../../di/types';
 
 @injectable()
 export class AuthController implements IAuthController{
@@ -55,10 +55,27 @@ export class AuthController implements IAuthController{
     }
   }
   
-  async login(req: Request, res: Response):Promise<void>{
+  async loginUser(req: Request, res: Response):Promise<void>{
     try {
       const { email, password } = req.body;
-      const data = await this.authService.login(email, password);
+      const data = await this.authService.loginUser(email, password);
+      if (!data || typeof data !== "object") {
+          res.status(400).json({ message: "Login failed" });
+          return
+      }
+      const { accessToken, refreshToken } = data;
+      setRefreshTokens(res,refreshToken)
+      res.status(200).json({ message: "Login successful",accessToken });
+    } catch (error) {
+        console.log(error)
+        res.status(400).json({ message: "Login Failed try again" });
+    }
+  }
+
+  async loginAdmin(req: Request, res: Response):Promise<void>{
+    try {
+      const { email, password } = req.body;
+      const data = await this.authService.loginAdmin(email, password);
       if (!data || typeof data !== "object") {
           res.status(400).json({ message: "Login failed" });
           return
@@ -104,10 +121,14 @@ export class AuthController implements IAuthController{
     }
     try {
       const userData = await this.authService.verifyUser(userId)
+      if(!userData){
+        res.status(400).json({ message: 'Invalid token' });  
+      }
       res.status(200).json({message:"got user by id successfully",user:userData});
       return;
     } catch (error) {
       res.status(400).json({ message: 'Invalid token' });
+      return
     }
   }
 }

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { inject, injectable } from 'inversify';
-import { IAdminService } from '../../core/interfaces/services/IAdminService';
-import { IAdminController } from '../../core/interfaces/controllers/IAdminController';
+import { IAdminService } from '../../core/interfaces/services/admin/IAdminService';
+import { IAdminController } from '../../core/interfaces/controllers/admin/IAdminController';
 import { TYPES } from '../../di/types';
 
 @injectable()
@@ -11,7 +11,6 @@ export class AdminController implements IAdminController{
     async getAdminByEmail(req: Request, res: Response) {
         try {
             const { email } = req.query;
-            console.log(email)
             if (!email || typeof email !== "string") {
                 res.status(400).json({ message: "Email is required and must be a string" });
                 return 
@@ -23,7 +22,7 @@ export class AdminController implements IAdminController{
             }
             res.status(200).json({message:"user fetched successsfully",user});
         } catch (error) {
-            res.status(500).json({ message: 'Internal Server Error', error});
+            res.status(400).json({ message: 'Login Failed', error:(error as Error).message });
         }
     }
 }

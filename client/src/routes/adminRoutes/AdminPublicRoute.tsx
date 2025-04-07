@@ -19,7 +19,7 @@ const AdminPublicRoute: React.FC = () => {
         return;
       }
       try {
-        const adminResponse = await api.get("/verify-admin");
+        const adminResponse = await api.get("/admin/verify-admin");
         dispatch(updateUser({ user: adminResponse.data.user }));
       } catch (adminErr) {
         try {

@@ -1,8 +1,8 @@
 import { inject, injectable } from 'inversify';
-import { IAuthService} from '../../core/interfaces/services/IAuthService';
+import { IAuthService} from '../../core/interfaces/services/auth/IAuthService';
 import { IUserRepository } from '../../core/interfaces/repositeries/IUserRepository';
 import { IUser } from '../../models/User';
-import { IOTPService } from '../../core/interfaces/services/IOTPService';
+import { IOTPService } from '../../core/interfaces/services/auth/IOTPService';
 import { signJWT, signRefreshToken,verifyRefreshToken  } from '../../utils/token';
 import { redisClient } from "../../config/redis";
 import { TYPES } from '../../di/types';
@@ -25,10 +25,24 @@ export class AuthService implements IAuthService {
     return user.email;
   }
 
-  async login(email: string, password: string): Promise<{ accessToken: string; refreshToken: string } | string> {
+  async loginUser(email: string, password: string): Promise<{ accessToken: string; refreshToken: string } | string> {
     const user = await this.userRepository.findUserByEmail(email);
-    if (!user || !user.password) {
-      throw new Error("invalid credential.");
+    if (!user || user.isAdmin) {
+      throw new Error("Entry restrcted");
+    }
+    const validPass = await comparePassword(password, user.password);
+    if(!validPass){
+      throw new Error("incorrect password")
+    }
+    const accessToken = signJWT({ userId: user._id , isAdmin:user.isAdmin});
+    const refreshToken = signRefreshToken({ userId: user._id, isAdmin:user.isAdmin });
+    return { accessToken, refreshToken };
+  }
+
+  async loginAdmin(email: string, password: string): Promise<{ accessToken: string; refreshToken: string } | string> {
+    const user = await this.userRepository.findUserByEmail(email);
+    if (!user || !user.isAdmin) {
+      throw new Error("Entry restrcted");
     }
     const validPass = await comparePassword(password, user.password);
     if(!validPass){
@@ -77,7 +91,7 @@ export class AuthService implements IAuthService {
 
   async verifyUser(userId:string): Promise<Omit<IUser, "password"> |null>{
     const userData = await this.userRepository.findUserById(userId)
-    if(!userData) throw new Error("Invalid User Id");
+    if(!userData) return null;
     return userData;
   }
 }

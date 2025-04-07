@@ -270,7 +270,7 @@ function NavItem({ icon, label, active = false }: NavItemProps) {
     <a
       href="#"
       className={`flex items-center px-4 py-3 text-sm rounded-lg ${
-        active ? "bg-[#FF9838] bg-opacity-10 text-[#FF9838] font-medium" : "text-gray-600 hover:bg-gray-100"
+        active ? "bg-[#FF9838] bg-opacity-10 text-[#ffffff] font-bold " : "text-gray-600 hover:bg-gray-100"
       }`}
     >
       <span className="mr-3">{icon}</span>

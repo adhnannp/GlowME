@@ -1,5 +1,5 @@
 import { injectable, inject } from 'inversify';
-import { IOTPService } from '../../core/interfaces/services/IOTPService';
+import { IOTPService } from '../../core/interfaces/services/auth/IOTPService';
 import { redisClient } from "../../config/redis";
 import { generateOTP, sendOTPEmail } from '../../utils/otp';
 import { IUserRepository } from '../../core/interfaces/repositeries/IUserRepository';

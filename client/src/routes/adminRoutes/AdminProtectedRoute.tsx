@@ -29,7 +29,7 @@ const AdminProtectedRoute: React.FC = () => {
       } 
 
       try {
-        const adminRes = await api.get("/verify-admin");
+        const adminRes = await api.get("/admin/verify-admin");
         dispatch(updateUser({ user: adminRes.data.user }));
       } catch (adminErr) {
         try {

@@ -19,7 +19,7 @@ export default class AdminAuthMiddleware implements IAdminAuthMiddleware {
   async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(401).json({ error: "No token provided" });
+      res.status(403).json({ error: "No token provided" });
       return;
     }
     const token = authHeader.split(" ")[1];

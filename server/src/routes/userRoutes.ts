@@ -1,9 +1,8 @@
 import express from 'express';
 import container from '../di/container';
-import { IAuthController } from '../core/interfaces/controllers/IAuthController';
-import { IUserController } from '../core/interfaces/controllers/IUserController';
+import { IAuthController } from '../core/interfaces/controllers/auth/IAuthController';
+import { IUserController } from '../core/interfaces/controllers/user/IUserController';
 import { TYPES } from '../di/types';
-import verifyToken from '../middleware/UserAuthMiddleware';
 import { IUserAuthMiddleware } from '../core/interfaces/middlewares/IUserAuthMiddleware';
 
 const router = express.Router();
@@ -15,7 +14,7 @@ const userAuthMiddleware = container.get<IUserAuthMiddleware>(TYPES.UserAuthMidd
 
 router.post('/register', authController.register.bind(authController));
 router.post('/resend-otp', authController.resendOTP.bind(authController));
-router.post('/login', authController.login.bind(authController));
+router.post('/login', authController.loginUser.bind(authController));
 router.post('/verify-otp', authController.verifyOTP.bind(authController));
 router.post('/logout', authController.logout.bind(authController));
 router.post('/refresh-token', authController.refreshToken.bind(authController));

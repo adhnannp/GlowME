@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { injectable, inject } from "inversify";
-import { IUserRepository } from "../core/interfaces/repositeries/IUserRepository";
+import { IUserRepository } from "../core/interfaces/repositories/IUserRepository";
 import { IAdminAuthMiddleware } from "../core/interfaces/middlewares/IAdminAuthMiddleware";
 import { TYPES } from "../di/types";
 

@@ -34,7 +34,8 @@ export default function ProfilePage() {
       {/* Left Sidebar */}
       <Sidebar
         sidebarExpanded={sidebarExpanded}
-        activePage="Profile"
+        activePage="Home"
+        setSidebarExpanded={setSidebarExpanded}
       />
       {/* Main Content */}
       <div className="flex-1 flex flex-col">

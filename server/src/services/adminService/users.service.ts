@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { IUsersService } from '../../core/interfaces/services/admin/IUsersService';
-import { IUserRepository } from '../../core/interfaces/repositeries/IUserRepository';
+import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
 import { TYPES } from '../../di/types';
 import { SafeUser } from '../../core/tpes/SafeUser';
 
@@ -10,11 +10,11 @@ export default class UsersService implements IUsersService {
         @inject(TYPES.UserRepository) private userRepository: IUserRepository
     ) {}
 
-    async getUser(skip:number): Promise<[SafeUser[],number] | null>{
+    async getUser(skip:number,limit:number): Promise<[SafeUser[],number] | null>{
         if(skip<0) {
             return null;
         } 
-        const users = await this.userRepository.getAllUser(skip);
+        const users = await this.userRepository.getAllUser(skip,limit);
         const TotalUsers = await this.userRepository.totalUser()
         if(!users)return null;
         return [users,TotalUsers];

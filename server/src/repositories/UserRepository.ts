@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { IUserRepository } from '../core/interfaces/repositeries/IUserRepository';
+import { IUserRepository } from '../core/interfaces/repositories/IUserRepository';
 import { IUser, UserModel } from '../models/User';
 import { SafeUser } from '../core/tpes/SafeUser';
 
@@ -18,8 +18,8 @@ export class UserRepository implements IUserRepository {
       return await UserModel.findById(id).select("-password");
   }
 
-  async getAllUser(skip:number=0): Promise<SafeUser[]| null >{
-      return await UserModel.find({isAdmin:false},'-password').skip(skip).limit(8).lean()
+  async getAllUser(skip:number=0,limit:number=8): Promise<SafeUser[]| null >{
+      return await UserModel.find({isAdmin:false},'-password').skip(skip).limit(limit).lean()
   }
 
   async totalUser(): Promise<number>{

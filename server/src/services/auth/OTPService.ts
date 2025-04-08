@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { IOTPService } from '../../core/interfaces/services/auth/IOTPService';
 import { redisClient } from "../../config/redis";
 import { generateOTP, sendOTPEmail } from '../../utils/otp';
-import { IUserRepository } from '../../core/interfaces/repositeries/IUserRepository';
+import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
 import { IUser } from '../../models/User';
 import { TYPES } from '../../di/types';
 

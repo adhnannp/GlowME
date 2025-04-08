@@ -4,13 +4,16 @@ import { IAuthController } from '../core/interfaces/controllers/auth/IAuthContro
 import { IUserController } from '../core/interfaces/controllers/user/IUserController';
 import { TYPES } from '../di/types';
 import { IUserAuthMiddleware } from '../core/interfaces/middlewares/IUserAuthMiddleware';
+import { IUserConnectionController } from '../core/interfaces/controllers/user/IUserConnectionController';
 
 const router = express.Router();
 
 
+const userAuthMiddleware = container.get<IUserAuthMiddleware>(TYPES.UserAuthMiddleware)
 const authController = container.get<IAuthController>(TYPES.AuthController);
 const userController = container.get<IUserController>(TYPES.UserController)
-const userAuthMiddleware = container.get<IUserAuthMiddleware>(TYPES.UserAuthMiddleware)
+const userConnectionController = container.get<IUserConnectionController>(TYPES.UserConnectionController);
+
 
 router.post('/register', authController.register.bind(authController));
 router.post('/resend-otp', authController.resendOTP.bind(authController));
@@ -21,5 +24,10 @@ router.post('/refresh-token', authController.refreshToken.bind(authController));
 router.get('/verify-user',userAuthMiddleware.handle.bind(userAuthMiddleware),authController.verifyUser.bind(authController));
 
 router.get('/user',userAuthMiddleware.handle.bind(userAuthMiddleware),userController.getUserByEmail.bind(userController));
+router.post('/follow', userAuthMiddleware.handle.bind(userAuthMiddleware), userConnectionController.followUser.bind(userConnectionController));
+router.post('/unfollow', userAuthMiddleware.handle.bind(userAuthMiddleware), userConnectionController.unfollowUser.bind(userConnectionController));
+router.post('/report', userAuthMiddleware.handle.bind(userAuthMiddleware), userConnectionController.reportUser.bind(userConnectionController));
+router.get('/users', userAuthMiddleware.handle.bind(userAuthMiddleware), userConnectionController.getUsers.bind(userConnectionController));
+router.get('/users/:id',userAuthMiddleware.handle.bind(userAuthMiddleware), userConnectionController.getUserById.bind(userConnectionController));
 
 export default router;

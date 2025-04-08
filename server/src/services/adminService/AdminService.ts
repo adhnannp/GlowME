@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { IAdminService } from '../../core/interfaces/services/admin/IAdminService';
-import { IUserRepository } from '../../core/interfaces/repositeries/IUserRepository';
+import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
 import { IUser } from '../../models/User';
 import { TYPES } from '../../di/types';
 

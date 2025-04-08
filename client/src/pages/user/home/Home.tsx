@@ -53,6 +53,7 @@ export default function QuestionsPage() {
       <Sidebar
         sidebarExpanded={sidebarExpanded}
         activePage="Home"
+        setSidebarExpanded={setSidebarExpanded}
       />
       {/* Main Content */}
       <div className="flex-1 flex flex-col">

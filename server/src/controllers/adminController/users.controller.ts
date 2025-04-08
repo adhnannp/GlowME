@@ -20,7 +20,7 @@ export class UsersController implements IUsersController {
         return;
       }
       const skip = (page - 1) * limit;
-      const result = await this.usersService.getUser(skip);
+      const result = await this.usersService.getUser(skip,limit);
   
       if (!result) {
         res.status(404).json({ message: 'No users found' });

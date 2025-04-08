@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { IAuthService} from '../../core/interfaces/services/auth/IAuthService';
-import { IUserRepository } from '../../core/interfaces/repositeries/IUserRepository';
+import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
 import { IUser } from '../../models/User';
 import { IOTPService } from '../../core/interfaces/services/auth/IOTPService';
 import { signJWT, signRefreshToken,verifyRefreshToken  } from '../../utils/token';

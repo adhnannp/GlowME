@@ -8,6 +8,39 @@ import { toast } from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 
 const LoginForm: React.FC = () => {
+  const handleGoogleLogin = () => {
+    const width = 500;
+    const height = 600;
+    const left = window.screenX + (window.innerWidth - width) / 2;
+    const top = window.screenY + (window.innerHeight - height) / 2;
+  
+    const popup = window.open(
+      'http://localhost:3000/api/auth/google',
+      'googleLogin',
+      `width=${width},height=${height},top=${top},left=${left}`
+    );
+  
+    const messageListener = (event: MessageEvent) => {
+      // Optional: check origin
+      if (event.origin !== 'http://localhost:3000') return;
+  
+      const { token } = event.data;
+      if (token) {
+        // Save the token and redirect
+        localStorage.setItem('accessToken', token); // or dispatch Redux action
+        toast.success('Google login successful!');
+        navigate('/');
+      } else {
+        toast.error('Google login failed.');
+      }
+  
+      window.removeEventListener('message', messageListener);
+      popup?.close();
+    };
+  
+    window.addEventListener('message', messageListener);
+  };
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -74,7 +107,12 @@ const LoginForm: React.FC = () => {
           >
             {loading ? 'Logging in...' : 'Log In'}
           </Button>
-          <Button variant="outline" className="rounded-md px-6 flex items-center space-x-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-md px-6 flex items-center space-x-2"
+            onClick={handleGoogleLogin}
+          >
             <FcGoogle className="text-xl" />
             <span>Sign in with Google</span>
           </Button>

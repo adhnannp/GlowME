@@ -30,7 +30,7 @@ export class AuthService implements IAuthService {
     if (!user || user.isAdmin) {
       throw new Error("Entry restrcted");
     }
-    const validPass = await comparePassword(password, user.password);
+    const validPass = await comparePassword(password, user.password!);
     if(!validPass){
       throw new Error("incorrect password")
     }
@@ -44,7 +44,7 @@ export class AuthService implements IAuthService {
     if (!user || !user.isAdmin) {
       throw new Error("Entry restrcted");
     }
-    const validPass = await comparePassword(password, user.password);
+    const validPass = await comparePassword(password, user.password!);
     if(!validPass){
       throw new Error("incorrect password")
     }

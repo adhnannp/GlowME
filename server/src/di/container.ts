@@ -34,6 +34,10 @@ import { IReportRepository } from '../core/interfaces/repositories/IReportReposi
 import { UserConnectionService } from '../services/userService/user.connection.service';
 import { IUserConnectionController } from '../core/interfaces/controllers/user/IUserConnectionController';
 import { UserConnectionController } from '../controllers/userController/user.connection.controller';
+import { GoogleAuthService } from '../services/auth/GoogleAuthService';
+import { IGoogleAuthService } from '../core/interfaces/services/auth/IGoogleAuthService';
+import { GoogleAuthController } from '../controllers/auth/GoogleAuthController';
+import { IGoogleAuthController } from '../core/interfaces/controllers/auth/IGoogleAuthController';
 
 const container = new Container();
 
@@ -50,6 +54,7 @@ container.bind<IUserService>(TYPES.UserService).to(UserService);
 container.bind<IAdminService>(TYPES.AdminService).to(AdminService);
 container.bind<IUsersService>(TYPES.UsersService).to(UsersService)
 container.bind<IUserConnectionService>(TYPES.UserConnectionService).to(UserConnectionService);
+container.bind<IGoogleAuthService>(TYPES.GoogleAuthService).to(GoogleAuthService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -57,6 +62,7 @@ container.bind<IUserController>(TYPES.UserController).to(UserController);
 container.bind<IAdminController>(TYPES.AdminController).to(AdminController);
 container.bind<IUsersController>(TYPES.UsersController).to(UsersController);
 container.bind<IUserConnectionController>(TYPES.UserConnectionController).to(UserConnectionController);
+container.bind<IGoogleAuthController>(TYPES.GoogleAuthController).to(GoogleAuthController);
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

@@ -8,6 +8,7 @@ import Header from "@/components/user/Header/Header";
 import Sidebar from "@/components/user/SideBar/SideBar";
 import { User } from "@/interfaces/auth.interface";
 import api from "@/utils/axios";
+import { Link } from "react-router-dom";
 
 interface UserProps {
   user: User;
@@ -15,27 +16,29 @@ interface UserProps {
 
 const UserCard: React.FC<UserProps> = ({ user }) => {
   return (
-    <Card className="p-4 flex flex-col">
-      <div className="flex items-center">
-      <img
-          src={user.profile_image || "/browserIcons/person_icon.png"}
-          alt={`${user.username}'s avatar`}
-          className="w-12 h-12 rounded-full mr-3 flex-shrink-0 object-cover"
-        />
+    <Link to={`/user/${user._id}`} className="block">
+      <Card className="p-4 flex flex-col hover:bg-gray-50 transition-colors">
         <div className="flex items-center">
-          <span className="font-medium mr-2">{user.username}</span>
-          <img src="/badges/level9.png" alt="Badge" className="w-5 h-5" />
+          <img
+            src={user.profile_image || "/browserIcons/person_icon.png"}
+            alt={`${user.username}'s avatar`}
+            className="w-12 h-12 rounded-full mr-3 flex-shrink-0 object-cover"
+          />
+          <div className="flex items-center">
+            <span className="font-medium mr-2">{user.username}</span>
+            <img src="/badges/level9.png" alt="Badge" className="w-5 h-5" />
+          </div>
         </div>
-      </div>
-      <div className="flex items-center text-sm">
-        <span className="text-green-500">★</span>
-        <span className="ml-1">XP {user.xp}</span>
-      </div>
-    </Card>
+        <div className="flex items-center text-sm">
+          <span className="text-green-500">★</span>
+          <span className="ml-1">XP {user.xp}</span>
+        </div>
+      </Card>
+    </Link>
   );
 };
 
-export default function Page() {
+export default function Connect() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
   const [users, setUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -133,7 +136,7 @@ export default function Page() {
                     <>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {users.map((user) => (
-                          <UserCard key={user._id} user={user} />
+                            <UserCard key={user._id} user={user} />
                         ))}
                       </div>
 

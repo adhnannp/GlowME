@@ -20,6 +20,10 @@ export class ConnectionRepository implements IConnectionRepository {
     });
   }
 
+  async getFollowerCount(userId: string): Promise<number> {
+    return await ConnectionModel.countDocuments({ following: userId });
+  }
+
   async getFollowers(userId: string, skip: number = 0): Promise<IConnection[] | null> {
     return await ConnectionModel.find({ following: userId })
       .populate('follower', '-password')

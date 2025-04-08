@@ -14,4 +14,13 @@ export class ReportRepository implements IReportRepository {
       .populate('reporter', 'username')
       .lean();
   }
+
+  async getReportedUserIds(reporterId: string): Promise<string[]> {
+    const reports = await ReportModel.find(
+      { reporter: reporterId, status: { $in: ['pending', 'resolved'] } },
+      'reported_user'
+    ).lean();
+    return reports.map((report) => report.reported_user.toString());
+  }
+
 }

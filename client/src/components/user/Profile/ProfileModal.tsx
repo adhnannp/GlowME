@@ -3,6 +3,7 @@ import { LogOut, Coins, Brain, Trophy } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { logout } from "@/feature/authThunks";
 import { AppDispatch } from "@/store/store";
+import { Link } from "react-router-dom";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -55,17 +56,19 @@ export function ProfileModal({isOpen,onClose,user,profileImage,}: ProfileModalPr
         </button>
 
         <div className="flex flex-col items-center mb-4">
-          <img
-            src={profileImage || "/placeholder.svg"}
-            alt="Profile"
-            className="w-16 h-16 rounded-full object-cover mb-2"
-          />
+          <Link to='/profile'>
+            <img
+              src={profileImage || "/placeholder.svg"}
+              alt="Profile"
+              className="w-16 h-16 rounded-full object-cover mb-2"
+            />
+          </Link>
           <div className="flex items-center gap-2 mt-1">
             <img
                 src="/badges/level 1.png"
                 alt="Level 1 Badge"
                 className="h-10 w-10"
-            />
+                />
             <span className="text-sm font-medium text-gray-700">
                 {user?.username || "user name"}
             </span>

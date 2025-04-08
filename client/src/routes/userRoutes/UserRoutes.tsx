@@ -9,7 +9,8 @@ import NotFound from "@/pages/NotFound/NotFound";
 import ProtectedRoute from "./ProtectedRoute";
 import PublicRoute from "./PublicRoute";
 import OtpRoute from "./OtpRoute";
-import Page from "@/pages/user/connectOthers/ConnectOthers";
+import OtherUserProfile from "@/pages/user/othersProfile/OtherProfile";
+import Connect from "@/pages/user/connectOthers/ConnectOthers";
 
 const UserRoutes: React.FC = () => {
   // const [isLoading, setIsLoading] = useState(true);
@@ -37,7 +38,8 @@ const UserRoutes: React.FC = () => {
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<QuestionsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/connect" element={<Page/>}/>
+        <Route path="/connect" element={<Connect/>}/>
+        <Route path="/user/:id" element={<OtherUserProfile/>}/>
       </Route>
 
       <Route element={<PublicRoute />}>

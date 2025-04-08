@@ -11,7 +11,8 @@ export const TYPES = {
     UserService: Symbol.for('UserService'),
     AdminService: Symbol.for('AdminService'),
     UsersService: Symbol.for('UsersService'),
-    UserConnectionService: Symbol.for('UserConnectionService'),  
+    UserConnectionService: Symbol.for('UserConnectionService'),
+    GoogleAuthService: Symbol.for('GoogleAuthService'),
   
     // Controllers
     AuthController: Symbol.for('AuthController'),
@@ -19,6 +20,7 @@ export const TYPES = {
     AdminController: Symbol.for('AdminController'),
     UsersController: Symbol.for('UsersController'),
     UserConnectionController: Symbol.for('UserConnectionController'),
+    GoogleAuthController: Symbol.for('GoogleAuthController'),
 
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),

@@ -6,6 +6,7 @@ import adminRoutes from './routes/adminRoutes';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import passport from './config/passport';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(passport.initialize());
 
 app.use('/api', userRoutes);
 app.use('/api/admin', adminRoutes); 

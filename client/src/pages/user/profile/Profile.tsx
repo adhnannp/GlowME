@@ -34,7 +34,7 @@ export default function ProfilePage() {
       {/* Left Sidebar */}
       <Sidebar
         sidebarExpanded={sidebarExpanded}
-        activePage="Home"
+        activePage="Profile"
         setSidebarExpanded={setSidebarExpanded}
       />
       {/* Main Content */}
@@ -96,14 +96,14 @@ export default function ProfilePage() {
                     <div className="border rounded-md p-4">
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                          <div className="text-xl">8,450</div>
+                          <div className="text-xl">{user?.xp}</div>
                           <div className="flex items-center text-green-500">
                             <Trophy className="w-5 h-5 mr-1" />
                             XP
                           </div>
                         </div>
                         <div>
-                          <div className="text-xl">5,450</div>
+                          <div className="text-xl">0</div>
                           <div className="flex items-center text-yellow-500">
                             <Coins className="w-5 h-5 mr-1" />
                             Coins
@@ -113,14 +113,14 @@ export default function ProfilePage() {
 
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                          <div className="text-xl">720</div>
+                          <div className="text-xl">{user?.questions_explored}</div>
                           <div className="flex items-center text-blue-500">
                             <Brain className="w-5 h-5 mr-1" />
                             QE
                           </div>
                         </div>
                         <div>
-                          <div className="text-xl">12</div>
+                          <div className="text-xl">0</div>
                           <div className="text-gray-500">Questions</div>
                         </div>
                       </div>

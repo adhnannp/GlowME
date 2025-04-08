@@ -51,6 +51,7 @@ export class UserConnectionController implements IUserConnectionController {
         res.status(401).json({ message: 'Invalid credentials' });
         return;
       }
+      await this.userConnectionService.unfollowUser(reporterId, userId)
       const result = await this.userConnectionService.reportUser(reporterId, userId, reason);
       res.status(200).json(result);
       return;
@@ -61,15 +62,20 @@ export class UserConnectionController implements IUserConnectionController {
 
   async getUsers(req: Request, res: Response): Promise<void> {
     try {
+      const userId = req.userId
+      if(!userId) {
+        res.status(404).json({ error: "Invalid credentails" });
+        return
+      } 
       const pageParam = req.query.page;
       const page = typeof pageParam === 'string' ? parseInt(pageParam) : 1;
-      const limit = 20;
+      const limit = 5;
       if (isNaN(page) || page < 1) {
         res.status(400).json({ message: 'Invalid page number' });
         return;
       }
       const skip = (page - 1) * limit;
-      const result = await this.userConnectionService.getUsers(skip, limit);
+      const result = await this.userConnectionService.getUsers(skip, limit,userId);
       if (!result) {
         res.status(404).json({ error: "No users found" });
         return;
@@ -91,14 +97,23 @@ export class UserConnectionController implements IUserConnectionController {
   async getUserById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const user = await this.userConnectionService.findUserById(id);
-      if (!user) {
+      const currentUserId = req.userId!
+      if(!currentUserId || !id){
+        res.status(401).json({ error: "Invalid credential" });
+      }
+      const result = await this.userConnectionService.findUserById(id,currentUserId);
+      if (!result) {
         res.status(404).json({ error: "User not found" });
         return;
       }
-      res.status(200).json(user);
-    } catch (error) {
-      res.status(400).json(error);
+      const [user, followerCount,isFollowing] = result;
+      res.status(200).json({
+        user,
+        followerCount,
+        isFollowing
+      });
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
     }
   }
 }

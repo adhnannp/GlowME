@@ -2,12 +2,20 @@
 import mongoose, { Document } from 'mongoose';
 import bcrypt from "bcrypt" 
 
+
+export interface IUserBadge {
+  badgeId: mongoose.Types.ObjectId;
+  acquiredAt: Date;
+}
+
 export interface IUser extends Document {
   username: string;
   profile_image?: string;
   password?: string;
   email: string;
   isAdmin?: boolean;
+  badges?: IUserBadge[];
+  currentBadge?: mongoose.Types.ObjectId;
   badge?: string;
   xp?: number;
   questions_explored?: number;
@@ -24,7 +32,11 @@ const userSchema = new mongoose.Schema<IUser>({
   password: { type: String },
   email: { type: String, required: true, unique: true },
   isAdmin: { type: Boolean, default: false },
-  badge: { type: String, default: '' },
+  badges: [{
+    badgeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Badge', required: true },
+    acquiredAt: { type: Date, default: Date.now }
+  }],
+  currentBadge: { type: mongoose.Schema.Types.ObjectId, ref: 'Badge' },
   xp: { type: Number, default: 0 },
   questions_explored: { type: Number, default: 0 },
   ban_expires_at: { type: Date, default: null },

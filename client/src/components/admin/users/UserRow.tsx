@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { MessageCircle } from "lucide-react"
 import { User } from "@/interfaces/auth.interface"
 
-interface UserRowProps {
+interface RowProps {
   user: User
   onBlockToggle: (userId: string, currentBlockStatus: boolean) => void
 }

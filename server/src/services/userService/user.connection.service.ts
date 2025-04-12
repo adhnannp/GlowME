@@ -15,8 +15,8 @@ export class UserConnectionService implements IUserConnectionService {
   constructor(
     @inject(TYPES.ConnectionRepository)
     private connectionRepo: IConnectionRepository,
-    @inject(TYPES.NotificationRepository)
-    private notificationRepo: INotificationRepository,
+    // @inject(TYPES.NotificationRepository)
+    // private notificationRepo: INotificationRepository,
     @inject(TYPES.ReportRepository) private reportRepo: IReportRepository,
     @inject(TYPES.UserRepository) private userRepo: IUserRepository
   ) {}
@@ -34,12 +34,12 @@ export class UserConnectionService implements IUserConnectionService {
       followingId
     );
 
-    await this.notificationRepo.createNotification({
-      user: followingId,
-      type: "follow",
-      message: "Someone started following you",
-      related_user: followerId,
-    });
+    // await this.notificationRepo.createNotification({
+    //   user: followingId,
+    //   type: "follow",
+    //   message: "Someone started following you",
+    //   related_user: followerId,
+    // });
 
     return connection;
   }
@@ -59,12 +59,12 @@ export class UserConnectionService implements IUserConnectionService {
       reason,
     });
 
-    await this.notificationRepo.createNotification({
-      user: reportedId,
-      type: "report",
-      message: "Someone reported you",
-      related_user: reporterId,
-    });
+    // await this.notificationRepo.createNotification({
+    //   user: reportedId,
+    //   type: "report",
+    //   message: "Someone reported you",
+    //   related_user: reporterId,
+    // });
 
     return report;
   }

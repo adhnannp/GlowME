@@ -1,10 +1,16 @@
+export interface IUserBadge {
+  badgeId: string;
+  acquiredAt: string;
+}
+
 export interface User {
     _id: string;
     username?:string;
     email: string;
     profile_image?:string;
     isAdmin: boolean;
-    badge?:string;
+    badges?: IUserBadge[];
+    currentBadge?: string;
     xp?:number;
     questions_explored?:number;
     ban_expires_at?: string | null;

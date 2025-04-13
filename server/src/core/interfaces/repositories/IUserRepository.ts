@@ -1,5 +1,5 @@
 import { IUser } from '../../../models/User';
-import { SafeUser } from '../../tpes/SafeUser';
+import { SafeUser } from '../../types/SafeUser';
 
 export interface IUserRepository {
   createUser(user: IUser): Promise<IUser>;

@@ -4,7 +4,7 @@ import { INotificationRepository } from "../../core/interfaces/repositories/INot
 import { IReportRepository } from "../../core/interfaces/repositories/IReportRepository";
 import { TYPES } from "../../di/types";
 import { IUserConnectionService } from "../../core/interfaces/services/user/IUserConnectionService";
-import { SafeUser } from "../../core/tpes/SafeUser";
+import { SafeUser } from "../../core/types/SafeUser";
 import { IUserRepository } from "../../core/interfaces/repositories/IUserRepository";
 import { IUser } from "../../models/User";
 import { IConnection } from "../../models/Connection";

@@ -1,8 +1,11 @@
+import { IBadgeRepository } from '../core/interfaces/repositories/IBadgeRepository';
+import { SafeBadge } from '../core/types/SafeBadge';
 import { BadgeModel, IBadge } from '../models/Badge';
 import { UserModel, IUser, IUserBadge } from '../models/User';
 import mongoose from 'mongoose';
 
-export class AdminBadgeRepository {
+export class BadgeRepository implements IBadgeRepository{
+
   async createBadge(badgeData: Partial<IBadge>): Promise<IBadge> {
     const badge = new BadgeModel(badgeData);
     return await badge.save();
@@ -26,12 +29,6 @@ export class AdminBadgeRepository {
 
   async getAllBadges(): Promise<IBadge[]> {
     return await BadgeModel.find().sort({ requiredXp: 1 });
-  }
-}
-
-export class UserBadgeRepository {
-  async findUserById(userId: string): Promise<IUser | null> {
-    return await UserModel.findById(userId);
   }
 
   async getAvailableBadges(userId: string): Promise<IBadge[]> {
@@ -69,7 +66,60 @@ export class UserBadgeRepository {
     );
   }
 
-  async getUserBadges(userId: string): Promise<IUser | null> {
-    return await UserModel.findById(userId).populate('badges.badgeId currentBadge');
+  async getUserBadges(userId: string): Promise<SafeBadge | null> {
+    const result = await UserModel.aggregate([
+      { $match: { _id: userId } },
+      {
+        $lookup: {
+          from: 'badges',
+          localField: 'badges.badgeId',
+          foreignField: '_id',
+          as: 'populatedBadges'
+        }
+      },
+      {
+        $lookup: {
+          from: 'badges',
+          localField: 'currentBadge',
+          foreignField: '_id',
+          as: 'currentBadge'
+        }
+      },
+      {
+        $addFields: {
+          badges: {
+            $map: {
+              input: "$badges",
+              as: "badge",
+              in: {
+                badgeId: {
+                  $arrayElemAt: [
+                    {
+                      $filter: {
+                        input: "$populatedBadges",
+                        as: "pb",
+                        cond: { $eq: ["$$pb._id", "$$badge.badgeId"] }
+                      }
+                    },
+                    0
+                  ]
+                },
+                acquiredAt: "$$badge.acquiredAt"
+              }
+            }
+          },
+          currentBadge: { $arrayElemAt: ["$currentBadge", 0] }
+        }
+      },
+      {
+        $project: {
+          badges: 1,
+          currentBadge: 1,
+          _id: 0
+        }
+      }
+    ]);
+    return result[0] ?? null;
   }
+
 }

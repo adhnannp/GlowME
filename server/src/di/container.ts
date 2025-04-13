@@ -38,6 +38,12 @@ import { GoogleAuthService } from '../services/auth/GoogleAuthService';
 import { IGoogleAuthService } from '../core/interfaces/services/auth/IGoogleAuthService';
 import { GoogleAuthController } from '../controllers/auth/GoogleAuthController';
 import { IGoogleAuthController } from '../core/interfaces/controllers/auth/IGoogleAuthController';
+import { IBadgeRepository } from '../core/interfaces/repositories/IBadgeRepository';
+import { BadgeRepository } from '../repositories/BadgeRepository';
+import { IAdminBadgeService } from '../core/interfaces/services/admin/IAdmin.Badge.Service';
+import { AdminBadgeService } from '../services/adminService/admin.badge.service';
+import { IUserBadgeService } from '../core/interfaces/services/user/IUser.Badge.Service';
+import { UserBadgeService } from '../services/userService/user.badge.service';
 
 const container = new Container();
 
@@ -46,6 +52,7 @@ container.bind<IUserRepository>(TYPES.UserRepository).to(UserRepository);
 container.bind<IConnectionRepository>(TYPES.ConnectionRepository).to(ConnectionRepository);
 container.bind<INotificationRepository>(TYPES.NotificationRepository).to(NotificationRepository);
 container.bind<IReportRepository>(TYPES.ReportRepository).to(ReportRepository);
+container.bind<IBadgeRepository>(TYPES.BadgeRepository).to(BadgeRepository);
 
 // Services
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService);
@@ -55,6 +62,8 @@ container.bind<IAdminService>(TYPES.AdminService).to(AdminService);
 container.bind<IUsersService>(TYPES.UsersService).to(UsersService)
 container.bind<IUserConnectionService>(TYPES.UserConnectionService).to(UserConnectionService);
 container.bind<IGoogleAuthService>(TYPES.GoogleAuthService).to(GoogleAuthService);
+container.bind<IUserBadgeService>(TYPES.UserBadgeService).to(UserBadgeService)
+container.bind<IAdminBadgeService>(TYPES.AdminBadgeService).to(AdminBadgeService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);

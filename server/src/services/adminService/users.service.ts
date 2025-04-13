@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import { IUsersService } from '../../core/interfaces/services/admin/IUsersService';
 import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
 import { TYPES } from '../../di/types';
-import { SafeUser } from '../../core/tpes/SafeUser';
+import { SafeUser } from '../../core/types/SafeUser';
 
 @injectable()
 export default class UsersService implements IUsersService {

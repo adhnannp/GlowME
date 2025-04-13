@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { IUserRepository } from '../core/interfaces/repositories/IUserRepository';
 import { IUser, UserModel } from '../models/User';
-import { SafeUser } from '../core/tpes/SafeUser';
+import { SafeUser } from '../core/types/SafeUser';
 
 @injectable()
 export class UserRepository implements IUserRepository {
@@ -16,11 +16,11 @@ export class UserRepository implements IUserRepository {
   }
 
   async findUserByEmail(email: string): Promise<IUser| null> {
-    return await UserModel.findOne({ email });
+    return await UserModel.findOne({ email }).populate('currentBadge');
   }
 
   async findUserById(id: string): Promise<Omit<IUser, "password"> |null> {
-      return await UserModel.findById(id).select("-password");
+      return await UserModel.findById(id).populate('currentBadge').select("-password");
   }
 
   async getAllUser(skip:number=0,limit:number=8): Promise<SafeUser[]| null >{

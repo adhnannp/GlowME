@@ -4,6 +4,7 @@ export const TYPES = {
     ConnectionRepository: Symbol.for('ConnectionRepository'),
     NotificationRepository: Symbol.for('NotificationRepository'),
     ReportRepository: Symbol.for('ReportRepository'),
+    BadgeRepository:Symbol.for('BadgeRepository'),
   
     // Services
     AuthService: Symbol.for('AuthService'),
@@ -13,7 +14,9 @@ export const TYPES = {
     UsersService: Symbol.for('UsersService'),
     UserConnectionService: Symbol.for('UserConnectionService'),
     GoogleAuthService: Symbol.for('GoogleAuthService'),
-  
+    AdminBadgeService: Symbol.for('AdminBadgeService'),
+    UserBadgeService: Symbol.for('UserBadgeService'),
+
     // Controllers
     AuthController: Symbol.for('AuthController'),
     UserController: Symbol.for('UserController'),

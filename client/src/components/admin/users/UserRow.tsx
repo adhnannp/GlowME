@@ -1,57 +1,62 @@
-import { TableCell , TableRow} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { MessageCircle } from "lucide-react"
-import { User } from "@/interfaces/auth.interface"
+"use client"
 
-interface RowProps {
+import { TableRow, TableCell } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import type { User } from "@/interfaces/auth.interface"
+
+interface UserRowProps {
   user: User
-  onBlockToggle: (userId: string, currentBlockStatus: boolean) => void
+  onBanUser: (user: User) => void
+  onUnbanUser: (user: User) => void
 }
 
-export default function UserRow({ user, onBlockToggle }: UserRowProps) {
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString)
-    const day = date.getDate()
-    const month = date.toLocaleString('default', { month: 'short' })
-    const year = date.getFullYear()
-    return `${day} ${month}, ${year}`
-  }
-
+export default function UserRow({ user, onBanUser, onUnbanUser }: UserRowProps) {
   return (
     <TableRow>
-      <TableCell>
-        <div className="flex items-center">
-          <Avatar className="h-10 w-10 mr-3">
-            <AvatarImage src={user.profile_image} />
-            <AvatarFallback>{user.username?.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <div>
-            <div className="font-medium">{user.username}</div>
-            <div className="text-sm text-gray-500">{user.email}</div>
-          </div>
+      <TableCell className="font-medium flex items-center gap-2">
+        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+          {user.profile_image ? (
+            <img
+              src={user.profile_image || "/placeholder.svg"}
+              alt={user.username}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-xs font-semibold">{user.username?.charAt(0).toUpperCase()}</span>
+          )}
+        </div>
+        <div>
+          <div>{user.username}</div>
+          <div className="text-xs text-gray-500">{user.email}</div>
         </div>
       </TableCell>
-      <TableCell>{user.xp?.toLocaleString()}</TableCell>
-      <TableCell>{user.questions_explored}</TableCell>
-      <TableCell>{formatDate(user.created_at!)}</TableCell>
+      <TableCell>{user.xp || 0}</TableCell>
+      <TableCell>{user.questions_explored || 0}</TableCell>
+      <TableCell>
+        {user.created_at
+          ? new Date(user.created_at).toLocaleDateString()
+          : "N/A"}
+      </TableCell>
       <TableCell className="text-right">
-        <div className="flex items-center justify-end space-x-2">
+        {user.isBlock ? (
           <Button
-            onClick={() => onBlockToggle(user._id, user.isBlock!)}
-            className={
-              user.isBlock
-                ? "bg-green-500 hover:bg-green-600 text-white"
-                : "bg-red-500 hover:bg-red-600 text-white"
-            }
+            variant="outline"
             size="sm"
+            onClick={() => onUnbanUser(user)}
+            className="text-green-600 hover:text-green-700 hover:bg-green-50"
           >
-            {user.isBlock ? "Unblock" : "Block"}
+            Unban
           </Button>
-          <Button variant="ghost" size="icon">
-            <MessageCircle className="h-5 w-5 text-[#FF9838]" />
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onBanUser(user)}
+            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+          >
+            Ban
           </Button>
-        </div>
+        )}
       </TableCell>
     </TableRow>
   )

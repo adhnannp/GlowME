@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { updateUser } from "@/feature/authSlice";
 import { logout } from "@/feature/authThunks";
 import api from "@/utils/axios";
+import toast from "react-hot-toast";
 
 const ProtectedRoute: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -32,7 +33,18 @@ const ProtectedRoute: React.FC = () => {
       try {
         const userRes = await api.get("/verify-user");
         dispatch(updateUser({ user: userRes.data.user }));
-      } catch (userErr) {
+      } catch (userErr:any) {
+        const status = userErr.response?.status;
+        const message = userErr.response?.data?.message;
+
+        // If user is banned or invalid, just logout and show toast
+        if (status === 400 && message === "User invalid or banned.") {
+          toast.error("Invalid or Banned User.");
+          dispatch(logout());
+          navigate("/login");
+          setLoading(false);
+          return;
+        }
         try {
           const adminRes = await api.get("/admin/verify-admin");
           dispatch(updateUser({ user: adminRes.data.user }));

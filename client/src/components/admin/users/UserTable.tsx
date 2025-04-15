@@ -1,14 +1,15 @@
 import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@/components/ui/table"
 import UserRow from "./UserRow"
-import { User } from "@/interfaces/auth.interface"
+import type { User } from "@/interfaces/auth.interface"
 
 interface UserTableProps {
   users: User[]
   loading: boolean
-  onBlockToggle: (userId: string, currentBlockStatus: boolean) => void
+  onBanUser: (user: User) => void
+  onUnbanUser: (user: User) => void
 }
 
-export default function UserTable({ users, loading, onBlockToggle }: UserTableProps) {
+export default function UserTable({ users, loading, onBanUser, onUnbanUser }: UserTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -23,20 +24,18 @@ export default function UserTable({ users, loading, onBlockToggle }: UserTablePr
       <TableBody>
         {loading ? (
           <TableRow>
-            <TableCell colSpan={6} className="text-center py-8">
+            <TableCell colSpan={5} className="text-center py-8">
               Loading users...
             </TableCell>
           </TableRow>
         ) : users.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={6} className="text-center py-8">
+            <TableCell colSpan={5} className="text-center py-8">
               No users found
             </TableCell>
           </TableRow>
         ) : (
-          users.map((user) => (
-            <UserRow key={user._id} user={user} onBlockToggle={onBlockToggle} />
-          ))
+          users.map((user) => <UserRow key={user._id} user={user} onBanUser={onBanUser} onUnbanUser={onUnbanUser} />)
         )}
       </TableBody>
     </Table>

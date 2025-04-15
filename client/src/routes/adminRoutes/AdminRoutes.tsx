@@ -5,6 +5,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import AdminPublicRoute from "@/routes/adminRoutes/AdminPublicRoute";
 import AdminProtectedRoute from "@/routes/adminRoutes/AdminProtectedRoute";
+import BadgeDashboard from "@/pages/admin/badges/Badges";
 
 const AdminRoutes:React.FC = () => {
   // const [isLoading, setIsLoading] = useState(true);
@@ -36,6 +37,7 @@ const AdminRoutes:React.FC = () => {
       </Route>
       <Route element={<AdminProtectedRoute />}>
         <Route path="/users" element={<UserDashboard />} />
+        <Route path="/badges" element={<BadgeDashboard />} />
         <Route path="/reports" element={<ReportsPage />} />
       </Route>
     </Routes>

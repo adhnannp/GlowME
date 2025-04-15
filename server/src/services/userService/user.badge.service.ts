@@ -3,10 +3,10 @@ import { injectable, inject } from 'inversify';
 import { IBadgeRepository } from '../../core/interfaces/repositories/IBadgeRepository';
 import { IBadge } from '../../models/Badge';
 import { TYPES } from '../../di/types';
-import { IUser } from '../../models/User';
 import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
 import { SafeBadge } from '../../core/types/SafeBadge';
 import { IUserBadgeService } from '../../core/interfaces/services/user/IUser.Badge.Service';
+import { SafeUser } from '../../core/types/SafeUser';
 
 @injectable()
 export class UserBadgeService implements IUserBadgeService{
@@ -20,7 +20,7 @@ export class UserBadgeService implements IUserBadgeService{
     return await this.badgeRepository.getAvailableBadges(userId);
   }
 
-  async unlockBadge(userId: string, badgeId: string): Promise<IUser> {
+  async unlockBadge(userId: string, badgeId: string): Promise<SafeUser> {
     const user = await this.userRepository.findUserById(userId);
     const badge = await this.badgeRepository.findBadgeById(badgeId);
 
@@ -35,7 +35,7 @@ export class UserBadgeService implements IUserBadgeService{
     return updatedUser;
   }
 
-  async setCurrentBadge(userId: string, badgeId: string): Promise<IUser> {
+  async setCurrentBadge(userId: string, badgeId: string): Promise<SafeUser> {
     const user = await this.userRepository.findUserById(userId);
     if (!user) throw new Error('User not found');
 

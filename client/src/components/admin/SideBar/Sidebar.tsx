@@ -1,62 +1,123 @@
-import { Home, Users, HelpCircle, Tag, Gift, Coins, MessageSquare, BarChart2, ShoppingBag, Tags, LogOut } from "lucide-react"
-import NavItem from "./NavItem"
-import { Link } from "react-router-dom"
+import { NavLink } from "react-router-dom";
+import { Home, Users, HelpCircle, Tag, Gift, Coins, MessageSquare, BarChart2, ShoppingBag, Tags, Award } from "lucide-react";
 
 export default function Sidebar() {
   return (
     <div className="w-[220px] bg-white flex flex-col">
       <div className="p-6">
         <div className="flex items-center">
-            <Link to="/admin/users" className="flex items-center">
-                <div className="mr-2 h-8 w-8 p-1 rounded-full bg-[#FF9838]">
-                    <img src="/browserIcons/g384.png" className="h-6 w-6" alt="icon" />
-                </div>
-              <span className="text-lg font-bold">GlowME</span>
-            </Link>
+          <NavLink to="/admin/users" className="flex items-center">
+            <div className="mr-2 h-8 w-8 p-1 rounded-full bg-[#FF9838]">
+              <img src="/browserIcons/g384.png" className="h-6 w-6" alt="icon" />
+            </div>
+            <span className="text-lg font-bold">GlowME</span>
+          </NavLink>
         </div>
       </div>
 
       <div className="flex-1 py-4">
         <nav className="space-y-1 px-2">
-          <Link to='/admin/dashboard'>
-            <NavItem icon={<Home className="h-5 w-5" />} label="Dashboard" />
-          </Link>
-          <Link to='/admin/users'>
-            <NavItem icon={<Users className="h-5 w-5" />} label="Users" active />
-          </Link>
-          <Link to='/admin/questions'>
-            <NavItem icon={<HelpCircle className="h-5 w-5" />} label="Questions" />
-          </Link>
-          <Link to='/admin/coupons'>
-            <NavItem icon={<Tag className="h-5 w-5" />} label="Manage Coupons" />
-          </Link>
-          <Link to='/admin/rewards'>
-            <NavItem icon={<Gift className="h-5 w-5" />} label="Manage Rewards" />
-          </Link>
-          <Link to='/admin/Dashboard'>
-            <NavItem icon={<Coins className="h-5 w-5" />} label="Manage GlowCoin" />
-          </Link>
-          <Link to='/admin/g-coin'>
-            <NavItem icon={<MessageSquare className="h-5 w-5" />} label="Message" />
-          </Link>
-          <Link to='/admin/reports'>
-            <NavItem icon={<BarChart2 className="h-5 w-5" />} label="Reports" />
-          </Link>
-          <Link to='/admin/orders'>
-            <NavItem icon={<ShoppingBag className="h-5 w-5" />} label="Orders" />
-          </Link>
-          <Link to='/admin/tags'>
-            <NavItem icon={<Tags className="h-5 w-5" />} label="Tags" />
-          </Link>
+          <NavLink
+            to="/admin/dashboard"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <Home className="h-5 w-5" />
+            <span className="ml-2">Dashboard</span>
+          </NavLink>
+          <NavLink
+            to="/admin/users"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <Users className="h-5 w-5" />
+            <span className="ml-2">Users</span>
+          </NavLink>
+          <NavLink
+            to="/admin/badges"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <Award className="h-5 w-5" />
+            <span className="ml-2">Badges</span>
+          </NavLink>
+          <NavLink
+            to="/admin/questions"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <HelpCircle className="h-5 w-5" />
+            <span className="ml-2">Questions</span>
+          </NavLink>
+          <NavLink
+            to="/admin/coupons"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <Tag className="h-5 w-5" />
+            <span className="ml-2">Manage Coupons</span>
+          </NavLink>
+          <NavLink
+            to="/admin/rewards"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <Gift className="h-5 w-5" />
+            <span className="ml-2">Manage Rewards</span>
+          </NavLink>
+          <NavLink
+            to="/admin/coins"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <Coins className="h-5 w-5" />
+            <span className="ml-2">Manage GlowCoin</span>
+          </NavLink>
+          <NavLink
+            to="/admin/messages"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <MessageSquare className="h-5 w-5" />
+            <span className="ml-2">Messages</span>
+          </NavLink>
+          <NavLink
+            to="/admin/reports"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <BarChart2 className="h-5 w-5" />
+            <span className="ml-2">Reports</span>
+          </NavLink>
+          <NavLink
+            to="/admin/orders"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <ShoppingBag className="h-5 w-5" />
+            <span className="ml-2">Orders</span>
+          </NavLink>
+          <NavLink
+            to="/admin/tags"
+            className={({ isActive }) =>
+              `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
+            }
+          >
+            <Tags className="h-5 w-5" />
+            <span className="ml-2">Tags</span>
+          </NavLink>
         </nav>
       </div>
-
-      <div className="p-4 border-t">
-        <button className="flex items-center text-[#FF9838] w-full">
-          <LogOut className="h-5 w-5 mr-2" />
-          <span>Logout</span>
-        </button>
-      </div>
     </div>
-  )
+  );
 }

@@ -35,9 +35,51 @@ export class UsersController implements IUsersController {
         totalUsers,
         totalPages,
       });
+      return
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Something went wrong', error });
+      res.status(500).json({ message: error });
+      return
+    }
+  }
+
+  async banUser(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.params.userId;
+      const { duration } = req.body;
+  
+      if (!userId || !duration) {
+        res.status(400).json({ message: 'User ID and duration are required' });
+        return;
+      }
+  
+      const user = await this.usersService.banUser(userId, duration);
+      res.status(200).json({
+        message: 'User banned successfully',
+        user,
+      });
+      return
+    } catch (error) {
+      res.status(400).json({ message:error });
+      return
+    }
+  }
+
+  async unbanUser(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = req.params.userId;
+  
+      if (!userId) {
+        res.status(400).json({ message: 'User ID is required' });
+        return;
+      }
+  
+      const user = await this.usersService.unbanUser(userId);
+  
+      res.status(200).json({ message: 'User unbanned successfully', user });
+      return
+    } catch (error) {
+      res.status(400).json({ message:error });
+      return
     }
   }
   

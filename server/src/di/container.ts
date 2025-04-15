@@ -44,6 +44,12 @@ import { IAdminBadgeService } from '../core/interfaces/services/admin/IAdmin.Bad
 import { AdminBadgeService } from '../services/adminService/admin.badge.service';
 import { IUserBadgeService } from '../core/interfaces/services/user/IUser.Badge.Service';
 import { UserBadgeService } from '../services/userService/user.badge.service';
+import { IAdminBadgeController } from '../core/interfaces/controllers/admin/IAdmin.Badge.Controller';
+import { AdminBadgeController } from '../controllers/adminController/admin.badge.controller';
+import { IUserBadgeController } from '../core/interfaces/controllers/user/IUser.Badge.Controller';
+import { UserBadgeController } from '../controllers/userController/user.badge.controller';
+import { IUnbanUsersJob } from '../core/interfaces/middlewares/IUnbanUserJob';
+import { UnbanUsersJob } from '../middleware/UnbanUsersJob';
 
 const container = new Container();
 
@@ -72,9 +78,12 @@ container.bind<IAdminController>(TYPES.AdminController).to(AdminController);
 container.bind<IUsersController>(TYPES.UsersController).to(UsersController);
 container.bind<IUserConnectionController>(TYPES.UserConnectionController).to(UserConnectionController);
 container.bind<IGoogleAuthController>(TYPES.GoogleAuthController).to(GoogleAuthController);
+container.bind<IAdminBadgeController>(TYPES.AdminBadgeController).to(AdminBadgeController)
+container.bind<IUserBadgeController>(TYPES.UserBadgeController).to(UserBadgeController)
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);
 container.bind<IAdminAuthMiddleware>(TYPES.AdminAuthMiddleware).to(AdminAuthMiddleware);
+container.bind<IUnbanUsersJob>(TYPES.UnbanUsersJob).to(UnbanUsersJob);
 
 export default container;

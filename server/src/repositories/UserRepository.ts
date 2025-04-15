@@ -52,4 +52,56 @@ export class UserRepository implements IUserRepository {
     });
   }
 
+  async banUser(userId: string, banExpiresAt?: Date | null): Promise<SafeUser | null> {
+    const updateData: Partial<IUser> = { isBlock: true };
+    if (banExpiresAt) {
+      updateData.ban_expires_at = banExpiresAt;
+    } else {
+      updateData.ban_expires_at = null;
+    }
+
+    return await UserModel.findByIdAndUpdate(userId, updateData, {
+    new: true,select: '-password',}).lean();
+
+  }
+
+  async unbanUser(userId: string): Promise<SafeUser | null> {
+    return await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        isBlock: false,
+        ban_expires_at: null,
+      },
+      {
+        new: true, 
+        select: '-password',
+      }
+    ).lean();
+  }
+
+  async unbanExpiredUsers(): Promise<boolean> {
+    const today = new Date();
+    const lowerBound = new Date(today);
+    lowerBound.setHours(23, 59, 0, 0);
+    const upperBound = new Date(today);
+    upperBound.setDate(upperBound.getDate() + 1);
+    upperBound.setHours(0, 1, 0, 0); 
+    const result = await UserModel.updateMany(
+      {
+        isBlock: true,
+        ban_expires_at: {
+          $gte: lowerBound,
+          $lt: upperBound,
+        },
+      },
+      {
+        $set: {
+          isBlock: false,
+          ban_expires_at: null,
+        },
+      }
+    );
+    return result.acknowledged === true;
+  }
+  
 }

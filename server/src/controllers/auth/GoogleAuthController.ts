@@ -48,8 +48,8 @@ export class GoogleAuthController implements IGoogleAuthController {
           </body>
         </html>
       `);      
-    } catch (error) {
-      next(error);
+    } catch (error:any) {
+      next(error.message);
     }
   }
 }

@@ -40,6 +40,7 @@ export default class UserAuthMiddleware implements IUserAuthMiddleware {
       next();
     } catch (error) {
       res.status(403).json({ message: "Invalid or expired token" });
+      return;
     }
   }
 }

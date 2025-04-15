@@ -1,19 +1,5 @@
-"use client"
-
-import type React from "react"
 import { useState } from "react"
 import {
-  Home,
-  Users,
-  HelpCircle,
-  Tag,
-  Gift,
-  Coins,
-  MessageSquare,
-  BarChart2,
-  ShoppingBag,
-  Tags,
-  LogOut,
   Search,
   ChevronDown,
   Heart,
@@ -24,6 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Sidebar from "@/components/admin/SideBar/Sidebar"
 
 interface ReportedItem {
   id: number
@@ -142,37 +129,7 @@ export default function ReportsPage() {
 
   return (
     <div className="flex h-screen bg-[#FFF8F0]">
-      {/* Sidebar - Same as previous implementation */}
-      <div className="w-[220px] bg-white flex flex-col">
-        <div className="p-6 border-b">
-          <div className="flex items-center">
-            <div className="mr-2 h-6 w-6 rounded-full bg-[#FF9838]"></div>
-            <span className="text-lg font-bold">Elegent</span>
-          </div>
-        </div>
-
-        <div className="flex-1 py-4">
-          <nav className="space-y-1 px-2">
-            <NavItem icon={<Home className="h-5 w-5" />} label="Dashboard" />
-            <NavItem icon={<Users className="h-5 w-5" />} label="Users" />
-            <NavItem icon={<HelpCircle className="h-5 w-5" />} label="Questions" />
-            <NavItem icon={<Tag className="h-5 w-5" />} label="Manage Coupons" />
-            <NavItem icon={<Gift className="h-5 w-5" />} label="Manage Rewards" />
-            <NavItem icon={<Coins className="h-5 w-5" />} label="Manage GlowCoin" />
-            <NavItem icon={<MessageSquare className="h-5 w-5" />} label="Message" />
-            <NavItem icon={<BarChart2 className="h-5 w-5" />} label="Reports" active />
-            <NavItem icon={<ShoppingBag className="h-5 w-5" />} label="Orders" />
-            <NavItem icon={<Tags className="h-5 w-5" />} label="Tags" />
-          </nav>
-        </div>
-
-        <div className="p-4 border-t">
-          <button className="flex items-center text-[#FF9838] w-full">
-            <LogOut className="h-5 w-5 mr-2" />
-            <span>Logout</span>
-          </button>
-        </div>
-      </div>
+      <Sidebar/>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
@@ -255,27 +212,6 @@ export default function ReportsPage() {
         </main>
       </div>
     </div>
-  )
-}
-
-// Reusable NavItem component from previous implementation
-interface NavItemProps {
-  icon: React.ReactNode
-  label: string
-  active?: boolean
-}
-
-function NavItem({ icon, label, active = false }: NavItemProps) {
-  return (
-    <a
-      href="#"
-      className={`flex items-center px-4 py-3 text-sm rounded-lg ${
-        active ? "bg-[#FF9838] bg-opacity-10 text-[#ffffff] font-bold " : "text-gray-600 hover:bg-gray-100"
-      }`}
-    >
-      <span className="mr-3">{icon}</span>
-      <span>{label}</span>
-    </a>
   )
 }
 

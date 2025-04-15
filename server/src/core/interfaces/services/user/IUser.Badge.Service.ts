@@ -1,10 +1,10 @@
 import { IBadge } from '../../../../models/Badge';
-import { IUser } from '../../../../models/User';
 import { SafeBadge } from '../../../types/SafeBadge';
+import { SafeUser } from '../../../types/SafeUser';
 
 export interface IUserBadgeService {
   getAvailableBadges(userId: string): Promise<IBadge[]>;
-  unlockBadge(userId: string, badgeId: string): Promise<IUser>;
-  setCurrentBadge(userId: string, badgeId: string): Promise<IUser>;
+  unlockBadge(userId: string, badgeId: string): Promise<SafeUser>;
+  setCurrentBadge(userId: string, badgeId: string): Promise<SafeUser>;
   getUserBadges(userId: string): Promise<SafeBadge>;
 }

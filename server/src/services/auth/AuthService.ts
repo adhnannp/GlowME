@@ -28,7 +28,14 @@ export class AuthService implements IAuthService {
   async loginUser(email: string, password: string): Promise<{ accessToken: string; refreshToken: string } | string> {
     const user = await this.userRepository.findUserByEmail(email);
     if (!user || user.isAdmin) {
-      throw new Error("Entry restrcted");
+      throw new Error("No User Found");
+    }
+    if (user.isBlock) {
+      if (user.ban_expires_at) {
+        const banExpires = new Date(user.ban_expires_at);
+        throw new Error(`You are banned. Ban will expire at: ${banExpires.toLocaleString()}`);
+      }
+      throw new Error("You are banned Permenently");
     }
     const validPass = await comparePassword(password, user.password!);
     if(!validPass){
@@ -42,7 +49,7 @@ export class AuthService implements IAuthService {
   async loginAdmin(email: string, password: string): Promise<{ accessToken: string; refreshToken: string } | string> {
     const user = await this.userRepository.findUserByEmail(email);
     if (!user || !user.isAdmin) {
-      throw new Error("Entry restrcted");
+      throw new Error("No Admin Found");
     }
     const validPass = await comparePassword(password, user.password!);
     if(!validPass){

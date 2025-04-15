@@ -24,10 +24,13 @@ export const TYPES = {
     UsersController: Symbol.for('UsersController'),
     UserConnectionController: Symbol.for('UserConnectionController'),
     GoogleAuthController: Symbol.for('GoogleAuthController'),
+    AdminBadgeController: Symbol.for('AdminBadgeController'),
+    UserBadgeController:Symbol.for('UserBadgeController'),
 
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),
     AdminAuthMiddleware: Symbol.for('AdminAuthMiddleware'),
+    UnbanUsersJob: Symbol.for('UnbanUsersJob'),
 
   };
   

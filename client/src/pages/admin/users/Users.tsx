@@ -4,8 +4,10 @@ import Sidebar from "@/components/admin/SideBar/Sidebar"
 import UserTable from "@/components/admin/users/UserTable"
 import SearchBar from "@/components/admin/users/SearchBar"
 import UserHeader from "@/components/admin/users/UserHeader"
-import { User } from "@/interfaces/auth.interface"
 import Pagination from "@/components/admin/users/Pagination"
+import BanUserModal from "@/components/admin/users/BanUserModal"
+import UnbanUserModal from "@/components/admin/users/UnbanUserModal"
+import type { User } from "@/interfaces/auth.interface"
 
 export interface ApiResponse {
   message: string
@@ -24,14 +26,19 @@ export default function UserDashboard() {
   const [totalUsers, setTotalUsers] = useState<number>(0)
   const [searchTerm, setSearchTerm] = useState<string>("")
 
-  const fetchUsers = async (page: number = 1) => {
+  // Modal states
+  const [isBanModalOpen, setIsBanModalOpen] = useState(false)
+  const [isUnbanModalOpen, setIsUnbanModalOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<User | null>(null)
+
+  const fetchUsers = async (page = 1) => {
     setLoading(true)
     try {
       const searchQuery = searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : ""
       const response = await api.get(`/admin/users?page=${page}${searchQuery}`)
-      
+
       const data: ApiResponse = await response.data
-      
+
       setUsers(data.users)
       setCurrentPage(data.page)
       setTotalPages(data.totalPages || Math.ceil(data.users.length / 10))
@@ -49,27 +56,48 @@ export default function UserDashboard() {
     fetchUsers(currentPage)
   }, [currentPage, searchTerm])
 
-  const toggleBlockStatus = async (userId: string, currentBlockStatus: boolean) => {
+  const handleBanUser = (user: User) => {
+    setSelectedUser(user)
+    setIsBanModalOpen(true)
+  }
+
+  const handleUnbanUser = (user: User) => {
+    setSelectedUser(user)
+    setIsUnbanModalOpen(true)
+  }
+
+  const confirmBanUser = async (userId: string, duration: string) => {
     try {
-      const response = await api.post(`/admin/users/${userId}/toggle-block`)
+      const response = await api.patch(`/admin/users/${userId}/ban`, { duration })
 
-      if (!response.ok) {
-        throw new Error(`Failed to ${currentBlockStatus ? 'unblock' : 'block'} user`)
+      if (!response) {
+        throw new Error("Failed to ban user")
       }
-
-      setUsers(users.map(user => 
-        user._id === userId ? { ...user, isBlock: !currentBlockStatus } : user
-      ))
+      setUsers(users.map((user) => (user._id === userId ? { ...user, isBlock: true } : user)))
     } catch (err) {
-      console.error(`Error toggling block status: ${err}`)
-      setError(err instanceof Error ? err.message : "Failed to update user status")
+      console.error(`Error banning user: ${err}`)
+      setError(err instanceof Error ? err.message : "Failed to ban user")
+    }
+  }
+
+  const confirmUnbanUser = async (userId: string) => {
+    try {
+      const response = await api.patch(`/admin/users/${userId}/unban`)
+
+      if (!response) {
+        throw new Error("Failed to unban user")
+      }
+      setUsers(users.map((user) => (user._id === userId ? { ...user, isBlock: false } : user)))
+    } catch (err) {
+      console.error(`Error unbanning user: ${err}`)
+      setError(err instanceof Error ? err.message : "Failed to unban user")
     }
   }
 
   return (
     <div className="flex h-screen bg-[#FFF8F0]">
       <Sidebar />
-      
+
       <div className="flex-1 flex flex-col">
         <header className="bg-[#FFF8F0] border-b p-4 flex items-center justify-between">
           <h1 className="text-xl font-semibold">User tables</h1>
@@ -92,17 +120,11 @@ export default function UserDashboard() {
             </div>
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                {error}
-              </div>
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>
             )}
 
             <div className="rounded-lg border overflow-hidden">
-              <UserTable 
-                users={users} 
-                loading={loading} 
-                onBlockToggle={toggleBlockStatus} 
-              />
+              <UserTable users={users} loading={loading} onBanUser={handleBanUser} onUnbanUser={handleUnbanUser} />
             </div>
 
             <Pagination
@@ -115,6 +137,20 @@ export default function UserDashboard() {
           </div>
         </main>
       </div>
+
+      <BanUserModal
+        isOpen={isBanModalOpen}
+        onClose={() => setIsBanModalOpen(false)}
+        onConfirm={confirmBanUser}
+        user={selectedUser}
+      />
+
+      <UnbanUserModal
+        isOpen={isUnbanModalOpen}
+        onClose={() => setIsUnbanModalOpen(false)}
+        onConfirm={confirmUnbanUser}
+        user={selectedUser}
+      />
     </div>
   )
 }

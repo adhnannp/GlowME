@@ -1,7 +1,8 @@
 import { IBadgeRepository } from '../core/interfaces/repositories/IBadgeRepository';
 import { SafeBadge } from '../core/types/SafeBadge';
+import { SafeUser } from '../core/types/SafeUser';
 import { BadgeModel, IBadge } from '../models/Badge';
-import { UserModel, IUser, IUserBadge } from '../models/User';
+import { UserModel, IUserBadge } from '../models/User';
 import mongoose from 'mongoose';
 
 export class BadgeRepository implements IBadgeRepository{
@@ -41,7 +42,7 @@ export class BadgeRepository implements IBadgeRepository{
     }).sort({ requiredXp: 1 });
   }
 
-  async addBadgeToUser(userId: string, badgeId: string): Promise<IUser | null> {
+  async addBadgeToUser(userId: string, badgeId: string): Promise<SafeUser | null> {
     return await UserModel.findByIdAndUpdate(
       userId,
       {
@@ -55,15 +56,15 @@ export class BadgeRepository implements IBadgeRepository{
         edited_at: new Date()
       },
       { new: true }
-    );
+    ).select('-password');
   }
 
-  async updateCurrentBadge(userId: string, badgeId: string): Promise<IUser | null> {
+  async updateCurrentBadge(userId: string, badgeId: string): Promise<SafeUser | null> {
     return await UserModel.findByIdAndUpdate(
       userId,
       { currentBadge: badgeId, edited_at: new Date() },
       { new: true }
-    );
+    ).select('-password');
   }
 
   async getUserBadges(userId: string): Promise<SafeBadge | null> {

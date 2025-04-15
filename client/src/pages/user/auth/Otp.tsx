@@ -15,10 +15,6 @@ const Otp: React.FC = () => {
                 {/* Illustration of person with phone */}
                 <img src="Animation - 1741701078258.gif" alt="Illustration of person with phone" className="w-full h-auto" />
               </div>
-              {/* Black circle decoration */}
-              <div className="absolute -bottom-54 -right-80">
-                <div className="w-50 h-50 bg-black rounded-full"></div>
-              </div>
             </div>
           </div>
         </div>

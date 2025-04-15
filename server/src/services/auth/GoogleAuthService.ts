@@ -21,6 +21,13 @@ export class GoogleAuthService implements IGoogleAuthService {
     }
     const existing = await this.userRepo.findUserByEmail(email);
     if (existing) {
+      if (existing.isBlock) {
+        if (existing.ban_expires_at) {
+          const banExpires = new Date(existing.ban_expires_at);
+          throw new Error(`You are banned. Ban will expire at: ${banExpires.toLocaleString()}`);
+        }
+        throw new Error("You are banned permanently.");
+      }
       const accessToken = signJWT({ userId: existing._id, isAdmin: existing.isAdmin });
       const refreshToken = signRefreshToken({ userId: existing._id, isAdmin: existing.isAdmin });
       return { user: existing, accessToken, refreshToken };

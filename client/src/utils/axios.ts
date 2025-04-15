@@ -75,7 +75,6 @@ api.interceptors.response.use(
         isRefreshing = false;
       }
     }
-
     return Promise.reject(error);
   }
 );

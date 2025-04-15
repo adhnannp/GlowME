@@ -14,8 +14,10 @@ export class AuthController implements IAuthController{
     try {
       const newUser = await this.authService.register(user);
       res.status(201).json({message:"registered successfully please check your email for OTP",user:{newUser}});
+      return
     } catch (error) {
       res.status(400).json({message:"Registration failed"})
+      return
     }
   }
 
@@ -30,9 +32,11 @@ export class AuthController implements IAuthController{
         const { accessToken, refreshToken } = data;
         setRefreshTokens(res, refreshToken);
         res.status(200).json({ message: "OTP verified successfully", accessToken });
+        return
     } catch (error) {
         console.error("Error in verifyOTP Controller:", error);
         res.status(400).json({ message: (error as Error).message || "OTP verification failed." });
+        return
     }
   }
 
@@ -42,15 +46,20 @@ export class AuthController implements IAuthController{
       const {email} = req.body
       await this.authService.resendOTP(email)
       res.status(200).json({message:'OTP resend successfully'});
+      return
     } catch (error:any) {
       if (error.message.includes("expired") || error.message.includes("does not exist")) {
         res.status(410).json({ message: "User data expired or not found. Please restart the verification process." });
+        return
       } else if (error.message.includes("Redis")) {
         res.status(500).json({ message: "Internal server error: Redis issue. Please try again later." });
+        return
       }else if(error.message.includes("resent")){
         res.status(400).json({ message:error.message });
+        return
       }else {
         res.status(400).json({ message: "Resend OTP failed. Please try again." });
+        return
       }
     }
   }
@@ -60,15 +69,17 @@ export class AuthController implements IAuthController{
       const { email, password } = req.body;
       const data = await this.authService.loginUser(email, password);
       if (!data || typeof data !== "object") {
-          res.status(400).json({ message: "Login failed" });
+          res.status(400).json({ message: "No User Found" });
           return
       }
+
       const { accessToken, refreshToken } = data;
       setRefreshTokens(res,refreshToken)
       res.status(200).json({ message: "Login successful",accessToken });
-    } catch (error) {
-        console.log(error)
-        res.status(400).json({ message: "Login Failed try again" });
+      return
+    } catch (error:any) {
+        res.status(400).json({ message:error.message });
+        return
     }
   }
 
@@ -83,15 +94,17 @@ export class AuthController implements IAuthController{
       const { accessToken, refreshToken } = data;
       setRefreshTokens(res,refreshToken)
       res.status(200).json({ message: "Login successful",accessToken });
-    } catch (error) {
-        console.log(error)
-        res.status(400).json({ message: "Login Failed try again" });
+      return
+    } catch (error:any) {
+        res.status(400).json({ message:error.message });
+        return
     }
   }
 
   async logout(req: Request, res: Response) {
     res.clearCookie('refreshToken');
     res.status(200).json({ message: 'Logged out successfully' });
+    return
   }
 
   async refreshToken(req: Request, res: Response) {
@@ -108,8 +121,10 @@ export class AuthController implements IAuthController{
     }
       setRefreshTokens(res,refreshToken)
       res.status(200).json({ message: 'Token refreshed',accessToken});
+      return
     } catch (error) {
       res.status(401).json({ message: 'Invalid refresh token' });
+      return
     }
   }
 
@@ -117,18 +132,19 @@ export class AuthController implements IAuthController{
     const userId = req.userId
     if(!userId){
       res.status(400).json({ message: 'no credentials added' });
-      return
+      return;
     }
     try {
       const userData = await this.authService.verifyUser(userId)
       if(!userData){
         res.status(400).json({ message: 'Invalid token' });  
+        return;
       }
       res.status(200).json({message:"got user by id successfully",user:userData});
       return;
     } catch (error) {
       res.status(400).json({ message: 'Invalid token' });
-      return
+      return;
     }
   }
 }

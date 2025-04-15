@@ -1,6 +1,6 @@
 import { IBadge } from '../../../models/Badge';
-import { IUser } from '../../../models/User';
 import { SafeBadge } from '../../types/SafeBadge';
+import { SafeUser } from '../../types/SafeUser';
 
 export interface IBadgeRepository {
   createBadge(badgeData: Partial<IBadge>): Promise<IBadge>;
@@ -9,7 +9,7 @@ export interface IBadgeRepository {
   updateBadge(badgeId: string, updates: Partial<IBadge>): Promise<IBadge | null>;
   getAllBadges(): Promise<IBadge[]>;
   getAvailableBadges(userId: string): Promise<IBadge[]>;
-  addBadgeToUser(userId: string, badgeId: string): Promise<IUser | null>;
-  updateCurrentBadge(userId: string, badgeId: string): Promise<IUser | null>;
+  addBadgeToUser(userId: string, badgeId: string): Promise<SafeUser | null>;
+  updateCurrentBadge(userId: string, badgeId: string): Promise<SafeUser | null>;
   getUserBadges(userId: string): Promise<SafeBadge | null>;
 }

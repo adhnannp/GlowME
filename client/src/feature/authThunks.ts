@@ -19,6 +19,7 @@ export const userLogin = createAsyncThunk<any, UserCredentials, { rejectValue: s
       const userData = await fetchUserAPI(credentials.email);
       return { ...loginResponse, user: userData.user };
     } catch (error: any) {
+      console.log(error)
       return thunkAPI.rejectWithValue(error.message);
     }
   }

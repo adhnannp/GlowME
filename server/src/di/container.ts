@@ -50,6 +50,10 @@ import { IUserBadgeController } from '../core/interfaces/controllers/user/IUser.
 import { UserBadgeController } from '../controllers/userController/user.badge.controller';
 import { IUnbanUsersJob } from '../core/interfaces/middlewares/IUnbanUserJob';
 import { UnbanUsersJob } from '../middleware/UnbanUsersJob';
+import { ForgotPasswordService } from '../services/auth/ForgotPasswordService';
+import { IForgotPasswordService } from '../core/interfaces/services/auth/IForgotPasswordService';
+import { ForgotPasswordcontroller } from '../controllers/auth/ForgotPasswordController';
+import { IForgotPasswordcontroller } from '../core/interfaces/controllers/auth/IforgotPasswordController';
 
 const container = new Container();
 
@@ -70,6 +74,8 @@ container.bind<IUserConnectionService>(TYPES.UserConnectionService).to(UserConne
 container.bind<IGoogleAuthService>(TYPES.GoogleAuthService).to(GoogleAuthService);
 container.bind<IUserBadgeService>(TYPES.UserBadgeService).to(UserBadgeService)
 container.bind<IAdminBadgeService>(TYPES.AdminBadgeService).to(AdminBadgeService);
+container.bind<IForgotPasswordService>(TYPES.ForgotPasswordService).to(ForgotPasswordService);
+
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -78,8 +84,9 @@ container.bind<IAdminController>(TYPES.AdminController).to(AdminController);
 container.bind<IUsersController>(TYPES.UsersController).to(UsersController);
 container.bind<IUserConnectionController>(TYPES.UserConnectionController).to(UserConnectionController);
 container.bind<IGoogleAuthController>(TYPES.GoogleAuthController).to(GoogleAuthController);
-container.bind<IAdminBadgeController>(TYPES.AdminBadgeController).to(AdminBadgeController)
-container.bind<IUserBadgeController>(TYPES.UserBadgeController).to(UserBadgeController)
+container.bind<IAdminBadgeController>(TYPES.AdminBadgeController).to(AdminBadgeController);
+container.bind<IUserBadgeController>(TYPES.UserBadgeController).to(UserBadgeController);
+container.bind<IForgotPasswordcontroller>(TYPES.ForgotPasswordController).to(ForgotPasswordcontroller);
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

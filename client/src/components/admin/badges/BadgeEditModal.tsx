@@ -15,6 +15,14 @@ interface BadgeEditModalProps {
   badge: Badge | null
 }
 
+const getImageSrc = (imagePath: string | null): string => {
+  if (!imagePath) return "/placeholder.svg"
+  if (imagePath.startsWith("data:") || imagePath.startsWith("blob:")) return imagePath
+  if (imagePath.startsWith("http")) return imagePath
+  return `${import.meta.env.VITE_SERVER_URL || "http://localhost:3000"}${imagePath}`
+}
+
+
 export default function BadgeEditModal({ isOpen, onClose, onSave, badge }: BadgeEditModalProps) {
   const [name, setName] = useState("")
   const [image, setImage] = useState<string | null>(null)
@@ -86,15 +94,11 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 
   const handleClose = () => {
     setImage(null)
+    if(badge){
+      setCroppedImage(badge.image)
+    }
     setShowCropper(false)
     onClose()
-  }
-
-  const handleEditCurrentImage = () => {
-    if (croppedImage) {
-      setImage(croppedImage)
-      setShowCropper(true)
-    }
   }
 
   return (
@@ -139,13 +143,10 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                 {croppedImage && (
                   <div className="mb-2 flex items-center gap-2">
                     <img
-                      src={croppedImage || "/placeholder.svg"}
+                      src={getImageSrc(croppedImage)}
                       alt="Badge"
                       className="w-12 h-12 rounded-full object-cover border"
                     />
-                    <Button variant="outline" size="sm" onClick={handleEditCurrentImage}>
-                      Edit Current Image
-                    </Button>
                   </div>
                 )}
                 <Input
@@ -156,7 +157,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   accept="image/*"
                   className="col-span-3"
                 />
-                <p className="text-xs text-gray-500 mt-1">Upload a new image or edit the existing one</p>
+                <p className="text-xs text-gray-500 mt-1">Upload a new image </p>
               </div>
               {fileError && <p className="text-xs text-red-500 mt-1">{fileError}</p>}
             </div>

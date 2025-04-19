@@ -7,6 +7,9 @@ import UserHeader from "@/components/admin/users/UserHeader"
 import Pagination from "@/components/admin/users/Pagination"
 import BadgeAddModal from "@/components/admin/badges/BadgeAddModal"
 import BadgeEditModal from "@/components/admin/badges/BadgeEditModal"
+import dataURLtoFile from "@/lib/dataURLtoFile"
+import toast from "react-hot-toast"
+
 
 export default function BadgeDashboard() {
   const [badges, setBadges] = useState<Badge[]>([])
@@ -57,8 +60,24 @@ export default function BadgeDashboard() {
   const handleAddBadge = async (newBadge: Omit<Badge, "_id" | "created_at" | "updated_at">) => {
     try {
       setLoading(true)
-      const response = await api.post("/admin/badges", newBadge)
-      console.log(response)
+  
+      const formData = new FormData()
+      formData.append("name", newBadge.name)
+      formData.append("requiredXp", newBadge.requiredXp.toString())
+
+      if (typeof newBadge.image === "string" && newBadge.image.startsWith("data:")) {
+        const file = dataURLtoFile(newBadge.image, "badge.jpg")
+        formData.append("image", file)
+      } else {
+        throw new Error("Invalid image format")
+      }
+  
+      const response = await api.post("/admin/badges", formData,{
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+  
       const createdBadge = response.data.badge
       setBadges((prev) => [...prev, createdBadge])
     } catch (err) {
@@ -68,19 +87,29 @@ export default function BadgeDashboard() {
       setLoading(false)
     }
   }
+  
 
   const handleUpdateBadge = async (updatedBadge: Badge) => {
     try {
       setLoading(true)
-      await api.put(`/admin/badges/${updatedBadge._id}`, {
-        name: updatedBadge.name,
-        image: updatedBadge.image,
+  
+      const formData = new FormData()
+      formData.append("name", updatedBadge.name)
+      if (typeof updatedBadge.image === "string" && updatedBadge.image.startsWith("data:")) {
+        const file = dataURLtoFile(updatedBadge.image, "badge.jpg")
+        formData.append("image", file)
+      } else if (typeof updatedBadge.image === "string") {
+        formData.append("imageUrl", updatedBadge.image)
+      }
+      const response = await api.patch(`/admin/badges/${updatedBadge._id}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       })
-
-      // Update the badges list
-      setBadges((prev) => prev.map((badge) => (badge._id === updatedBadge._id ? updatedBadge : badge)))
-
-      // Show success message or notification here
+      const badgeFromServer = response.data.badge
+      setBadges((prev) =>
+        prev.map((badge) => (badge._id === badgeFromServer._id ? badgeFromServer : badge))
+      )
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update badge")
       console.error("Failed to update badge:", err)
@@ -88,8 +117,8 @@ export default function BadgeDashboard() {
       setLoading(false)
     }
   }
+  
 
-  // Calculate paginated data
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
   const currentBadges = filteredBadges.slice(indexOfFirstItem, indexOfLastItem)

@@ -24,19 +24,19 @@ export class ConnectionRepository implements IConnectionRepository {
     return await ConnectionModel.countDocuments({ following: userId });
   }
 
-  async getFollowers(userId: string, skip: number = 0): Promise<IConnection[] | null> {
+  async getFlollowingCount(userId:string):Promise<number> {
+    return await ConnectionModel.countDocuments({ follower: userId });
+  }
+
+  async getFollowers(userId: string): Promise<IConnection[] | null> {
     return await ConnectionModel.find({ following: userId })
       .populate('follower', '-password')
-      .skip(skip)
-      .limit(10)
       .lean();
   }
 
-  async getFollowing(userId: string, skip: number = 0): Promise<IConnection[] | null> {
+  async getFollowing(userId: string): Promise<IConnection[] | null> {
     return await ConnectionModel.find({ follower: userId })
       .populate('following', '-password')
-      .skip(skip)
-      .limit(10)
       .lean();
   }
 

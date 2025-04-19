@@ -16,6 +16,7 @@ export const TYPES = {
     GoogleAuthService: Symbol.for('GoogleAuthService'),
     AdminBadgeService: Symbol.for('AdminBadgeService'),
     UserBadgeService: Symbol.for('UserBadgeService'),
+    ForgotPasswordService: Symbol.for('ForgotPasswordService'),
 
     // Controllers
     AuthController: Symbol.for('AuthController'),
@@ -25,7 +26,8 @@ export const TYPES = {
     UserConnectionController: Symbol.for('UserConnectionController'),
     GoogleAuthController: Symbol.for('GoogleAuthController'),
     AdminBadgeController: Symbol.for('AdminBadgeController'),
-    UserBadgeController:Symbol.for('UserBadgeController'),
+    UserBadgeController: Symbol.for('UserBadgeController'),
+    ForgotPasswordController: Symbol.for('ForgotPasswordController'),
 
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),

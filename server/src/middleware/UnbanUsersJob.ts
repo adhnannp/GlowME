@@ -12,8 +12,8 @@ export class UnbanUsersJob implements IUnbanUsersJob{
   ) {}
 
   public start(): void {
-    cron.schedule("0 0 * * *", async () => {
-      console.log("[CRON] Running unban job at 12:00 AM...");
+    cron.schedule("2 0 * * *", async () => {
+      console.log("[CRON] Running unban job at 12:02 AM...");
 
       try {
         const success = await this.userRepository.unbanExpiredUsers();

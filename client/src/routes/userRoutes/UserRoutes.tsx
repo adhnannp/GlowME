@@ -11,6 +11,7 @@ import PublicRoute from "./PublicRoute";
 import OtpRoute from "./OtpRoute";
 import OtherUserProfile from "@/pages/user/othersProfile/OtherProfile";
 import Connect from "@/pages/user/connectOthers/ConnectOthers";
+import ResetPasswordForm from "@/pages/user/resetPassword/resetPassword";
 
 const UserRoutes: React.FC = () => {
   // const [isLoading, setIsLoading] = useState(true);
@@ -45,6 +46,7 @@ const UserRoutes: React.FC = () => {
       <Route element={<PublicRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/reset-password" element={<ResetPasswordForm />} />
       </Route>
 
       <Route element={<OtpRoute />}>

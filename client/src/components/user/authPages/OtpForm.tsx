@@ -117,7 +117,7 @@ const OtpForm: React.FC = () => {
       navigate("/");
     } catch(error:any) {
       setErrorMessage("Invalid OTP. Please try again.");
-      toast.error(error.message||errorMessage)
+      toast.error(error.Payload ||errorMessage)
     }
   };
 

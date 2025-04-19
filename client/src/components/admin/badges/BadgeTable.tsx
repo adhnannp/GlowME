@@ -3,7 +3,7 @@ import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@
 export interface Badge {
   _id: string
   name: string
-  image: string
+  image: string;
   requiredXp: number
   created_at: string
   updated_at: string
@@ -43,7 +43,7 @@ export default function BadgeTable({ badges, loading, onEdit }: BadgeTableProps)
           badges.map((badge) => (
             <TableRow key={badge._id}>
               <TableCell className="flex items-center space-x-3">
-                <img src={badge.image} alt={badge.name} className="w-8 h-8 rounded-full object-cover" />
+                <img src={`http://localhost:3000${badge.image}`} alt={badge.name} className="w-8 h-8 rounded-full object-cover" />
                 <span>{badge.name}</span>
               </TableCell>
               <TableCell>{badge.requiredXp}</TableCell>

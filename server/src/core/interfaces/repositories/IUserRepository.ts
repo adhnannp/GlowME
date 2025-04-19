@@ -12,5 +12,6 @@ export interface IUserRepository {
   totalUsersWithFilter(filter?: any): Promise<number>;
   banUser(userId: string, banExpiresAt?: Date | null): Promise<SafeUser | null>;
   unbanUser(userId: string): Promise<SafeUser | null>;
-  unbanExpiredUsers(): Promise<boolean> 
+  unbanExpiredUsers(): Promise<boolean> ;
+  updateUserPassword(userId: string, password: string): Promise<IUser | null>;
 }

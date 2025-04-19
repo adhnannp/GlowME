@@ -16,7 +16,8 @@ export class AuthController implements IAuthController{
       res.status(201).json({message:"registered successfully please check your email for OTP",user:{newUser}});
       return
     } catch (error) {
-      res.status(400).json({message:"Registration failed"})
+      const err = error as Error
+      res.status(400).json({message:err.message})
       return
     }
   }

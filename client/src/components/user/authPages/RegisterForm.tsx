@@ -1,66 +1,93 @@
-import React, { useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { FcGoogle } from "react-icons/fc";
-import { useDispatch } from "react-redux";
-import { registerUser } from "@/feature/authThunks";
-import { useNavigate } from "react-router-dom";
-import { AppDispatch } from "@/store/store"; 
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { FcGoogle } from 'react-icons/fc';
+import { useDispatch } from 'react-redux';
+import { registerUser } from '@/feature/authThunks';
+import { useNavigate } from 'react-router-dom';
+import { AppDispatch } from '@/store/store';
 import { toast } from 'react-hot-toast';
 
+// Define the validation schema with Zod
+const registerSchema = z
+  .object({
+    username: z.string().min(3, 'Username must be at least 3 characters').nonempty('Username is required'),
+    email: z.string().email('Please enter a valid email').nonempty('Email is required'),
+    password: z.string().min(6, 'Password must be at least 6 characters').nonempty('Password is required'),
+    confirmPassword: z.string().nonempty('Confirm password is required'),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  });
+
+type RegisterFormData = z.infer<typeof registerSchema>;
+
 const RegisterForm: React.FC = () => {
-  const handleGoogleLogin = () => {
-      const width = 500;
-      const height = 600;
-      const left = window.screenX + (window.innerWidth - width) / 2;
-      const top = window.screenY + (window.innerHeight - height) / 2;
-    
-      const popup = window.open(
-        'http://localhost:3000/api/auth/google',
-        'googleLogin',
-        `width=${width},height=${height},top=${top},left=${left}`
-      );
-    
-      const messageListener = (event: MessageEvent) => {
-        // Optional: check origin
-        if (event.origin !== 'http://localhost:3000') return;
-    
-        const { token } = event.data;
-        if (token) {
-          // Save the token and redirect
-          localStorage.setItem('accessToken', token); // or dispatch Redux action
-          toast.success('Google login successful!');
-          navigate('/');
-        } else {
-          toast.error('Google login failed.');
-        }
-    
-        window.removeEventListener('message', messageListener);
-        popup?.close();
-      };
-    
-      window.addEventListener('message', messageListener);
-  };
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleGoogleLogin = () => {
+    const width = 500;
+    const height = 600;
+    const left = window.screenX + (window.innerWidth - width) / 2;
+    const top = window.screenY + (window.innerHeight - height) / 2;
+
+    const popup = window.open(
+      'http://localhost:3000/api/auth/google',
+      'googleLogin',
+      `width=${width},height=${height},top=${top},left=${left}`
+    );
+
+    const messageListener = (event: MessageEvent) => {
+      if (event.origin !== 'http://localhost:3000') return;
+
+      const { token } = event.data;
+      if (token) {
+        localStorage.setItem('accessToken', token);
+        toast.success('Google login successful!');
+        navigate('/');
+      } else {
+        toast.error('Google login failed.');
+      }
+
+      window.removeEventListener('message', messageListener);
+      popup?.close();
+    };
+
+    window.addEventListener('message', messageListener);
   };
 
-  const handleSubmit = async () => {
+  // Handle form submission
+  const onSubmit = async (data: RegisterFormData) => {
     try {
-      const response = await dispatch(registerUser(form)).unwrap();
+      const { confirmPassword, ...formData } = data; 
+      const response = await dispatch(registerUser(formData)).unwrap();
       if (response?.email) {
-        localStorage.setItem("otp_email",response.email)
-        toast.success('Please check you Email for OTP');
-        navigate(`/otp`);
+        localStorage.setItem('otp_email', response.email);
+        toast.success('Please check your Email for OTP');
+        navigate('/otp');
       }
-    } catch (error) {
-      toast.error('registration failed');
-      console.error("Registration failed:", error);
+    } catch (error :any) {
+      toast.error(error);
+      console.error('Registration failed:', error);
     }
   };
 
@@ -69,24 +96,57 @@ const RegisterForm: React.FC = () => {
       <h2 className="text-2xl font-semibold mb-2">Sign Up</h2>
       <p className="text-sm mb-6">You are a step away from something great!</p>
 
-      <div className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="relative">
           <div className="text-xs text-gray-500 absolute top-1 left-3 z-10">Username</div>
-          <Input type="text" name="username" value={form.username} onChange={handleChange} className="rounded-md border-gray-300 pt-4" />
+          <Input
+            type="text"
+            {...register('username')}
+            className="rounded-md border-gray-300 pt-4"
+          />
+          {errors.username && <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>}
         </div>
 
         <div className="relative">
           <div className="text-xs text-gray-500 absolute top-1 left-3 z-10">Email</div>
-          <Input type="email" name="email" value={form.email} onChange={handleChange} className="rounded-md border-gray-300 pt-4" />
+          <Input
+            type="email"
+            {...register('email')}
+            className="rounded-md border-gray-300 pt-4"
+          />
+          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
         </div>
 
         <div className="relative">
           <div className="text-xs text-gray-500 absolute top-1 left-3 z-10">Password</div>
-          <Input type="password" name="password" value={form.password} onChange={handleChange} className="rounded-md border-gray-300 pt-4" />
+          <Input
+            type="password"
+            {...register('password')}
+            className="rounded-md border-gray-300 pt-4"
+          />
+          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
+        </div>
+
+        <div className="relative">
+          <div className="text-xs text-gray-500 absolute top-1 left-3 z-10">Confirm Password</div>
+          <Input
+            type="password"
+            {...register('confirmPassword')}
+            className="rounded-md border-gray-300 pt-4"
+          />
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
+          )}
         </div>
 
         <div className="flex space-x-2">
-          <Button onClick={handleSubmit} className="bg-black text-white rounded-md px-6">Sign Up</Button>
+          <Button
+            type="submit"
+            className="bg-black text-white rounded-md px-6"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Signing Up...' : 'Sign Up'}
+          </Button>
           <Button
             type="button"
             variant="outline"
@@ -97,7 +157,7 @@ const RegisterForm: React.FC = () => {
             <span>Sign in with Google</span>
           </Button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };

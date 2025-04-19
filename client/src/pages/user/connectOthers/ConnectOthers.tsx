@@ -43,7 +43,10 @@ export default function Connect() {
   const [users, setUsers] = useState<User[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalUsers, setTotalUsers] = useState(0);
   const [loading, setLoading] = useState(false);
+
+  const usersPerPage = 12;
 
   const toggleSidebar = () => {
     setSidebarExpanded(!sidebarExpanded);
@@ -52,14 +55,18 @@ export default function Connect() {
   const fetchUsers = async (page: number) => {
     try {
       setLoading(true);
-      const response = await api.get(`/users?page=${page}`);
+      const response = await api.get(`/users?page=${page}&limit=${usersPerPage}`);
       const data = response.data;
-      
+
       setUsers(Array.isArray(data.users) ? data.users : []);
-      setTotalPages(Math.ceil(data.total / 10));
+      setTotalUsers(data.total || 0);
+      setTotalPages(Math.ceil(data.total / usersPerPage));
       setCurrentPage(page);
     } catch (error) {
       console.error("Error fetching users:", error);
+      setUsers([]);
+      setTotalUsers(0);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
@@ -70,7 +77,9 @@ export default function Connect() {
   }, [currentPage]);
 
   const handleNext = () => {
-    setCurrentPage(currentPage + 1);
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
   };
 
   const handlePrevious = () => {
@@ -78,6 +87,8 @@ export default function Connect() {
       setCurrentPage(currentPage - 1);
     }
   };
+
+  const isLastPage = users.length < usersPerPage || currentPage * usersPerPage >= totalUsers;
 
   return (
     <div className="flex h-screen bg-white">
@@ -136,11 +147,10 @@ export default function Connect() {
                     <>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {users.map((user) => (
-                            <UserCard key={user._id} user={user} />
+                          <UserCard key={user._id} user={user} />
                         ))}
                       </div>
 
-                      {/* Simple Pagination */}
                       <div className="flex justify-center mt-8 gap-2">
                         <Button
                           onClick={handlePrevious}
@@ -149,19 +159,14 @@ export default function Connect() {
                         >
                           Previous
                         </Button>
-                        <button className="px-4 py-2">
-                            {currentPage}
-                        </button>
+                        <span className="px-4 py-2">{currentPage}</span>
                         <Button
                           onClick={handleNext}
-                          disabled={totalPages <= 1 || currentPage === totalPages}
+                          disabled={isLastPage}
                           variant="outline"
                         >
                           Next
                         </Button>
-                        <span className="px-4 py-2">
-                          Page {currentPage} of {totalPages}
-                        </span>
                       </div>
                     </>
                   )}

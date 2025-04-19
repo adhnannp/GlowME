@@ -2,6 +2,7 @@ import { injectable } from 'inversify';
 import { IUserRepository } from '../core/interfaces/repositories/IUserRepository';
 import { IUser, UserModel } from '../models/User';
 import { SafeUser } from '../core/types/SafeUser';
+import bcrypt from 'bcrypt';
 
 @injectable()
 export class UserRepository implements IUserRepository {
@@ -80,18 +81,12 @@ export class UserRepository implements IUserRepository {
   }
 
   async unbanExpiredUsers(): Promise<boolean> {
-    const today = new Date();
-    const lowerBound = new Date(today);
-    lowerBound.setHours(23, 59, 0, 0);
-    const upperBound = new Date(today);
-    upperBound.setDate(upperBound.getDate() + 1);
-    upperBound.setHours(0, 1, 0, 0); 
+    const now = new Date();
     const result = await UserModel.updateMany(
       {
         isBlock: true,
         ban_expires_at: {
-          $gte: lowerBound,
-          $lt: upperBound,
+          $lt: now,
         },
       },
       {
@@ -101,7 +96,18 @@ export class UserRepository implements IUserRepository {
         },
       }
     );
+    console.log(result)
     return result.acknowledged === true;
   }
   
+  async updateUserPassword(userId: string, password: string): Promise<IUser | null> {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await UserModel.findByIdAndUpdate(
+      userId,
+      { password: hashedPassword },
+      { new: true }
+    ).populate('currentBadge');
+    return user;
+  }
+
 }

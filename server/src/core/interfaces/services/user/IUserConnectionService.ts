@@ -10,5 +10,7 @@ export interface IUserConnectionService {
     unfollowUser(followerId: string, followingId: string): Promise<void>;
     reportUser(reporterId: string, reportedId: string, reason: string): Promise<IReport | null>;
     getUsers(skip: number, limit:number,currentUserId:string): Promise<[SafeUser[], number] | null>;
-    findUserById(id: string,currentUserId:string): Promise<[Omit<IUser, "password">, number,boolean] | null>;
+    findUserById(id: string,currentUserId:string): Promise<[Omit<IUser, "password">, number,number,boolean] | null>;
+    getFollowers(userId: string): Promise<IConnection[] | null> ;
+    getFollowing(userId: string): Promise<IConnection[] | null> 
   }

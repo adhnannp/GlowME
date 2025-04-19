@@ -20,6 +20,7 @@ export default function OtherUserProfile() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
   const [userData, setUserData] = useState<User | null>(null)
   const [followerCount, setFollowerCount] = useState<number>(0); 
+  const [followingCount, setFollowingCount] = useState<number>(0); 
   const [isFollowing,setIsFollowing] = useState<boolean>(false);
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -30,7 +31,6 @@ export default function OtherUserProfile() {
   if(id==currentUser?._id){
     navigate("/profile")
   }
-  console.log(id)
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"
@@ -44,6 +44,7 @@ export default function OtherUserProfile() {
         const response = await api.get(`/users/${id}`)
         setUserData(response.data?.user);
         setFollowerCount(response.data?.followerCount || 0);
+        setFollowingCount(response.data?.followingCount || 0)
         setIsFollowing(response.data.isFollowing)
         setError(null)
       } catch (err) {
@@ -164,7 +165,9 @@ const handleDisconnect = async () => {
                     Member since {memberSince}
                   </span>
                   <span className="mx-2">•</span>
-                  <span>{followerCount} connection</span>
+                  <span>{followerCount} Followers</span>
+                  <span className="mx-2">•</span>
+                  <span>{followingCount} Following</span>
                 </div>
               </div>
               <button
@@ -175,12 +178,12 @@ const handleDisconnect = async () => {
                     {isFollowing ? (
                     <>
                         <Grid2x2X className="h-4 w-4 mr-1 text-gray-800" />
-                        Disconnect
+                        Unfollow
                     </>
                     ) : (
                     <>
                         <Grid2x2Plus className="h-4 w-4 mr-1 text-gray-800" />
-                        Connect
+                        Follow
                     </>
                     )}
               </button>
@@ -297,7 +300,7 @@ const handleDisconnect = async () => {
                       {/* Rank and rankProgress aren't in the User interface */}
                       <div className="mt-4">
                         <div className="flex justify-between mb-1">
-                          <span>{userData?.badge || "Beginner"}</span>
+                          <span>{userData?.currentBadge || "Beginner"}</span>
                           <span>1%</span>
                         </div>
                         <Progress value={1} className="h-2" />

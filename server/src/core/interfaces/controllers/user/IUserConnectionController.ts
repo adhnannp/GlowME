@@ -6,4 +6,6 @@ export interface IUserConnectionController {
   reportUser(req: Request, res: Response): Promise<void>;
   getUsers(req: Request, res: Response): Promise<void>;
   getUserById(req: Request, res: Response): Promise<void>;
+  getFollowers(req: Request, res: Response): Promise<void>;
+  getFollowing(req: Request, res: Response): Promise<void>;
 }

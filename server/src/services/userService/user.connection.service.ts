@@ -73,22 +73,47 @@ export class UserConnectionService implements IUserConnectionService {
     if (skip < 0) {
       return null;
     }
-    const reportedUserIds = await this.reportRepo.getReportedUserIds(currentUserId);
     const users = await this.userRepo.getAllUsersWithFilter(skip, limit, {
-      _id: { $nin: reportedUserIds },
+      isBlock: false,
     });
     const TotalUsers = await this.userRepo.totalUsersWithFilter({
-      _id: { $nin: reportedUserIds },
+      isBlock: false,
     });
     if (!users) return null;
     return [users, TotalUsers];
   }
 
-  async findUserById(id: string,currentUserId:string): Promise<[Omit<IUser, "password">, number,boolean] | null> {
+  async findUserById(id: string,currentUserId:string): Promise<[Omit<IUser, "password">, number,number,boolean] | null> {
     const user = await this.userRepo.findUserById(id);
-    if (!user) return null;
+    if (!user || user.isBlock) return null;
     const followerCount = await this.connectionRepo.getFollowerCount(id);
+    const followingCount = await this.connectionRepo.getFlollowingCount(id);
     const isFollowing = await this.connectionRepo.isFollowing(currentUserId,id)
-    return [user, followerCount,isFollowing];
+    return [user, followerCount,followingCount,isFollowing];
   }
+
+  async getFollowers(userId: string): Promise<IConnection[] | null> {
+    try {
+      if (!userId) {
+        throw new Error('User ID is required');
+      }
+      const followers = await this.connectionRepo.getFollowers(userId);
+      return followers;
+    } catch (error) {
+      throw new Error(`${(error as Error).message}`);
+    }
+  }
+
+  async getFollowing(userId: string): Promise<IConnection[] | null> {
+    try {
+      if (!userId) {
+        throw new Error('User ID is required');
+      }
+      const following = await this.connectionRepo.getFollowing(userId);
+      return following;
+    } catch (error) {
+      throw new Error(`${(error as Error).message}`);
+    }
+  }
+
 }

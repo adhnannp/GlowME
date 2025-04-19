@@ -58,6 +58,9 @@ export default function ImageCropper({ image, onCropComplete, onCancel }: ImageC
       throw new Error("No 2d context")
     }
 
+    ctx.fillStyle = "#FFFFFF"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    
     ctx.drawImage(
       imgRef.current,
       completedCrop.x * scaleX,
@@ -88,7 +91,7 @@ export default function ImageCropper({ image, onCropComplete, onCancel }: ImageC
             src={image || "/placeholder.svg"}
             alt="Crop me"
             onLoad={onImageLoad}
-            className="max-h-[300px] object-contain"
+            className="max-h-[300px] object-contain bg-white"
           />
         </ReactCrop>
       </div>

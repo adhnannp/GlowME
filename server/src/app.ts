@@ -7,6 +7,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import passport from './config/passport';
+import path from 'path';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use("/badges", express.static(path.join(__dirname, "../public/badges")))
 
 app.use('/api', userRoutes);
 app.use('/api/admin', adminRoutes); 

@@ -10,12 +10,10 @@ import BadgeEditModal from "@/components/admin/badges/BadgeEditModal"
 import dataURLtoFile from "@/lib/dataURLtoFile"
 import toast from "react-hot-toast"
 
-
 export default function BadgeDashboard() {
   const [badges, setBadges] = useState<Badge[]>([])
   const [filteredBadges, setFilteredBadges] = useState<Badge[]>([])
   const [loading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState<number>(1)
   const [searchTerm, setSearchTerm] = useState<string>("")
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
@@ -32,9 +30,8 @@ export default function BadgeDashboard() {
 
       setBadges(data.badges)
       setFilteredBadges(data.badges)
-      setError(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred")
+      toast.error(err instanceof Error ? err.message : "An unknown error occurred")
       console.error("Failed to fetch badges:", err)
     } finally {
       setLoading(false)
@@ -72,7 +69,7 @@ export default function BadgeDashboard() {
         throw new Error("Invalid image format")
       }
   
-      const response = await api.post("/admin/badges", formData,{
+      const response = await api.post("/admin/badges", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -80,14 +77,14 @@ export default function BadgeDashboard() {
   
       const createdBadge = response.data.badge
       setBadges((prev) => [...prev, createdBadge])
+      toast.success("Badge added successfully")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to add badge")
+      toast.error(err instanceof Error ? err.message : "Failed to add badge")
       console.error("Failed to add badge:", err)
     } finally {
       setLoading(false)
     }
   }
-  
 
   const handleUpdateBadge = async (updatedBadge: Badge) => {
     try {
@@ -110,14 +107,14 @@ export default function BadgeDashboard() {
       setBadges((prev) =>
         prev.map((badge) => (badge._id === badgeFromServer._id ? badgeFromServer : badge))
       )
+      toast.success("Badge Updated successfully")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update badge")
+      toast.error(err instanceof Error ? err.message : "Failed to update badge")
       console.error("Failed to update badge:", err)
     } finally {
       setLoading(false)
     }
   }
-  
 
   const indexOfLastItem = currentPage * itemsPerPage
   const indexOfFirstItem = indexOfLastItem - itemsPerPage
@@ -153,10 +150,6 @@ export default function BadgeDashboard() {
                 Add Badge
               </button>
             </div>
-
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>
-            )}
 
             <div className="rounded-lg border overflow-hidden">
               <BadgeTable badges={currentBadges} loading={loading} onEdit={handleEdit} />

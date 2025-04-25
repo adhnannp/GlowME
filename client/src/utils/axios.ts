@@ -3,7 +3,7 @@ import {store} from "@/store/store";
 import { logout } from "@/feature/authThunks";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: import.meta.env.VITE_BASE_API_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -50,7 +50,7 @@ api.interceptors.response.use(
 
       try {
         const refreshResponse = await axios.post(
-          "http://localhost:3000/api/refresh-token",
+          import.meta.env.VITE_REFRESH_TOKEN_URL,
           {},
           { withCredentials: true }
         );

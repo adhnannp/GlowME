@@ -27,5 +27,7 @@ router.patch('/users/:userId/unban',adminAuthMiddleware.handle.bind(adminAuthMid
 router.get('/badges',adminAuthMiddleware.handle.bind(adminAuthMiddleware),badgeController.getAllBadges.bind(badgeController))
 router.post('/badges',adminAuthMiddleware.handle.bind(adminAuthMiddleware),badgeUpload.single('image'),badgeController.createBadge.bind(badgeController));
 router.patch('/badges/:badgeId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),badgeUpload.single('image'),badgeController.updateBadge.bind(badgeController));
+router.patch('/list-badge/:badgeId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),badgeController.listBadge.bind(badgeController));
+router.patch('/unlist-badge/:badgeId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),badgeController.unlistBadge.bind(badgeController));
 
 export default router;

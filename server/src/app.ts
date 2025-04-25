@@ -8,12 +8,14 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import passport from './config/passport';
 import path from 'path';
+import dotenv from 'dotenv';
 
 const app = express();
+dotenv.config();
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:4000', 
+  origin: process.env.CLIENT_URL!, 
   credentials: true,
 }));
 

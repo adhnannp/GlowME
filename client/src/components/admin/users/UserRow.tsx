@@ -40,19 +40,17 @@ export default function UserRow({ user, onBanUser, onUnbanUser }: UserRowProps) 
       <TableCell className="text-right">
         {user.isBlock ? (
           <Button
-            variant="outline"
             size="sm"
             onClick={() => onUnbanUser(user)}
-            className="text-green-600 hover:text-green-700 hover:bg-green-50"
+            className="px-3 py-1 rounded text-white transition bg-green-500 hover:bg-green-600"
           >
             Unban
           </Button>
         ) : (
           <Button
-            variant="outline"
             size="sm"
             onClick={() => onBanUser(user)}
-            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+            className="px-3 py-1 rounded text-white transition bg-red-500 hover:bg-red-600"
           >
             Ban
           </Button>

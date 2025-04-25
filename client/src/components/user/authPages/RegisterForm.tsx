@@ -51,13 +51,13 @@ const RegisterForm: React.FC = () => {
     const top = window.screenY + (window.innerHeight - height) / 2;
 
     const popup = window.open(
-      'http://localhost:3000/api/auth/google',
+      import.meta.env.VITE_GOOGLE_AUTH_API,
       'googleLogin',
       `width=${width},height=${height},top=${top},left=${left}`
     );
 
     const messageListener = (event: MessageEvent) => {
-      if (event.origin !== 'http://localhost:3000') return;
+      if (event.origin !== import.meta.env.VITE_BASE_URL) return;
 
       const { token } = event.data;
       if (token) {

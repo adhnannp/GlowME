@@ -14,7 +14,7 @@ import ForgotPasswordForm from './ForgotPasswordForm';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email').nonempty('Email is required'),
-  password: z.string().min(6, 'Password must be at least 6 characters').nonempty('Password is required'),
+  password: z.string().nonempty('Password is required'),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -37,13 +37,13 @@ const LoginForm: React.FC = () => {
     const top = window.screenY + (window.innerHeight - height) / 2;
 
     const popup = window.open(
-      'http://localhost:3000/api/auth/google',
+      import.meta.env.VITE_GOOGLE_AUTH_API,
       'googleLogin',
       `width=${width},height=${height},top=${top},left=${left}`
     );
 
     const messageListener = (event: MessageEvent) => {
-      if (event.origin !== 'http://localhost:3000') return;
+      if (event.origin !== import.meta.env.VITE_BASE_URL) return;
 
       const { token } = event.data;
       if (token) {

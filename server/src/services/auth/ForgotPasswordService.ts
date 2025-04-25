@@ -6,6 +6,9 @@ import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import { sendResetEmail } from '../../utils/otp';
 import { IForgotPasswordService } from '../../core/interfaces/services/auth/IForgotPasswordService';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 @injectable()
 export class ForgotPasswordService implements IForgotPasswordService {
@@ -27,7 +30,7 @@ export class ForgotPasswordService implements IForgotPasswordService {
       { EX: ttlSeconds }
     );
     
-    const resetLink = `http://localhost:4000/reset-password?token=${token}`;
+    const resetLink = `${process.env.CLIENT_PASSWORD_RESET_URL!}token=${token}`;
     await sendResetEmail(email, resetLink);
   }
 

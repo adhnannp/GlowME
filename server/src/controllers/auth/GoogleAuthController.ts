@@ -4,6 +4,9 @@ import { IGoogleAuthController } from '../../core/interfaces/controllers/auth/IG
 import { IGoogleAuthService } from '../../core/interfaces/services/auth/IGoogleAuthService';
 import { TYPES } from '../../di/types';
 import { setRefreshTokens } from '../../utils/setRefreshToken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 @injectable()
 export class GoogleAuthController implements IGoogleAuthController {
@@ -41,7 +44,7 @@ export class GoogleAuthController implements IGoogleAuthController {
             <script>
               window.opener.postMessage(
                 ${JSON.stringify({ token: accessToken })},
-                'http://localhost:4000'
+                '${process.env.CLIENT_URL!}'
               );
               window.close();
             </script>

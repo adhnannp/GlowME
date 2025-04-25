@@ -21,7 +21,7 @@ export default function Pagination({
   return (
     <div className="flex items-center justify-between mt-4 text-sm">
       <div>
-        Showing {startItem}-{endItem} of {totalItems} users
+        Showing {startItem}-{endItem} of {totalItems} items
       </div>
       <div className="flex items-center space-x-2">
         <Button

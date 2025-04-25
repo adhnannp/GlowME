@@ -20,6 +20,22 @@ export class BadgeRepository implements IBadgeRepository{
     return await BadgeModel.findOne({ name });
   }
 
+  async listBadge(badgeId:string):Promise<IBadge | null> {
+    return await BadgeModel.findByIdAndUpdate(
+      badgeId,
+      { isListed: true, updated_at: new Date() },
+      { new: true }
+    );
+  }
+
+  async unlistBadge(badgeId:string):Promise<IBadge | null> {
+    return await BadgeModel.findByIdAndUpdate(
+      badgeId,
+      { isListed: false, updated_at: new Date() },
+      { new: true }
+    );
+  }
+
   async updateBadge(badgeId: string, updates: Partial<IBadge>): Promise<IBadge | null> {
     return await BadgeModel.findByIdAndUpdate(
       badgeId,

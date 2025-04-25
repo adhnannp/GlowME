@@ -29,7 +29,7 @@ export class AdminBadgeService implements IAdminBadgeService{
     return badge;
   }
 
-  async updateBadge(badgeId: string, name?: string, imageFile?: Express.Multer.File): Promise<IBadge> {
+  async updateBadge(badgeId: string, name?: string, requiredXp?:number ,imageFile?: Express.Multer.File): Promise<IBadge> {
     const badge = await this.badgeRepository.findBadgeById(badgeId);
     if (!badge) throw new Error('Badge not found');
 
@@ -40,6 +40,10 @@ export class AdminBadgeService implements IAdminBadgeService{
       }
       updates.name = name;
     }
+    if(requiredXp){
+      updates.requiredXp = requiredXp;
+    }
+
     if (imageFile) {
       const oldImagePath = path.join(__dirname, '../../../public', badge.image);
       await fs.unlink(oldImagePath).catch(() => {});
@@ -49,6 +53,22 @@ export class AdminBadgeService implements IAdminBadgeService{
     const updatedBadge = await this.badgeRepository.updateBadge(badgeId, updates);
     if (!updatedBadge) throw new Error('Failed to update badge');
     return updatedBadge;
+  }
+
+  async listBadge(badgeId:string):Promise<IBadge>{
+    const badge = await this.badgeRepository.findBadgeById(badgeId);
+    if (!badge || badge.isListed) throw new Error('Badge not found or allready listed');
+    const listedBadge = await this.badgeRepository.listBadge(badgeId);
+    if(!listedBadge) throw new Error ('Failed to list the badge')
+    return listedBadge;
+  }
+
+  async unlistBadge(badgeId:string):Promise<IBadge>{
+    const badge = await this.badgeRepository.findBadgeById(badgeId);
+    if (!badge || !badge.isListed) throw new Error('Badge not found or allready unlisted');
+    const listedBadge = await this.badgeRepository.unlistBadge(badgeId);
+    if(!listedBadge) throw new Error ('Failed to unlist the badge')
+    return listedBadge;
   }
 
   async getAllBadges(): Promise<IBadge[]> {

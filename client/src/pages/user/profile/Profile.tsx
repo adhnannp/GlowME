@@ -12,12 +12,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useNavigate } from "react-router-dom";
 import UserBadges from "@/components/user/Profile/UserBadge";
 import { User } from "@/interfaces/auth.interface";
+import EditProfileModal from "@/components/user/Profile/EditProfile";
 
 interface Connection {
   _id: string;
   created_at: string;
-  follower?: User; // For followers endpoint
-  following?: User; // For following endpoint
+  follower?: User; 
+  following?: User;
   __v: number;
 }
 
@@ -31,6 +32,7 @@ export default function ProfilePage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"followers" | "following" | null>(null);
   const navigate = useNavigate();
+  const [editModalOpen, setEditModalOpen] = useState(false);
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -139,12 +141,20 @@ export default function ProfilePage() {
                   </span>
                 </div>
               </div>
-              <button className="flex items-center border rounded-md px-3 py-1.5 text-sm">
+              <button
+                className="flex items-center border rounded-md px-3 py-1.5 text-sm cursor-pointer"
+                onClick={() => setEditModalOpen(true)}
+              >
                 <Edit3 className="h-4 w-4 mr-1" />
                 Edit Profile
               </button>
             </div>
 
+            {/*edit profile modal*/}
+            <EditProfileModal 
+              open={editModalOpen} 
+              onClose={() => setEditModalOpen(false)} 
+            />
             {/* Modal */}
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
               <DialogContent>

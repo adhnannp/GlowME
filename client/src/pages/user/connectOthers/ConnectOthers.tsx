@@ -16,7 +16,6 @@ interface UserProps {
 }
 
 const UserCard: React.FC<UserProps> = ({ user }) => {
-  console.log(user)
   return (
     <Link to={`/user/${user._id}`} className="block">
       <Card className="p-4 flex flex-col hover:bg-gray-50 transition-colors">

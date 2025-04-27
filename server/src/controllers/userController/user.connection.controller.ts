@@ -113,8 +113,9 @@ export class UserConnectionController implements IUserConnectionController {
         followingCount,
         isFollowing,
       });
-    } catch (error: any) {
-      res.status(400).json({ error: error.message });
+    } catch (err) {
+      const error = err as Error
+      res.status(400).json({ message: error.message });
     }
   }
 

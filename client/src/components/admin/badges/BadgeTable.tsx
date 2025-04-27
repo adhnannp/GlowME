@@ -43,7 +43,6 @@ export default function BadgeTable({ badges, loading, onEdit, onUpdateBadge }: B
       const response = await api.patch(endpoint);
       const updatedBadge = response.data.badge;
 
-      // Update the badge in the parent component
       onUpdateBadge(updatedBadge);
 
       toast.success(`Badge ${selectedBadge.isListed ? "unlisted" : "listed"} successfully`);

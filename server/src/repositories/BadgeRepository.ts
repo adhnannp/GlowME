@@ -50,7 +50,11 @@ export class BadgeRepository implements IBadgeRepository{
 
   async getAvailableBadges(userId: string): Promise<IBadge[]> {
     const user = await UserModel.findById(userId);
-    if (!user || !user.badges) return [];
+    if (!user || !user.badges) {
+      return await BadgeModel.find({
+        isListed: true
+      }).sort({ requiredXp: 1 });
+    }
     const acquiredBadgeIds = user.badges.map(b => b.badgeId);
     return await BadgeModel.find({
       isListed: true,
@@ -85,7 +89,7 @@ export class BadgeRepository implements IBadgeRepository{
 
   async getUserBadges(userId: string): Promise<SafeBadge | null> {
     const result = await UserModel.aggregate([
-      { $match: { _id: userId } },
+      { $match: { _id: new mongoose.Types.ObjectId(userId) } },
       {
         $lookup: {
           from: 'badges',

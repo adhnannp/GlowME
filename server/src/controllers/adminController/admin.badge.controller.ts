@@ -1,4 +1,3 @@
-// src/controllers/adminBadgeController.ts
 import { injectable, inject } from 'inversify';
 import { Request, Response } from 'express';
 import { IAdminBadgeService } from '../../core/interfaces/services/admin/IAdmin.Badge.Service';
@@ -30,7 +29,8 @@ export class AdminBadgeController implements IAdminBadgeController{
 
       const badge = await this.badgeService.createBadge(name, parsedRequiredXp, imageFile);
       res.status(201).json({badge , message:'successfully created the badge'});
-    } catch (error: any) {
+    } catch (err) {
+        const error = err as Error
         res.status(400).json({ message:error });
         return;
     }
@@ -71,7 +71,8 @@ export class AdminBadgeController implements IAdminBadgeController{
       const badge = await this.badgeService.updateBadge(badgeId, name, parsedRequiredXp, imageFile);
       res.status(200).json({ badge, message: 'Successfully updated the badge' });
       return
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as Error
       res.status(400).json({ message: error.message || 'Failed to update badge' });
       return;
     }

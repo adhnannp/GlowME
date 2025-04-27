@@ -6,7 +6,7 @@ import { IConnection } from '../models/Connection';
 
 @injectable()
 export class ConnectionRepository implements IConnectionRepository {
-  async followUser(followerId: string, followingId: string): Promise<IConnection | any> {
+  async followUser(followerId: string, followingId: string): Promise<IConnection | null> {
     return await ConnectionModel.create({
       follower: followerId,
       following: followingId

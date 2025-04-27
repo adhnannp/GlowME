@@ -51,7 +51,8 @@ export class GoogleAuthController implements IGoogleAuthController {
           </body>
         </html>
       `);      
-    } catch (error:any) {
+    } catch (err) {
+      const error = err as Error
       next(error.message);
     }
   }

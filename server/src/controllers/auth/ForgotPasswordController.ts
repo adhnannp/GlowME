@@ -19,9 +19,10 @@ export class ForgotPasswordcontroller implements IForgotPasswordcontroller{
       }
       await this.forgotPasswordService.requestPasswordReset(email);
       res.status(200).json({ message: 'If the email exists, a reset link has been sent.' });
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as Error
       console.error('Error in forgotPassword:', error);
-      res.status(400).json({ message: 'Something went wrong' });
+      res.status(400).json({ message: error.message});
     }
   }
 
@@ -34,7 +35,8 @@ export class ForgotPasswordcontroller implements IForgotPasswordcontroller{
       }
       await this.forgotPasswordService.resetPassword(token, password);
       res.status(200).json({ message: 'Password reset successful' });
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as Error
       console.error('Error in resetPassword:', error);
       res.status(400).json({ message: error.message || 'Invalid or expired token' });
     }

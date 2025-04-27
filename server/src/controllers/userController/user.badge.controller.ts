@@ -1,4 +1,3 @@
-// src/controllers/userBadgeController.ts
 import { injectable, inject } from 'inversify';
 import { Request, Response } from 'express';
 import { IUserBadgeService } from '../../core/interfaces/services/user/IUser.Badge.Service';
@@ -14,16 +13,17 @@ export class UserBadgeController implements IUserBadgeController{
 
   async getAvailableBadges(req: Request, res: Response ): Promise<void> {
     try {
-      const userId = req.userId;
+      const {userId} = req.params;
       if (!userId) {
         res.status(401).json({ message: 'User not authenticated' });
         return;
       }
 
       const badges = await this.badgeService.getAvailableBadges(userId);
-      res.status(200).json({badges, message:'success fully fetched all the badges'});
-    } catch (error: any) {
-        res.status(400).json({ message: error });
+      res.status(200).json({badges, message:'successfully fetched all the badges'});
+    } catch (error) {
+        const err= error as Error
+        res.status(400).json({ message: err.message });
         return;
     }
   }
@@ -34,7 +34,7 @@ export class UserBadgeController implements IUserBadgeController{
       const { badgeId } = req.body;
 
       if (!userId) {
-        res.status(401).json({ message: 'User not authenticated' });
+        res.status(401).json({ message: 'User is not authenticated' });
         return;
       }
       if (!badgeId) {
@@ -43,9 +43,10 @@ export class UserBadgeController implements IUserBadgeController{
       }
 
       const user = await this.badgeService.unlockBadge(userId, badgeId);
-      res.status(200).json({user, message:"success fully unlocked the badge"});
-    } catch (error: any) {
-        res.status(400).json({ message: error });
+      res.status(200).json({user, message:"successfully unlocked the badge"});
+    } catch (error) {
+        const err = error as Error
+        res.status(400).json({ message: err.message });
         return;
     }
   }
@@ -66,15 +67,16 @@ export class UserBadgeController implements IUserBadgeController{
 
       const user = await this.badgeService.setCurrentBadge(userId, badgeId);
       res.status(200).json({user,message:"successfully changed the current badge"});
-    } catch (error: any) {
-        res.status(400).json({ message: error });
+    } catch (error) {
+        const err = error as Error
+        res.status(400).json({ message: err.message });
         return;
     }
   }
 
   async getUserBadges(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.userId;
+      const {userId} = req.params;
       if (!userId) {
         res.status(401).json({ message: 'User not authenticated' });
         return;
@@ -82,8 +84,9 @@ export class UserBadgeController implements IUserBadgeController{
 
       const badges = await this.badgeService.getUserBadges(userId);
       res.status(200).json({badges,message:"fetched all badge acquired by the user"});
-    } catch (error: any) {
-        res.status(400).json({ message: error });
+    } catch (error) {
+        const err = error as Error
+        res.status(400).json({ message: err.message });
         return;
     }
   }

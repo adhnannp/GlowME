@@ -3,16 +3,7 @@ import { ADMIN_API } from "@/config/adminApi";
 import dataURLtoFile from "@/lib/dataURLtoFile";
 import { Badge } from "@/components/admin/badges/BadgeTable";
 import { AxiosError } from "axios";
-
-// Centralized error handler
-export function handleApiError(err: AxiosError | Error, fallbackMessage: string): Error {
-  // Check if it's an AxiosError with a response
-  const message =
-    err instanceof AxiosError && err.response?.data?.message
-      ? err.response.data.message
-      : fallbackMessage;
-  return new Error(message);
-}
+import { handleApiError } from "@/utils/errorHandling";
 
 export const fetchBadges = async (): Promise<Badge[]> => {
   try {

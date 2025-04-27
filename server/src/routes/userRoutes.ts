@@ -8,6 +8,7 @@ import { IUserConnectionController } from '../core/interfaces/controllers/user/I
 import { IGoogleAuthController } from '../core/interfaces/controllers/auth/IGoogleAuthController';
 import passport from '../config/passport';
 import { IForgotPasswordcontroller } from '../core/interfaces/controllers/auth/IforgotPasswordController';
+import { IUserBadgeController } from '../core/interfaces/controllers/user/IUser.Badge.Controller';
 
 const router = express.Router();
 
@@ -17,7 +18,8 @@ const googleAuth = container.get<IGoogleAuthController>(TYPES.GoogleAuthControll
 const authController = container.get<IAuthController>(TYPES.AuthController);
 const userController = container.get<IUserController>(TYPES.UserController)
 const userConnectionController = container.get<IUserConnectionController>(TYPES.UserConnectionController);
-const forgotPasswordController = container.get<IForgotPasswordcontroller>(TYPES.ForgotPasswordController); // Add controller resolution
+const forgotPasswordController = container.get<IForgotPasswordcontroller>(TYPES.ForgotPasswordController);
+const badgeController = container.get<IUserBadgeController>(TYPES.UserBadgeController)
 
 router.post('/register', authController.register.bind(authController));
 router.post('/resend-otp', authController.resendOTP.bind(authController));
@@ -45,5 +47,10 @@ router.get('/users/:id',userAuthMiddleware.handle.bind(userAuthMiddleware), user
 
 router.get('/followers', userAuthMiddleware.handle.bind(userAuthMiddleware),userConnectionController.getFollowers.bind(userConnectionController));
 router.get('/following', userAuthMiddleware.handle.bind(userAuthMiddleware),userConnectionController.getFollowing.bind(userConnectionController));
+
+router.get('/badges/:userId',userAuthMiddleware.handle.bind(userAuthMiddleware),badgeController.getAvailableBadges.bind(badgeController));
+router.get('/user-badges/:userId',userAuthMiddleware.handle.bind(userAuthMiddleware),badgeController.getUserBadges.bind(badgeController));
+router.patch('/badges/unlock',userAuthMiddleware.handle.bind(userAuthMiddleware),badgeController.unlockBadge.bind(badgeController));
+router.put('/badges/set-current',userAuthMiddleware.handle.bind(userAuthMiddleware),badgeController.setCurrentBadge.bind(badgeController));
 
 export default router;

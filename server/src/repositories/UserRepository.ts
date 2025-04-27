@@ -14,7 +14,7 @@ export class UserRepository implements IUserRepository {
   async createGoogleUser(user:Partial<IUser>):Promise<IUser>{
     const newUser = new UserModel(user);
     return await newUser.save();
-  }
+  } 
 
   async findUserByEmail(email: string): Promise<IUser| null> {
     return await UserModel.findOne({ email }).populate('currentBadge');
@@ -25,7 +25,14 @@ export class UserRepository implements IUserRepository {
   }
 
   async getAllUser(skip:number=0,limit:number=8): Promise<SafeUser[]| null >{
-      return await UserModel.find({isAdmin:false},'-password').skip(skip).limit(limit).lean()
+      return await UserModel.find({isAdmin:false},'-password')
+      .populate({
+        path: 'currentBadge',
+        select: 'name image requiredXp',
+      })
+      .skip(skip)
+      .limit(limit)
+      .lean()
   }
 
   async getAllUsersWithFilter(
@@ -37,6 +44,10 @@ export class UserRepository implements IUserRepository {
       isAdmin: false,
       ...filter,      
     }, '-password')
+      .populate({
+        path: 'currentBadge',
+        select: 'name image requiredXp',
+      })
       .skip(skip)
       .limit(limit)
       .lean();

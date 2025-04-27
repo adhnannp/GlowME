@@ -4,7 +4,6 @@ import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Header from "@/components/user/Header/Header"
 import CommunityItem from "@/components/user/Profile/CommunityItem"
-import BadgeCard from "@/components/user/Profile/BadgeCard"
 import Sidebar from "@/components/user/SideBar/SideBar"
 import { useParams } from "react-router-dom"
 import { User } from "@/interfaces/auth.interface"
@@ -13,6 +12,8 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
 import { useNavigate } from "react-router-dom"
 import toast from 'react-hot-toast';
+import OtherUserBadges from "@/components/user/OtherProfile/OtherUserBadge"
+import DefaultUser from "@/components/user/Default/DefaultUser"
 
 export default function OtherUserProfile() {
   const navigate = useNavigate()
@@ -27,7 +28,7 @@ export default function OtherUserProfile() {
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
   const [reportReason, setReportReason] = useState<string>('');
 
-  const { id } = useParams() // Get user ID from URL params
+  const { id } = useParams() 
   if(id==currentUser?._id){
     navigate("/profile")
   }
@@ -36,7 +37,6 @@ export default function OtherUserProfile() {
     "July", "August", "September", "October", "November", "December"
   ]
 
-  // Fetch user data when component mounts or ID changes
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -133,8 +133,10 @@ const handleDisconnect = async () => {
     return <div className="flex h-screen items-center justify-center">Loading...</div>
   }
 
-  if (error) {
-    return <div className="flex h-screen items-center justify-center">{error}</div>
+  if (error||!userData || !userData?._id) {
+    return (
+      <DefaultUser/>
+    );
   }
 
   return (
@@ -283,7 +285,6 @@ const handleDisconnect = async () => {
                       </div>
 
                       <div className="grid grid-cols-2 gap-4 mb-4">
-                        {/* QE isn't in the User interface */}
                         <div>
                           <div className="text-xl">{userData?.questions_explored || 0}</div>
                           <div className="flex items-center text-blue-500">
@@ -297,7 +298,6 @@ const handleDisconnect = async () => {
                         </div>
                       </div>
 
-                      {/* Rank and rankProgress aren't in the User interface */}
                       <div className="mt-4">
                         <div className="flex justify-between mb-1">
                           <span>{userData?.currentBadge || "Beginner"}</span>
@@ -315,56 +315,7 @@ const handleDisconnect = async () => {
                     </div>
                   </div>
 
-                  <div className="md:col-span-2">
-                    <h2 className="text-xl font-semibold mb-4">Badges</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      <BadgeCard
-                        title="Supreme"
-                        imageUrl="/badges/level9.png"
-                        color="from-yellow-500 to-amber-600"
-                        required="4000 required"
-                        requiredColor="text-green-500"
-                        current={false}
-                        acquired={userData?.badge === "Supreme"}
-                      />
-                      <BadgeCard
-                        title="Master"
-                        imageUrl="/badges/level 7.png"
-                        color="from-purple-500 to-violet-600"
-                        required="2000 required"
-                        requiredColor="text-green-500"
-                        current={false}
-                        acquired={userData?.badge === "Master"}
-                      />
-                      <BadgeCard
-                        title="Skilled"
-                        imageUrl="/badges/level 4.png"
-                        color="from-cyan-400 to-blue-500"
-                        required=""
-                        requiredColor=""
-                        current={userData?.badge === "Skilled"}
-                        acquired={userData?.badge === "Skilled"}
-                      />
-                      <BadgeCard
-                        title="Beginner"
-                        imageUrl="/badges/level 2.png"
-                        color="from-lime-400 to-green-500"
-                        required=""
-                        requiredColor=""
-                        current={userData?.badge === "Beginner"}
-                        acquired={true}
-                      />
-                      <BadgeCard
-                        title="Bot"
-                        imageUrl="/badges/level 1.png"
-                        color="from-yellow-300 to-amber-400"
-                        required=""
-                        requiredColor=""
-                        current={userData?.badge === "Bot"}
-                        acquired={true}
-                      />
-                    </div>
-                  </div>
+                  <OtherUserBadges userId={userData?._id}/>
                 </div>
               </TabsContent>
 

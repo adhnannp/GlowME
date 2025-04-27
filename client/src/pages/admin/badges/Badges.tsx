@@ -70,7 +70,7 @@ export default function BadgeDashboard() {
     }
   };
 
-  // New function to handle badge updates from BadgeTable
+
   const handleBadgeUpdate = (updatedBadge: Badge) => {
     setBadges((prev) =>
       prev.map((badge) => (badge._id === updatedBadge._id ? updatedBadge : badge))

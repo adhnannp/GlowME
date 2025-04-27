@@ -6,15 +6,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card";
 import Header from "@/components/user/Header/Header";
 import Sidebar from "@/components/user/SideBar/SideBar";
-import { User } from "@/interfaces/auth.interface";
+import { UserWithBadge } from "@/interfaces/auth.interface";
 import api from "@/utils/axios";
 import { Link } from "react-router-dom";
 
+
 interface UserProps {
-  user: User;
+  user: UserWithBadge;
 }
 
 const UserCard: React.FC<UserProps> = ({ user }) => {
+  console.log(user)
   return (
     <Link to={`/user/${user._id}`} className="block">
       <Card className="p-4 flex flex-col hover:bg-gray-50 transition-colors">
@@ -26,7 +28,13 @@ const UserCard: React.FC<UserProps> = ({ user }) => {
           />
           <div className="flex items-center">
             <span className="font-medium mr-2">{user.username}</span>
-            <img src="/badges/level9.png" alt="Badge" className="w-5 h-5" />
+            {user?.currentBadge?.image && (
+              <img 
+                src={`${import.meta.env.VITE_BASE_URL}${user.currentBadge.image}`} 
+                alt="Badge" 
+                className="w-5 h-5" 
+              />
+            )}          
           </div>
         </div>
         <div className="flex items-center text-sm">
@@ -40,7 +48,7 @@ const UserCard: React.FC<UserProps> = ({ user }) => {
 
 export default function Connect() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserWithBadge[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);

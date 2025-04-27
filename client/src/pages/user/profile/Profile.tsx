@@ -4,20 +4,14 @@ import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Header from "@/components/user/Header/Header";
 import CommunityItem from "@/components/user/Profile/CommunityItem";
-import BadgeCard from "@/components/user/Profile/BadgeCard";
 import Sidebar from "@/components/user/SideBar/SideBar";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import api from "@/utils/axios";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
-
-interface User {
-  _id: string;
-  username: string;
-  profile_image?: string;
-  // Add other fields as needed
-}
+import UserBadges from "@/components/user/Profile/UserBadge";
+import { User } from "@/interfaces/auth.interface";
 
 interface Connection {
   _id: string;
@@ -36,7 +30,7 @@ export default function ProfilePage() {
   const [following, setFollowing] = useState<Connection[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"followers" | "following" | null>(null);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const monthNames = [
     "January", "February", "March", "April", "May", "June",
@@ -51,13 +45,15 @@ export default function ProfilePage() {
   }
 
   useEffect(() => {
+    if (!user?._id) return;
+
     const fetchUserData = async () => {
       try {
-        const response = await api.get(`/users/${user?._id}`);
+        const response = await api.get(`/users/${user._id}`);
         setFollowerCount(response.data?.followerCount || 0);
         setFollowingCount(response.data?.followingCount || 0);
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching user data:", err);
       }
     };
 
@@ -88,6 +84,14 @@ export default function ProfilePage() {
     setSidebarExpanded(!sidebarExpanded);
   };
 
+  if (!user?._id) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-white">
+        <p>Please log in to view your profile.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-screen bg-white">
       {/* Left Sidebar */}
@@ -108,12 +112,12 @@ export default function ProfilePage() {
           <div className="max-w-5xl mx-auto p-6">
             <div className="flex items-start mb-6">
               <img
-                src={user?.profile_image || "/browserIcons/person_icon.png"}
+                src={user.profile_image || "/browserIcons/person_icon.png"}
                 alt="Profile"
                 className="w-32 h-32 rounded-full object-cover mr-6 border border-gray-300"
               />
               <div className="flex-1 pt-4">
-                <h1 className="text-3xl font-bold">{user?.username || "Anonymous"}</h1>
+                <h1 className="text-3xl font-bold">{user.username || "Anonymous"}</h1>
                 <div className="flex items-center text-gray-500 mt-1">
                   <span className="flex items-center">
                     <Star className="w-4 h-4 mr-1 fill-gray-500" />
@@ -150,7 +154,11 @@ export default function ProfilePage() {
                 <div className="max-h-[400px] overflow-y-auto">
                   {modalType === "followers" && followers.length > 0 ? (
                     followers.map((connection) => (
-                      <div key={connection._id} className="flex items-center p-2 border-b" onClick={() => navigate(`/user/${connection.follower?._id}`)}>
+                      <div
+                        key={connection._id}
+                        className="flex items-center p-2 border-b"
+                        onClick={() => navigate(`/user/${connection.follower?._id}`)}
+                      >
                         <img
                           src={connection.follower?.profile_image || "/browserIcons/person_icon.png"}
                           alt={connection.follower?.username}
@@ -161,7 +169,11 @@ export default function ProfilePage() {
                     ))
                   ) : modalType === "following" && following.length > 0 ? (
                     following.map((connection) => (
-                      <div key={connection._id} className="flex items-center p-2 border-b" onClick={() => navigate(`/user/${connection.follower?._id}`)}>
+                      <div
+                        key={connection._id}
+                        className="flex items-center p-2 border-b"
+                        onClick={() => navigate(`/user/${connection.following?._id}`)}
+                      >
                         <img
                           src={connection.following?.profile_image || "/browserIcons/person_icon.png"}
                           alt={connection.following?.username}
@@ -202,7 +214,7 @@ export default function ProfilePage() {
                     <div className="border rounded-md p-4">
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                          <div className="text-xl">{user?.xp}</div>
+                          <div className="text-xl">{user.xp}</div>
                           <div className="flex items-center text-green-500">
                             <Trophy className="w-5 h-5 mr-1" />
                             XP
@@ -219,7 +231,7 @@ export default function ProfilePage() {
 
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div>
-                          <div className="text-xl">{user?.questions_explored}</div>
+                          <div className="text-xl">{user.questions_explored}</div>
                           <div className="flex items-center text-blue-500">
                             <Brain className="w-5 h-5 mr-1" />
                             QE
@@ -250,56 +262,7 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Badges Section - 2/3 */}
-                  <div className="md:col-span-2">
-                    <h2 className="text-xl font-semibold mb-4">Badges</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      <BadgeCard
-                        title="Supreme"
-                        imageUrl="/badges/level9.png"
-                        color="from-yellow-500 to-amber-600"
-                        required="4000 required"
-                        requiredColor="text-green-500"
-                        current={false}
-                        acquired={false}
-                      />
-                      <BadgeCard
-                        title="Master"
-                        imageUrl="/badges/level 7.png"
-                        color="from-purple-500 to-violet-600"
-                        required="2000 required"
-                        requiredColor="text-green-500"
-                        current={false}
-                        acquired={false}
-                      />
-                      <BadgeCard
-                        title="Skilled"
-                        imageUrl="/badges/level 4.png"
-                        color="from-cyan-400 to-blue-500"
-                        required=""
-                        requiredColor=""
-                        current={true}
-                        acquired={false}
-                      />
-                      <BadgeCard
-                        title="Beginner"
-                        imageUrl="/badges/level 2.png"
-                        color="from-lime-400 to-green-500"
-                        required=""
-                        requiredColor=""
-                        current={false}
-                        acquired={true}
-                      />
-                      <BadgeCard
-                        title="Bot"
-                        imageUrl="/badges/level 1.png"
-                        color="from-yellow-300 to-amber-400"
-                        required=""
-                        requiredColor=""
-                        current={false}
-                        acquired={true}
-                      />
-                    </div>
-                  </div>
+                  <UserBadges userId={user._id} />
                 </div>
               </TabsContent>
 

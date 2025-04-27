@@ -48,7 +48,8 @@ export class AuthController implements IAuthController{
       await this.authService.resendOTP(email)
       res.status(200).json({message:'OTP resend successfully'});
       return
-    } catch (error:any) {
+    } catch (err) {
+      const error = err as Error
       if (error.message.includes("expired") || error.message.includes("does not exist")) {
         res.status(410).json({ message: "User data expired or not found. Please restart the verification process." });
         return
@@ -78,8 +79,9 @@ export class AuthController implements IAuthController{
       setRefreshTokens(res,refreshToken)
       res.status(200).json({ message: "Login successful",accessToken });
       return
-    } catch (error:any) {
-        res.status(400).json({ message:error.message });
+    } catch (error) {
+        const err = error as Error
+        res.status(400).json({ message:err.message });
         return
     }
   }
@@ -96,8 +98,9 @@ export class AuthController implements IAuthController{
       setRefreshTokens(res,refreshToken)
       res.status(200).json({ message: "Login successful",accessToken });
       return
-    } catch (error:any) {
-        res.status(400).json({ message:error.message });
+    } catch (error) {
+        const err = error as Error
+        res.status(400).json({ message:err.message });
         return
     }
   }

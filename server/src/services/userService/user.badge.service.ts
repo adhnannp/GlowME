@@ -25,6 +25,9 @@ export class UserBadgeService implements IUserBadgeService{
     const badge = await this.badgeRepository.findBadgeById(badgeId);
 
     if (!user || !badge) throw new Error('User or Badge not found');
+    if (!badge.isListed) {
+      throw new Error('Badge is not listed and cannot be unlocked');
+    }
     if (user.xp! < badge.requiredXp) throw new Error('Insufficient XP');
     if (user.badges!.some(b => b.badgeId.toString() === badgeId)) {
       throw new Error('Badge already acquired');
@@ -37,8 +40,11 @@ export class UserBadgeService implements IUserBadgeService{
 
   async setCurrentBadge(userId: string, badgeId: string): Promise<SafeUser> {
     const user = await this.userRepository.findUserById(userId);
+    const badge = await this.badgeRepository.findBadgeById(badgeId);
     if (!user) throw new Error('User not found');
-
+    if (!badge) {
+      throw new Error('Badge not found');
+    }
     const hasBadge = user.badges!.some(b => b.badgeId.toString() === badgeId);
     if (!hasBadge) throw new Error('Badge not acquired');
 
@@ -49,7 +55,7 @@ export class UserBadgeService implements IUserBadgeService{
 
   async getUserBadges(userId: string): Promise<SafeBadge> {
     const result = await this.badgeRepository.getUserBadges(userId);
-    if (!result) throw new Error('User not found');
+    if (!result) throw new Error('Not acquired any badges');
     return result;
   }
 }

@@ -1,5 +1,5 @@
 // Sidebar.tsx
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Home,
   HelpCircle,
@@ -10,10 +10,15 @@ import {
   PlusCircle,
   User,
   Info,
+  ShoppingBag,
+  Coins,
+  Gift,
+  Lock,
 } from "lucide-react";
 import SidebarItem from "./SideBarItem";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import NotificationsPanel from "./NotificationPanel";
+import ChangePasswordModal from "./ChangePasswordModal";
 
 interface SidebarProps {
   sidebarExpanded: boolean;
@@ -21,8 +26,14 @@ interface SidebarProps {
   setSidebarExpanded: (expanded: boolean) => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage ,setSidebarExpanded }) => {
-  const [showNotifications, setShowNotifications] = React.useState(false);
+const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSidebarExpanded }) => {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const location = useLocation();
+
+  const moreRoutes = ["/redeem", "/gcoin", "/view-order"];
+  const isMoreActive = moreRoutes.includes(location.pathname);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -34,17 +45,29 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage ,setSideb
       ) {
         setShowNotifications(false);
       }
+      if (
+        showMoreMenu &&
+        !target.closest(".more-menu") &&
+        !target.closest(".more-trigger")
+      ) {
+        setShowMoreMenu(false);
+      }
     }
     document.addEventListener("mousedown", handleClickOutside);
-
-    // Clean up
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showNotifications]);
+  }, [showNotifications, showMoreMenu]);
 
   const toggleNotifications = () => {
     setShowNotifications((prev) => !prev);
+    if (sidebarExpanded) {
+      setSidebarExpanded(false);
+    }
+  };
+
+  const toggleMoreMenu = () => {
+    setShowMoreMenu((prev) => !prev);
     if (sidebarExpanded) {
       setSidebarExpanded(false);
     }
@@ -84,7 +107,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage ,setSideb
               expanded={sidebarExpanded}
             />
           </Link>
-          <Link to="#"> 
+          <Link to="#">
             <SidebarItem
               icon={<Bell className="w-5 h-5" />}
               label="Notifications"
@@ -138,14 +161,59 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage ,setSideb
             expanded={sidebarExpanded}
           />
         </Link>
-        <Link to="/more">
+        <div className="relative">
           <SidebarItem
             icon={<Info className="h-5 w-5" />}
             label="More"
-            active={activePage === "More"}
+            active={isMoreActive || showMoreMenu || showChangePasswordModal}
+            onClick={toggleMoreMenu}
+            className="more-trigger"
             expanded={sidebarExpanded}
+            aria-label="More options"
           />
-        </Link>
+          {showMoreMenu && (
+            <div
+              className={`more-menu absolute ${
+                sidebarExpanded ? "left-[230px]" : "left-[60px]"
+              } bottom-10 w-48 bg-white border shadow-lg z-10`}
+            >
+              <Link
+                to="/redeem"
+                className="flex items-center px-4 py-2 text-sm text-black hover:bg-gray-100"
+                onClick={() => setShowMoreMenu(false)}
+              >
+                <Gift className="w-4 h-4 mr-2 text-gray-700" />
+                Redeem
+              </Link>
+              <Link
+                to="/gcoin"
+                className="flex items-center px-4 py-2 text-sm text-black hover:bg-gray-100"
+                onClick={() => setShowMoreMenu(false)}
+              >
+                <Coins className="w-4 h-4 mr-2 text-gray-700" />
+                GCoin
+              </Link>
+              <Link
+                to="/view-order"
+                className="flex items-center px-4 py-2 text-sm text-black hover:bg-gray-100"
+                onClick={() => setShowMoreMenu(false)}
+              >
+                <ShoppingBag className="w-4 h-4 mr-2 text-gray-700" />
+                View-Order
+              </Link>
+              <div
+                className="flex items-center px-4 py-2 text-sm text-black hover:bg-gray-100 cursor-pointer"
+                onClick={() => {
+                  setShowMoreMenu(false);
+                  setShowChangePasswordModal(true);
+                }}
+              >
+                <Lock className="w-4 h-4 mr-2 text-gray-700" />
+                Change-Password
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       {showNotifications && (
@@ -153,6 +221,11 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage ,setSideb
           <NotificationsPanel onClose={() => setShowNotifications(false)} />
         </div>
       )}
+
+      <ChangePasswordModal
+        open={showChangePasswordModal}
+        onClose={() => setShowChangePasswordModal(false)}
+      />
     </div>
   );
 };

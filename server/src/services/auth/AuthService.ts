@@ -37,6 +37,9 @@ export class AuthService implements IAuthService {
       }
       throw new Error("You are banned Permenently");
     }
+    if(!user.password ){
+      throw new Error("Please Login With Google Or try Forgot Password");
+    }
     const validPass = await comparePassword(password, user.password!);
     if(!validPass){
       throw new Error("incorrect password")

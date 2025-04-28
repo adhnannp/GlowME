@@ -53,4 +53,7 @@ router.get('/user-badges/:userId',userAuthMiddleware.handle.bind(userAuthMiddlew
 router.patch('/badges/unlock',userAuthMiddleware.handle.bind(userAuthMiddleware),badgeController.unlockBadge.bind(badgeController));
 router.put('/badges/set-current',userAuthMiddleware.handle.bind(userAuthMiddleware),badgeController.setCurrentBadge.bind(badgeController));
 
+router.get('/user/has-password',userAuthMiddleware.handle.bind(userAuthMiddleware),userController.hasPassword.bind(userController));
+router.patch('/user/change-password',userAuthMiddleware.handle.bind(userAuthMiddleware),userController.changePassword.bind(userController));
+
 export default router;

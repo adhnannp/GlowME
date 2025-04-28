@@ -1,3 +1,4 @@
+import { USER_API } from "@/config/userApi";
 import api from "@/utils/axios";
 import { handleApiError } from "@/utils/errorHandling";
 import { AxiosError } from "axios";
@@ -16,7 +17,7 @@ export const updateUserProfile = async (data: UpdateProfileData) => {
       formData.append("profile_image", data.profile_image, "profile.jpg");
     }
 
-    const response = await api.patch("/users/update-profile", formData, {
+    const response = await api.patch(USER_API.EDIT_PROFILE, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

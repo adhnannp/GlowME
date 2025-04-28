@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { userLogin, adminLogin, registerUser ,verifyOtp, logout} from "./authThunks";
-import { User } from "../interfaces/auth.interface";
+import { UserWithBadge } from "../interfaces/auth.interface";
 
 interface AuthState {
-  user: User | null;
+  user: UserWithBadge | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
   loading: boolean;

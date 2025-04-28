@@ -255,8 +255,8 @@ export default function ProfilePage() {
 
                       <div className="mt-4">
                         <div className="flex justify-between mb-1">
-                          <span>Sorcerer</span>
-                          <span>1%</span>
+                        <span>{user?.currentBadge?.name || "Badge"}</span>
+                        <span>1%</span>
                         </div>
                         <Progress value={1} className="h-2" />
                       </div>

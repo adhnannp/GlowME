@@ -105,18 +105,6 @@ export function ProfileModal({isOpen,onClose,user,profileImage,}: ProfileModalPr
           </div>
         </div>
 
-        <div className="mb-4">
-          <div className="flex justify-between mb-1">
-            <span className="text-sm font-medium">Level Progress</span>
-            <span className="text-sm font-medium">1%</span>
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div
-              className="bg-black h-2.5 rounded-full"
-              style={{ width: "1%" }}
-            ></div>
-          </div>
-        </div>
       </div>
     </div>
   );

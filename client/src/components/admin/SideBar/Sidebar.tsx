@@ -72,7 +72,7 @@ export default function Sidebar() {
             <span className="ml-2">Manage Rewards</span>
           </NavLink>
           <NavLink
-            to="/admin/coins"
+            to="/admin/GCoins"
             className={({ isActive }) =>
               `flex items-center p-2 rounded-md ${isActive ? 'bg-[#FF9838] text-white' : 'text-gray-600 hover:bg-gray-100'}`
             }

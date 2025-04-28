@@ -12,35 +12,18 @@ import OtpRoute from "./OtpRoute";
 import OtherUserProfile from "@/pages/user/othersProfile/OtherProfile";
 import Connect from "@/pages/user/connectOthers/ConnectOthers";
 import ResetPasswordForm from "@/pages/user/resetPassword/resetPassword";
+import GCoinPage from "@/pages/user/GCoin/GCoin";
 
 const UserRoutes: React.FC = () => {
-  // const [isLoading, setIsLoading] = useState(true);
-  // const location = useLocation();
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   const timer = setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 1500);
-  //   return () => clearTimeout(timer);
-  // }, [location]);
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex items-center justify-center h-screen bg-white">
-  //       <img src="/loading.gif" alt="Loading..." className="w-10 h-10" />
-  //     </div>
-  //   );
-  // }
 
   return (
     <Routes>
-
       <Route element={<ProtectedRoute />}>
         <Route path="/" element={<QuestionsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/connect" element={<Connect/>}/>
         <Route path="/user/:id" element={<OtherUserProfile/>}/>
+        <Route path="/GCoin" element={<GCoinPage/>} />
       </Route>
 
       <Route element={<PublicRoute />}>

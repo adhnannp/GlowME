@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react"
 import { Coins, Brain, Trophy, Star, Grid2x2Plus, AlertTriangle, Grid2x2X } from "lucide-react"
-import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Header from "@/components/user/Header/Header"
 import CommunityItem from "@/components/user/Profile/CommunityItem"
 import Sidebar from "@/components/user/SideBar/SideBar"
 import { useParams } from "react-router-dom"
-import { User } from "@/interfaces/auth.interface"
+import { UserWithBadge } from "@/interfaces/auth.interface"
 import api from "@/utils/axios"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
@@ -14,19 +13,19 @@ import { useNavigate } from "react-router-dom"
 import toast from 'react-hot-toast';
 import OtherUserBadges from "@/components/user/OtherProfile/OtherUserBadge"
 import DefaultUser from "@/components/user/Default/DefaultUser"
+import ReportUserModal from "@/components/user/OtherProfile/ReportUserModal"
 
 export default function OtherUserProfile() {
   const navigate = useNavigate()
   const currentUser = useSelector((state: RootState) => state.auth.user)
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
-  const [userData, setUserData] = useState<User | null>(null)
+  const [userData, setUserData] = useState<UserWithBadge | null>(null)
   const [followerCount, setFollowerCount] = useState<number>(0); 
   const [followingCount, setFollowingCount] = useState<number>(0); 
   const [isFollowing,setIsFollowing] = useState<boolean>(false);
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isReportModalOpen, setIsReportModalOpen] = useState<boolean>(false);
-  const [reportReason, setReportReason] = useState<string>('');
 
   const { id } = useParams() 
   if(id==currentUser?._id){
@@ -89,32 +88,6 @@ const handleDisconnect = async () => {
       toast.error(err.response?.data?.message || "Failed to disconnect");
       console.error(err);
     }
-  };
-
-  const handleReportClick = () => {
-    setIsReportModalOpen(true);
-  };
-
-  const handleReportSubmit = async () => {
-    try {
-      if (!id || !reportReason.trim()) {
-        toast.error("Please provide a reason for reporting");
-        return;
-      }
-      const response = await api.post('/report', { userId: id, reason: reportReason });
-      toast.success(response.data.message || "User reported successfully!");
-      setIsReportModalOpen(false);
-      setReportReason('');
-      navigate('/connect')
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Failed to report user");
-      console.error(err);
-    }
-  };
-
-  const handleCloseModal = () => {
-    setIsReportModalOpen(false);
-    setReportReason('');
   };
 
   let memberSince = "N/A"
@@ -191,61 +164,18 @@ const handleDisconnect = async () => {
               </button>
               <button
                 className="flex items-center border rounded-md px-3 py-1.5 text-sm"
-                onClick={handleReportClick}
+                onClick={() => setIsReportModalOpen(true)}
                 disabled={loading}
                 >
                 <AlertTriangle className="h-4 w-4 mr-1 text-gray-800"/>
                 Report
               </button>
+              <ReportUserModal
+                open={isReportModalOpen}
+                onClose={() => setIsReportModalOpen(false)}
+                userId={id || ""}
+              />
             </div>
-            {isReportModalOpen && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <div className="bg-white p-6 rounded-md w-96">
-                <h2 className="text-lg font-semibold mb-4">Report User</h2>
-                <p className="mb-4">Are you sure you want to report this user?</p>
-                
-                {/* Radio buttons for report reasons */}
-                <div className="space-y-2 mb-4">
-                    {[
-                    "Harassment",
-                    "Sexual Abuse",
-                    "Content Violation",
-                    "Spam",
-                    "Impersonation",
-                    "Other",
-                    ].map((reason) => (
-                    <label key={reason} className="flex items-center">
-                        <input
-                        type="radio"
-                        name="reportReason"
-                        value={reason}
-                        checked={reportReason === reason}
-                        onChange={(e) => setReportReason(e.target.value)}
-                        className="mr-2"
-                        />
-                        {reason}
-                    </label>
-                    ))}
-                </div>
-
-                <div className="flex justify-end space-x-2">
-                    <button
-                    className="px-4 py-2 bg-gray-300 rounded-md"
-                    onClick={handleCloseModal}
-                    >
-                    Cancel
-                    </button>
-                    <button
-                    className="px-4 py-2 bg-red-500 text-white rounded-md disabled:bg-red-300"
-                    onClick={handleReportSubmit}
-                    disabled={!reportReason}
-                    >
-                    Report
-                    </button>
-                </div>
-                </div>
-            </div>
-            )}
             <Tabs defaultValue="profile" className="mb-6">
               <TabsList className="bg-transparent w-1/3 justify-start rounded-none p-0 h-auto gap-3">
                 <TabsTrigger
@@ -294,16 +224,8 @@ const handleDisconnect = async () => {
                         </div>
                         <div>
                           <div className="text-xl">0</div>
-                          <div className="text-gray-500">Questions Explored</div>
+                          <div className="text-gray-500">Questions</div>
                         </div>
-                      </div>
-
-                      <div className="mt-4">
-                        <div className="flex justify-between mb-1">
-                          <span>{userData?.currentBadge || "Beginner"}</span>
-                          <span>1%</span>
-                        </div>
-                        <Progress value={1} className="h-2" />
                       </div>
                     </div>
 

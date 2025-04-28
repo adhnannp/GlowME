@@ -15,7 +15,7 @@ import {
   Lock,
 } from "lucide-react";
 import SidebarItem from "./SideBarItem";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import NotificationsPanel from "./NotificationPanel";
 import ChangePasswordModal from "./ChangePasswordModal";
 
@@ -29,10 +29,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSideb
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
-  const location = useLocation();
-
-  const moreRoutes = ["/redeem", "/gcoin", "/view-order"];
-  const isMoreActive = moreRoutes.includes(location.pathname);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -164,7 +160,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSideb
           <SidebarItem
             icon={<Info className="h-5 w-5" />}
             label="More"
-            active={isMoreActive || showMoreMenu || showChangePasswordModal}
+            active={activePage==="GCoin" || showMoreMenu || showChangePasswordModal}
             onClick={toggleMoreMenu}
             className="more-trigger"
             expanded={sidebarExpanded}

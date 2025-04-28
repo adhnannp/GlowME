@@ -6,6 +6,8 @@ import { Routes, Route } from "react-router-dom";
 import AdminPublicRoute from "@/routes/adminRoutes/AdminPublicRoute";
 import AdminProtectedRoute from "@/routes/adminRoutes/AdminProtectedRoute";
 import BadgeDashboard from "@/pages/admin/badges/Badges";
+import GCoinDashboard from "@/pages/admin/GCoin/GCoinDashboard";
+import CouponDashboard from "@/pages/admin/coupons/CouponDashboard";
 
 const AdminRoutes:React.FC = () => {
   // const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +40,8 @@ const AdminRoutes:React.FC = () => {
       <Route element={<AdminProtectedRoute />}>
         <Route path="/users" element={<UserDashboard />} />
         <Route path="/badges" element={<BadgeDashboard />} />
+        <Route path="/GCoins" element={<GCoinDashboard />} />
+        <Route path="/coupons" element={<CouponDashboard />} />
         <Route path="/reports" element={<ReportsPage />} />
       </Route>
     </Routes>

@@ -115,7 +115,7 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ open, onClose
   };
 
   if (checkingPasswordStatus) {
-    {console.log('password changing not available')};
+    {console.log('')};
   }
 
   return (

@@ -1,10 +1,14 @@
 import { inject, injectable } from 'inversify';
-import { IUserService} from '../../core/interfaces/services/user/IUserService';
+import { IUserService, UpdateProfileData } from '../../core/interfaces/services/user/IUserService';
 import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
 import { IUser } from '../../models/User';
 import { TYPES } from '../../di/types';
 import { SafeUser } from '../../core/types/SafeUser';
 import { comparePassword } from '../../validators/comparePasswrod';
+import cloudinary from "../../config/cloudinary";
+import extractCloudinaryPublicId from '../../utils/extractCloudinaryPublicId';
+
+
 
 @injectable()
 export class UserService implements IUserService {
@@ -47,6 +51,50 @@ export class UserService implements IUserService {
         if (!updatedUser) throw new Error('Changing password failed');
         const { password, ...userWithoutPassword } = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
         return userWithoutPassword;
+    }
+
+    async updateUserProfile(userId: string, data: UpdateProfileData): Promise<SafeUser> {
+        if (!userId || !data.username) {
+            throw new Error("Invalid Credentials");
+        }
+
+        const currentUser = await this.userRepository.findUserById(userId);
+        if (!currentUser) {
+            throw new Error("User not found");
+        }
+
+        let profileImageUrl: string | undefined;
+        if (data.profile_image) {
+            if (currentUser.profile_image) {
+                try {
+                  const publicId = extractCloudinaryPublicId(currentUser.profile_image);
+                  if (publicId) {
+                    await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+                  }
+                } catch (err) {
+                  const error = err as Error;
+                  console.warn(`Failed to delete old profile image: ${error.message}`);
+                }
+            }
+            const base64Image = `data:${data.profile_image.mimetype};base64,${data.profile_image.buffer.toString("base64")}`;
+            const uploadResult = await cloudinary.uploader.upload(
+              base64Image,
+              {
+                folder: "profile_images",
+                resource_type: "image",
+              }
+            );
+            profileImageUrl = uploadResult.secure_url;
+        }
+        const updatedUser = await this.userRepository.updateUserProfile(userId, {
+          username: data.username,
+          profile_image: profileImageUrl,
+        });
+
+        if (!updatedUser) {
+          throw new Error("User not found");
+        }
+        return updatedUser;
     }
 
 }

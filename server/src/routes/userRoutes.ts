@@ -9,6 +9,7 @@ import { IGoogleAuthController } from '../core/interfaces/controllers/auth/IGoog
 import passport from '../config/passport';
 import { IForgotPasswordcontroller } from '../core/interfaces/controllers/auth/IforgotPasswordController';
 import { IUserBadgeController } from '../core/interfaces/controllers/user/IUser.Badge.Controller';
+import { profile_pictureUpload } from '../config/multerConfig';
 
 const router = express.Router();
 
@@ -55,5 +56,5 @@ router.put('/badges/set-current',userAuthMiddleware.handle.bind(userAuthMiddlewa
 
 router.get('/user/has-password',userAuthMiddleware.handle.bind(userAuthMiddleware),userController.hasPassword.bind(userController));
 router.patch('/user/change-password',userAuthMiddleware.handle.bind(userAuthMiddleware),userController.changePassword.bind(userController));
-
+router.patch('/user/update-profile',userAuthMiddleware.handle.bind(userAuthMiddleware),profile_pictureUpload.single('profile_image'),userController.updateUserProfile.bind(userController))
 export default router;

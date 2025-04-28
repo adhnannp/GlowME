@@ -8,6 +8,13 @@ import { toast } from "react-hot-toast";
 import { updateUser } from "@/feature/authSlice";
 import UserImageCropper from "./UserImageCropper";
 import { updateUserProfile } from "@/services/user/user.editProfile.service";
+import { z } from "zod";
+
+// Define Zod schema for username
+const usernameSchema = z
+  .string()
+  .min(3, "Username must be at least 3 characters")
+  .nonempty("Username is required");
 
 interface EditProfileModalProps {
   open: boolean;
@@ -67,15 +74,23 @@ const EditProfileModal = ({ open, onClose }: EditProfileModalProps) => {
   };
 
   const handleSubmit = async () => {
-    if (!username.trim()) {
-      toast.error("Username cannot be empty");
+    try {
+      // Validate username with Zod
+      usernameSchema.parse(username);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const errorMessage = error.errors[0].message; // Get first error message
+        toast.error(errorMessage);
+        return;
+      }
+      toast.error("Invalid username");
       return;
     }
 
     setLoading(true);
     try {
       const updatedUser = await updateUserProfile({
-        username,
+        username: username.trim(), // Trim before sending
         profile_image: croppedImageFile,
       });
 
@@ -170,7 +185,7 @@ const EditProfileModal = ({ open, onClose }: EditProfileModalProps) => {
               <Button variant="outline" onClick={handleClose} disabled={loading}>
                 Cancel
               </Button>
-              <Button onClick={handleSubmit} disabled={loading || !username}>
+              <Button onClick={handleSubmit} disabled={loading}>
                 {loading ? "Saving..." : "Save Changes"}
               </Button>
             </div>

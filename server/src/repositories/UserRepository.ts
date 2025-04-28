@@ -3,7 +3,7 @@ import { IUserRepository } from '../core/interfaces/repositories/IUserRepository
 import { IUser, UserModel } from '../models/User';
 import { SafeUser } from '../core/types/SafeUser';
 import bcrypt from 'bcrypt';
-import { passwordSchema } from '../validators/userDataValidation';
+import { passwordSchema, usernameSchema } from '../validators/userDataValidation';
 
 @injectable()
 export class UserRepository implements IUserRepository {
@@ -121,6 +121,18 @@ export class UserRepository implements IUserRepository {
       { new: true }
     ).populate('currentBadge');
     return user;
+  }
+
+  async updateUserProfile(userId: string, data: { username: string; profile_image?: string }): Promise<SafeUser | null> {
+    const validatedInput = usernameSchema.parse(data.username);
+    const updateData: { username: string; profile_image?: string; edited_at: Date } = {
+      username: data.username,
+      edited_at: new Date(),
+    };
+    if (data.profile_image) {
+      updateData.profile_image = data.profile_image;
+    }
+    return UserModel.findByIdAndUpdate(userId, updateData, { new: true }).populate("currentBadge").select("-password");
   }
 
 }

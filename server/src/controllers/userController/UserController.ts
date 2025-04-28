@@ -80,4 +80,34 @@ export class UserController implements IUserController{
             });
         }
     }
+
+    async updateUserProfile(req: Request, res: Response):Promise<void> {
+        try {
+          const userId = req.userId;
+          if (!userId) {
+            res.status(401).json({ message: "Unauthorized: User ID not found" });
+            return 
+          }
+          const { username } = req.body;
+          const profile_image = req.file;
+          if (!username) {
+            res.status(400).json({ message: "Username is required" });
+            return 
+          }
+          const updatedUser = await this.userService.updateUserProfile(userId, {
+            username,
+            profile_image: profile_image || null,
+          });
+          res.status(200).json({
+              message: "Profile updated successfully",
+              user: updatedUser,
+            });
+          return 
+        } catch (error) {
+          const err = error as Error;
+          res.status(400).json({ message: err.message || "Failed to update profile" });
+          return 
+        }
+    }
+
 }

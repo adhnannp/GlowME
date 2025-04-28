@@ -11,7 +11,6 @@ import { useNavigate } from 'react-router-dom';
 import { AppDispatch } from '@/store/store';
 import { toast } from 'react-hot-toast';
 
-// Define the validation schema with Zod
 const registerSchema = z
   .object({
     username: z.string().min(3, 'Username must be at least 3 characters').nonempty('Username is required'),

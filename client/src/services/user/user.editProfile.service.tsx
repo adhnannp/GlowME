@@ -24,12 +24,13 @@ export const updateUserProfile = async (data: UpdateProfileData) => {
     });
 
     toast.success("Profile updated successfully");
-    return response.data.user;
+    return response.data;
   } catch (error) {
     const err = handleApiError(
       error as AxiosError | Error,
       "Failed to update profile"
     );
+    console.log(err.message)
     toast.error(err.message);
     throw err;
   }

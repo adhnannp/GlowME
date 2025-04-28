@@ -7,6 +7,8 @@ import { signJWT, signRefreshToken,verifyRefreshToken  } from '../../utils/token
 import { redisClient } from "../../config/redis";
 import { TYPES } from '../../di/types';
 import { comparePassword } from '../../validators/comparePasswrod';
+import { registerSchema } from '../../validators/userDataValidation';
+
 
 @injectable()
 export class AuthService implements IAuthService {
@@ -16,6 +18,7 @@ export class AuthService implements IAuthService {
   ) {}
 
   async register(user: IUser): Promise<string> {
+    const validatedUser = registerSchema.parse(user);
     const existingUser = await this.userRepository.findUserByEmail(user.email);
     if (existingUser) throw new Error('User already exists');
 

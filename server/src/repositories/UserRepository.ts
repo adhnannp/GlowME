@@ -3,6 +3,7 @@ import { IUserRepository } from '../core/interfaces/repositories/IUserRepository
 import { IUser, UserModel } from '../models/User';
 import { SafeUser } from '../core/types/SafeUser';
 import bcrypt from 'bcrypt';
+import { passwordSchema } from '../validators/userDataValidation';
 
 @injectable()
 export class UserRepository implements IUserRepository {
@@ -112,6 +113,7 @@ export class UserRepository implements IUserRepository {
   }
   
   async updateUserPassword(userId: string, password: string): Promise<IUser | null> {
+    const validatedInput = passwordSchema.parse( password );
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await UserModel.findByIdAndUpdate(
       userId,

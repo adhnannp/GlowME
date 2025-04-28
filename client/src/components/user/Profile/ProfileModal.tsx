@@ -64,11 +64,13 @@ export function ProfileModal({isOpen,onClose,user,profileImage,}: ProfileModalPr
             />
           </Link>
           <div className="flex items-center gap-2 mt-1">
-            <img
-                src="/badges/level 1.png"
-                alt="Level 1 Badge"
+            {user.currentBadge?.image && (
+              <img
+                src={`${import.meta.env.VITE_BASE_URL}${user.currentBadge.image}`}
+                alt={user.currentBadge.name || "Badge"}
                 className="h-10 w-10"
-                />
+              />
+            )}
             <span className="text-sm font-medium text-gray-700">
                 {user?.username || "user name"}
             </span>

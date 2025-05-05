@@ -125,9 +125,8 @@ export class UserRepository implements IUserRepository {
 
   async updateUserProfile(userId: string, data: { username: string; profile_image?: string }): Promise<SafeUser | null> {
     const validatedInput = usernameSchema.parse(data.username);
-    const updateData: { username: string; profile_image?: string; edited_at: Date } = {
+    const updateData: { username: string; profile_image?: string; } = {
       username: data.username,
-      edited_at: new Date(),
     };
     if (data.profile_image) {
       updateData.profile_image = data.profile_image;

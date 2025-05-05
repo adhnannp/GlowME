@@ -96,7 +96,7 @@ export default function BadgeDashboard() {
     setIsEditModalOpen(true);
   };
 
-  const handleAddBadge = async (newBadge: Omit<Badge, "_id" | "created_at" | "updated_at" | "isListed">) => {
+  const handleAddBadge = async (newBadge: Omit<Badge, "_id" | "created_at" | "edited_at" | "isListed">) => {
     try {
       setLoading(true);
   

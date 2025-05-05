@@ -18,6 +18,7 @@ export interface IUser extends Document {
   currentBadge?: mongoose.Types.ObjectId;
   badge?: string;
   xp?: number;
+  coin_balance?:number;
   questions_explored?: number;
   ban_expires_at?: Date|null;
   isGoogleUser?:boolean;
@@ -38,12 +39,13 @@ const userSchema = new mongoose.Schema<IUser>({
   }],
   currentBadge: { type: mongoose.Schema.Types.ObjectId, ref: 'Badge' },
   xp: { type: Number, default: 0 },
+  coin_balance: { type: Number, default: 0 },
   questions_explored: { type: Number, default: 0 },
   ban_expires_at: { type: Date, default: null },
   isGoogleUser: {type:Boolean, default:false},
   isBlock: { type: Boolean, default: false },
-  created_at: { type: Date, default: Date.now },
-  edited_at: { type: Date, default: Date.now },
+},{
+  timestamps: { createdAt: 'created_at', updatedAt: 'edited_at' }
 });
 
 userSchema.pre("save", async function (next) {

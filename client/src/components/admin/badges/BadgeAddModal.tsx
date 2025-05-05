@@ -11,7 +11,7 @@ import type { Badge } from "@/components/admin/badges/BadgeTable"
 interface BadgeAddModalProps {
   isOpen: boolean
   onClose: () => void
-  onSave: (badge: Omit<Badge, "_id" | "created_at" | "updated_at" | "isListed">) => void
+  onSave: (badge: Omit<Badge, "_id" | "created_at" | "edited_at" | "isListed">) => void
 }
 
 export default function BadgeAddModal({ isOpen, onClose, onSave }: BadgeAddModalProps) {

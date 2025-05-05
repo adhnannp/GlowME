@@ -9,7 +9,7 @@ interface Badge {
   requiredXp: number;
   isListed: boolean;
   created_at: string;
-  updated_at: string;
+  edited_at: string;
 }
 
 interface Props {

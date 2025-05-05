@@ -5,8 +5,8 @@ export interface IBadge extends Document{
     image: string;
     requiredXp: number;
     isListed:boolean;
-    created_at:Date;
-    updated_at:Date;
+    created_at?:Date;
+    edited_at?: Date;
 }
 
 const badgeSchema = new mongoose.Schema<IBadge>({
@@ -14,8 +14,9 @@ const badgeSchema = new mongoose.Schema<IBadge>({
     image: { type: String, required: true },
     requiredXp: { type: Number, required: true, min: 0},
     isListed: {type:Boolean, default:true},
-    created_at: { type: Date, default: Date.now },
-    updated_at: { type: Date, default: Date.now },
+},
+{
+    timestamps: { createdAt: 'created_at', updatedAt: 'edited_at' }
 })
 
 export const BadgeModel = mongoose.model<IBadge>('Badge', badgeSchema);

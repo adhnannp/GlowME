@@ -23,7 +23,7 @@ export class BadgeRepository implements IBadgeRepository{
   async listBadge(badgeId:string):Promise<IBadge | null> {
     return await BadgeModel.findByIdAndUpdate(
       badgeId,
-      { isListed: true, updated_at: new Date() },
+      { isListed: true },
       { new: true }
     );
   }
@@ -31,7 +31,7 @@ export class BadgeRepository implements IBadgeRepository{
   async unlistBadge(badgeId:string):Promise<IBadge | null> {
     return await BadgeModel.findByIdAndUpdate(
       badgeId,
-      { isListed: false, updated_at: new Date() },
+      { isListed: false },
       { new: true }
     );
   }
@@ -39,7 +39,7 @@ export class BadgeRepository implements IBadgeRepository{
   async updateBadge(badgeId: string, updates: Partial<IBadge>): Promise<IBadge | null> {
     return await BadgeModel.findByIdAndUpdate(
       badgeId,
-      { ...updates, updated_at: new Date() },
+      { ...updates },
       { new: true }
     );
   }
@@ -73,7 +73,6 @@ export class BadgeRepository implements IBadgeRepository{
           } as IUserBadge
         },
         currentBadge: badgeId,
-        edited_at: new Date()
       },
       { new: true }
     ).select('-password');
@@ -82,7 +81,7 @@ export class BadgeRepository implements IBadgeRepository{
   async updateCurrentBadge(userId: string, badgeId: string): Promise<SafeUser | null> {
     return await UserModel.findByIdAndUpdate(
       userId,
-      { currentBadge: badgeId, edited_at: new Date() },
+      { currentBadge: badgeId },
       { new: true }
     ).select('-password');
   }

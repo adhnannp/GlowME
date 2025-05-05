@@ -17,7 +17,7 @@ export const fetchBadges = async (): Promise<Badge[]> => {
 };
 
 export const addBadge = async (
-  newBadge: Omit<Badge, "_id" | "created_at" | "updated_at" | "isListed">
+  newBadge: Omit<Badge, "_id" | "created_at" | "edited_at" | "isListed">
 ): Promise<Badge> => {
   try {
     const formData = new FormData();

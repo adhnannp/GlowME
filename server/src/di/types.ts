@@ -4,7 +4,8 @@ export const TYPES = {
     ConnectionRepository: Symbol.for('ConnectionRepository'),
     NotificationRepository: Symbol.for('NotificationRepository'),
     ReportRepository: Symbol.for('ReportRepository'),
-    BadgeRepository:Symbol.for('BadgeRepository'),
+    BadgeRepository: Symbol.for('BadgeRepository'),
+    CoinPlanRepository: Symbol.for('CoinPlanRepository'),
   
     // Services
     AuthService: Symbol.for('AuthService'),
@@ -17,6 +18,7 @@ export const TYPES = {
     AdminBadgeService: Symbol.for('AdminBadgeService'),
     UserBadgeService: Symbol.for('UserBadgeService'),
     ForgotPasswordService: Symbol.for('ForgotPasswordService'),
+    AdminCoinPlanService: Symbol.for('AdminCoinPlanService'),
 
     // Controllers
     AuthController: Symbol.for('AuthController'),
@@ -28,6 +30,7 @@ export const TYPES = {
     AdminBadgeController: Symbol.for('AdminBadgeController'),
     UserBadgeController: Symbol.for('UserBadgeController'),
     ForgotPasswordController: Symbol.for('ForgotPasswordController'),
+    AdminCoinPlanController: Symbol.for('AdminCoinPlanController'),
 
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),

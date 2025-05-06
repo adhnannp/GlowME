@@ -2,7 +2,6 @@ import { injectable } from 'inversify';
 import { ICoinPlanRepository } from '../core/interfaces/repositories/ICoinPlanRepository';
 import { CoinPlanModel, ICoinPlan } from '../models/CoinPlan';
 
-
 @injectable()
 export class CoinPlanRepository implements ICoinPlanRepository{
 
@@ -11,12 +10,16 @@ export class CoinPlanRepository implements ICoinPlanRepository{
     return await plan.save();
   }
 
-  async getOneCoinPlanById(id:string): Promise<ICoinPlan | null>{
+  async getCoinPlanById(id:string): Promise<ICoinPlan | null>{
     return await CoinPlanModel.findById(id);
   }
 
+  async getCoinPlanByTitle(title:string): Promise<ICoinPlan | null>{
+    return await CoinPlanModel.findOne({title});
+  }
+
   async getListedPlans(): Promise<ICoinPlan[]> {
-    return await CoinPlanModel.find({ isList: true }).sort({ created_at: -1 });
+    return await CoinPlanModel.find({ isListed: true }).sort({ created_at: -1 });
   }
 
   async getAllPlans(): Promise<ICoinPlan[]> {
@@ -28,11 +31,11 @@ export class CoinPlanRepository implements ICoinPlanRepository{
   }
 
   async unlistPlan(id: string): Promise<ICoinPlan | null> {
-    return await CoinPlanModel.findByIdAndUpdate(id, { isList: false }, { new: true });
+    return await CoinPlanModel.findByIdAndUpdate(id, { isListed: false }, { new: true });
   }
 
   async listPlan(id: string): Promise<ICoinPlan | null> {
-    return await CoinPlanModel.findByIdAndUpdate(id, { isList: true }, { new: true });
+    return await CoinPlanModel.findByIdAndUpdate(id, { isListed: true }, { new: true });
   }
 
 }

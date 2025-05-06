@@ -113,7 +113,10 @@ export class UserRepository implements IUserRepository {
   }
   
   async updateUserPassword(userId: string, password: string): Promise<IUser | null> {
-    const validatedInput = passwordSchema.parse( password );
+    const validationResult = passwordSchema.safeParse(password);
+    if (!validationResult.success) {
+      throw new Error(validationResult.error.errors[0].message);
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await UserModel.findByIdAndUpdate(
       userId,
@@ -124,7 +127,10 @@ export class UserRepository implements IUserRepository {
   }
 
   async updateUserProfile(userId: string, data: { username: string; profile_image?: string }): Promise<SafeUser | null> {
-    const validatedInput = usernameSchema.parse(data.username);
+    const validationResult = usernameSchema.safeParse(data.username);
+    if (!validationResult.success) {
+      throw new Error(validationResult.error.errors[0].message);
+    }
     const updateData: { username: string; profile_image?: string; } = {
       username: data.username,
     };

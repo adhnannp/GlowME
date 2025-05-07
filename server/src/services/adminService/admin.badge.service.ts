@@ -1,4 +1,3 @@
-// src/services/adminBadgeService.ts
 import { injectable, inject } from 'inversify';
 import { IBadgeRepository } from '../../core/interfaces/repositories/IBadgeRepository';
 import { IBadge } from '../../models/Badge';

@@ -10,6 +10,7 @@ import passport from '../config/passport';
 import { IForgotPasswordcontroller } from '../core/interfaces/controllers/auth/IforgotPasswordController';
 import { IUserBadgeController } from '../core/interfaces/controllers/user/IUser.Badge.Controller';
 import { profile_pictureUpload } from '../config/multerConfig';
+import IUserCoinPlanController from '../core/interfaces/controllers/user/IUser.CoinPlan.controller';
 
 const router = express.Router();
 
@@ -21,6 +22,7 @@ const userController = container.get<IUserController>(TYPES.UserController)
 const userConnectionController = container.get<IUserConnectionController>(TYPES.UserConnectionController);
 const forgotPasswordController = container.get<IForgotPasswordcontroller>(TYPES.ForgotPasswordController);
 const badgeController = container.get<IUserBadgeController>(TYPES.UserBadgeController)
+const coinPlanController = container.get<IUserCoinPlanController>(TYPES.UserCoinPlanController)
 
 router.post('/register', authController.register.bind(authController));
 router.post('/resend-otp', authController.resendOTP.bind(authController));
@@ -57,4 +59,7 @@ router.put('/badges/set-current',userAuthMiddleware.handle.bind(userAuthMiddlewa
 router.get('/user/has-password',userAuthMiddleware.handle.bind(userAuthMiddleware),userController.hasPassword.bind(userController));
 router.patch('/user/change-password',userAuthMiddleware.handle.bind(userAuthMiddleware),userController.changePassword.bind(userController));
 router.patch('/user/update-profile',userAuthMiddleware.handle.bind(userAuthMiddleware),profile_pictureUpload.single('profile_image'),userController.updateUserProfile.bind(userController))
+
+router.get('/Gcoin',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.getCoinPlans.bind(coinPlanController));
+
 export default router;

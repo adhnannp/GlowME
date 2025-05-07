@@ -60,6 +60,10 @@ import { IAdminCoinPlanService } from '../core/interfaces/services/admin/IAdmin.
 import { AdminCoinPlanService } from '../services/adminService/admin.coinPlan.service';
 import IAdminCoinPlanController from '../core/interfaces/controllers/admin/IAdmin.CoinPlan.Controller';
 import { AdminCoinPlanController } from '../controllers/adminController/admin.coinPlan.controller';
+import IUserCoinPlanService from '../core/interfaces/services/user/IUser.CoinPlan.Service';
+import { UserCoinPlanService } from '../services/userService/user.coinPlan.service';
+import IUserCoinPlanController from '../core/interfaces/controllers/user/IUser.CoinPlan.controller';
+import { UserCoinPlanController } from '../controllers/userController/user.coinPlan.controller';
 
 const container = new Container();
 
@@ -83,6 +87,7 @@ container.bind<IUserBadgeService>(TYPES.UserBadgeService).to(UserBadgeService)
 container.bind<IAdminBadgeService>(TYPES.AdminBadgeService).to(AdminBadgeService);
 container.bind<IForgotPasswordService>(TYPES.ForgotPasswordService).to(ForgotPasswordService);
 container.bind<IAdminCoinPlanService>(TYPES.AdminCoinPlanService).to(AdminCoinPlanService);
+container.bind<IUserCoinPlanService>(TYPES.UserCoinPlanService).to(UserCoinPlanService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -95,6 +100,7 @@ container.bind<IAdminBadgeController>(TYPES.AdminBadgeController).to(AdminBadgeC
 container.bind<IUserBadgeController>(TYPES.UserBadgeController).to(UserBadgeController);
 container.bind<IForgotPasswordcontroller>(TYPES.ForgotPasswordController).to(ForgotPasswordcontroller);
 container.bind<IAdminCoinPlanController>(TYPES.AdminCoinPlanController).to(AdminCoinPlanController)
+container.bind<IUserCoinPlanController>(TYPES.UserCoinPlanController).to(UserCoinPlanController)
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

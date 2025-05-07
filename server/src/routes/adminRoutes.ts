@@ -38,4 +38,5 @@ router.get('/coin-plans',adminAuthMiddleware.handle.bind(adminAuthMiddleware),co
 router.patch('/coin-plans/:id',adminAuthMiddleware.handle.bind(adminAuthMiddleware),coinPlanController.updatePlan.bind(coinPlanController));
 router.post('/coin-plans/:id/list',adminAuthMiddleware.handle.bind(adminAuthMiddleware),coinPlanController.listPlan.bind(coinPlanController));
 router.post('/coin-plans/:id/unlist',adminAuthMiddleware.handle.bind(adminAuthMiddleware),coinPlanController.unlistPlan.bind(coinPlanController));
+
 export default router;

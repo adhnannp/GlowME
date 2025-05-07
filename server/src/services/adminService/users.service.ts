@@ -16,9 +16,9 @@ export default class UsersService implements IUsersService {
             return null;
         } 
         const users = await this.userRepository.getAllUser(skip,limit);
-        const TotalUsers = await this.userRepository.totalUser()
+        const totalUsers = await this.userRepository.totalUser()
         if(!users)return null;
-        return [users,TotalUsers];
+        return [users,totalUsers];
     }
 
     async banUser(userId: string, banDuration: string): Promise<SafeUser | null> {

@@ -31,6 +31,7 @@ export class UserRepository implements IUserRepository {
         path: 'currentBadge',
         select: 'name image requiredXp',
       })
+      .sort({ created_at: -1 })
       .skip(skip)
       .limit(limit)
       .lean()

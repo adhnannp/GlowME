@@ -1,4 +1,3 @@
-// src/services/adminCoinPlanService.ts
 import { injectable, inject } from 'inversify';
 import { ICoinPlanRepository } from '../../core/interfaces/repositories/ICoinPlanRepository';
 import { ICoinPlan } from '../../models/CoinPlan';

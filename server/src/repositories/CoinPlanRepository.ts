@@ -19,7 +19,7 @@ export class CoinPlanRepository implements ICoinPlanRepository{
   }
 
   async getListedPlans(): Promise<ICoinPlan[]> {
-    return await CoinPlanModel.find({ isListed: true }).sort({ created_at: -1 });
+    return await CoinPlanModel.find({ isListed: true }).sort({ coins: -1 });
   }
 
   async getAllPlans(): Promise<ICoinPlan[]> {

@@ -19,6 +19,7 @@ export const TYPES = {
     UserBadgeService: Symbol.for('UserBadgeService'),
     ForgotPasswordService: Symbol.for('ForgotPasswordService'),
     AdminCoinPlanService: Symbol.for('AdminCoinPlanService'),
+    UserCoinPlanService: Symbol.for('UserCoinPlanService'),
 
     // Controllers
     AuthController: Symbol.for('AuthController'),
@@ -31,6 +32,7 @@ export const TYPES = {
     UserBadgeController: Symbol.for('UserBadgeController'),
     ForgotPasswordController: Symbol.for('ForgotPasswordController'),
     AdminCoinPlanController: Symbol.for('AdminCoinPlanController'),
+    UserCoinPlanController: Symbol.for('UserCoinPlanController'),
 
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),

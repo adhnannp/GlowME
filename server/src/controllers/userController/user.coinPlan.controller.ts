@@ -30,4 +30,25 @@ export class UserCoinPlanController implements IUserCoinPlanController{
     }
   }
 
+  async createCoinPlanCheckoutSession(req: Request, res: Response): Promise<void> {
+    try {
+      const { planId } = req.body;
+      const userId = req.userId;
+      if (!userId || !planId) {
+        res.status(400).json({ message: 'userId and planId are required' });
+        return;
+      }
+      const { sessionId } = await this.coinPlanService.createCoinPlanCheckoutSession(userId, planId);
+      res.status(200).json({
+        message: 'Checkout session created successfully',
+        sessionId,
+      });
+      return;
+    } catch (err) {
+      const error = err as Error;
+      res.status(400).json({ message: error.message });
+      return;
+    }
+  }
+
 }

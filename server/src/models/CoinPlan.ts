@@ -1,9 +1,9 @@
 import mongoose, { Document } from 'mongoose';
 
 export interface ICoinPlan extends Document {
-  title?: string;
-  coins?: number;
-  price?: number;
+  title: string;
+  coins: number;
+  price: number;
   isListed?: boolean;
   created_at?: Date;
   edited_at?: Date;

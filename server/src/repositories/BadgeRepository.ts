@@ -1,3 +1,4 @@
+import { injectable } from 'inversify';
 import { IBadgeRepository } from '../core/interfaces/repositories/IBadgeRepository';
 import { SafeBadge } from '../core/types/SafeBadge';
 import { SafeUser } from '../core/types/SafeUser';
@@ -5,6 +6,7 @@ import { BadgeModel, IBadge } from '../models/Badge';
 import { UserModel, IUserBadge } from '../models/User';
 import mongoose from 'mongoose';
 
+@injectable()
 export class BadgeRepository implements IBadgeRepository{
 
   async createBadge(badgeData: Partial<IBadge>): Promise<IBadge> {

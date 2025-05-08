@@ -64,6 +64,8 @@ import IUserCoinPlanService from '../core/interfaces/services/user/IUser.CoinPla
 import { UserCoinPlanService } from '../services/userService/user.coinPlan.service';
 import IUserCoinPlanController from '../core/interfaces/controllers/user/IUser.CoinPlan.controller';
 import { UserCoinPlanController } from '../controllers/userController/user.coinPlan.controller';
+import ICoinTransactionRepository from '../core/interfaces/repositories/ICoinTransactionRepository';
+import { CoinTransactionRepository } from '../repositories/CoinTransactionRepository';
 
 const container = new Container();
 
@@ -74,6 +76,7 @@ container.bind<INotificationRepository>(TYPES.NotificationRepository).to(Notific
 container.bind<IReportRepository>(TYPES.ReportRepository).to(ReportRepository);
 container.bind<IBadgeRepository>(TYPES.BadgeRepository).to(BadgeRepository);
 container.bind<ICoinPlanRepository>(TYPES.CoinPlanRepository).to(CoinPlanRepository);
+container.bind<ICoinTransactionRepository>(TYPES.CoinTransactionRepository).to(CoinTransactionRepository)
 
 // Services
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService);

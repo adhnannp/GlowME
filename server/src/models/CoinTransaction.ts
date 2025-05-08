@@ -7,6 +7,8 @@ export interface ICoinTransaction extends Document {
   type: CoinTransactionType;
   amount: number;
   coins:number;
+  stripePaymentIntentId?: string;
+  stripeChargeId?: string;
   created_at?: Date;
   edited_at?: Date;
 }
@@ -16,8 +18,10 @@ const coinTransactionSchema = new mongoose.Schema<ICoinTransaction>({
   type: { type: String, enum: ['purchase', 'reward', 'refund'], required: true },
   amount: { type: Number, required: true },
   coins:{type: Number, required: true},
+  stripePaymentIntentId: { type: String, required: false },
+  stripeChargeId: { type: String, required: false },
 },{
    timestamps: { createdAt: 'created_at', updatedAt: 'edited_at' }
 });
 
-export const CoinTransactionModel = mongoose.model<ICoinTransaction>('CoinTransaction', coinTransactionSchema);
+export const  CoinTransactionModel = mongoose.model<ICoinTransaction>('CoinTransaction', coinTransactionSchema);

@@ -15,3 +15,16 @@ export const getCoinPlans = async () => {
       throw err;
     }
 };
+
+export const createCheckoutSession = async (planId: string) => {
+  try {
+    const response = await api.post(USER_API.GCOIN_CHECKOUT, { planId });
+    if (!response.data.sessionId) {
+      throw new Error(response.data.message || "Failed to create checkout session");
+    }
+    return response.data.sessionId;
+  } catch (error) {
+    const err = handleApiError(error as AxiosError | Error, "failed to create checkout session");
+    throw err;
+  }
+};

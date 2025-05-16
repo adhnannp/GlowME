@@ -21,6 +21,7 @@ export const TYPES = {
     ForgotPasswordService: Symbol.for('ForgotPasswordService'),
     AdminCoinPlanService: Symbol.for('AdminCoinPlanService'),
     UserCoinPlanService: Symbol.for('UserCoinPlanService'),
+    AdminReportService: Symbol.for('AdminReportService'),
 
     // Controllers
     AuthController: Symbol.for('AuthController'),
@@ -34,6 +35,7 @@ export const TYPES = {
     ForgotPasswordController: Symbol.for('ForgotPasswordController'),
     AdminCoinPlanController: Symbol.for('AdminCoinPlanController'),
     UserCoinPlanController: Symbol.for('UserCoinPlanController'),
+    AdminReportController: Symbol.for('AdminReportController'),
 
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),

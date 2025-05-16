@@ -73,19 +73,15 @@ export class UserConnectionService implements IUserConnectionService {
     if (skip < 0) {
       return null;
     }
-    const users = await this.userRepo.getAllUsersWithFilter(skip, limit, {
-      isBlock: false,
-    });
-    const TotalUsers = await this.userRepo.totalUsersWithFilter({
-      isBlock: false,
-    });
+    const users = await this.userRepo.getAllUsersWithFilter(skip, limit,{});
+    const TotalUsers = await this.userRepo.totalUsersWithFilter({});
     if (!users) return null;
     return [users, TotalUsers];
   }
 
   async findUserById(id: string,currentUserId:string): Promise<[Omit<IUser, "password">, number,number,boolean] | null> {
     const user = await this.userRepo.findUserById(id);
-    if (!user || user.isBlock) return null;
+    if (!user ) return null;
     const followerCount = await this.connectionRepo.getFollowerCount(id);
     const followingCount = await this.connectionRepo.getFlollowingCount(id);
     const isFollowing = await this.connectionRepo.isFollowing(currentUserId,id)

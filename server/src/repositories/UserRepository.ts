@@ -141,4 +141,20 @@ export class UserRepository implements IUserRepository {
     return UserModel.findByIdAndUpdate(userId, updateData, { new: true }).populate("currentBadge").select("-password");
   }
 
+  async incrementCoin(userId: string, coins: number): Promise<SafeUser> {
+    return await UserModel.findOneAndUpdate(
+      { _id: userId },
+      { $inc: { coin_balance: coins } },
+      { new: true }
+    ).populate("currentBadge").select("-password");
+  }
+
+  async incrementXp(userId: string, xp: number): Promise<void> {
+    await UserModel.findOneAndUpdate(
+      { _id: userId },
+      { $inc: { xp } },
+      { new: true }
+    ).populate("currentBadge").select("-password");
+  }
+
 }

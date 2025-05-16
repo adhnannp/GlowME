@@ -5,12 +5,18 @@ import { TYPES } from '../../di/types';
 import IUserCoinPlanService from '../../core/interfaces/services/user/IUser.CoinPlan.Service';
 import ICoinTransactionRepository from '../../core/interfaces/repositories/ICoinTransactionRepository';
 import { createStripeCheckoutSession } from '../../utils/stripeUtils';
+import { stripe } from '../../config/stripe';
+import { Types } from 'mongoose';
+import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
+import { ICoinTransaction } from '../../models/CoinTransaction';
+import { SafeUser } from '../../core/types/SafeUser';
 
 @injectable()
 export class UserCoinPlanService implements IUserCoinPlanService{
   constructor(
     @inject(TYPES.CoinPlanRepository) private coinPlanRepository: ICoinPlanRepository,
-    @inject(TYPES.CoinTransactionRepository) private coinTransactionRepo : ICoinTransactionRepository
+    @inject(TYPES.CoinTransactionRepository) private coinTransactionRepo : ICoinTransactionRepository,
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
   ) {}
 
   async getPlans(): Promise<ICoinPlan[] | null> {
@@ -41,8 +47,35 @@ export class UserCoinPlanService implements IUserCoinPlanService{
     return { sessionId };
   }
 
+  async getCheckoutSessionDetails(sessionId: string):
+  Promise<{transactionData: ICoinTransaction;updatedUser: SafeUser | null;}> {
+    if (!sessionId) throw new Error('Session ID is required');
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (!session || session.payment_status !== 'paid') {
+      throw new Error('Payment not completed or session not found');
+    }
+    const metadata = session.metadata;
+    if (!metadata || !metadata.userId || !metadata.coins || !session.amount_total) {
+      throw new Error('Missing session metadata');
+    }
+    const userId = new Types.ObjectId(metadata.userId);
+    const coins = parseInt(metadata.coins, 10);
+    const amount = session.amount_total / 100; 
+    const stripePaymentIntentId = session.payment_intent?.toString() || '';
+    const existingUser = await this.userRepo.findUserById(metadata.userId)
+    const existingTransaction = await this.coinTransactionRepo.findByStripeIntentId(stripePaymentIntentId);
+    if (existingTransaction) {
+      return {transactionData:existingTransaction,updatedUser:existingUser};
+    }
+    const updatedUser = await this.userRepo.incrementCoin(metadata.userId,coins)
+    const transactionData = await this.coinTransactionRepo.create({
+      userId,
+      type: 'purchase',
+      amount,
+      coins,
+      stripePaymentIntentId,
+    });
+    return {transactionData,updatedUser};
+  }
+
 }
-
-// async buyPlan(userId:string,planId:string){
-
-// }

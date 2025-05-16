@@ -5,4 +5,9 @@ export const ADMIN_API = {
     LIST_BADGE:'/admin/list-badge/',
     UNLIST_BADGE:'/admin/unlist-badge/',
     COIN_PLANS:'/admin/coin-plans',
+    GET_USER_REPORT:'/admin/reports/users',
+    BAN_USER_REPORT:'/admin/report/ban-user',
+    REJECT_USER_REPORT:'/admin/reports/reject',
+    REJECT_ALL_USER_REPORT:'/admin/reports/reject-all',
+    WARNING_USER_REPORT:'/admin/reports/warning',
 }

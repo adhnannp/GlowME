@@ -4,11 +4,12 @@ import { useDispatch } from "react-redux";
 import { logout } from "@/feature/authThunks";
 import { AppDispatch } from "@/store/store";
 import { Link } from "react-router-dom";
+import { UserWithBadge } from "@/interfaces/auth.interface";
 
 interface ProfileModalProps {
   isOpen: boolean;
   onClose: () => void;
-  user: any;
+  user: UserWithBadge | null;
   profileImage: string;
 }
 
@@ -64,7 +65,7 @@ export function ProfileModal({isOpen,onClose,user,profileImage,}: ProfileModalPr
             />
           </Link>
           <div className="flex items-center gap-2 mt-1">
-            {user.currentBadge?.image && (
+            {user?.currentBadge?.image && (
               <img
                 src={`${import.meta.env.VITE_BASE_URL}${user.currentBadge.image}`}
                 alt={user.currentBadge.name || "Badge"}
@@ -83,7 +84,7 @@ export function ProfileModal({isOpen,onClose,user,profileImage,}: ProfileModalPr
               <Coins className="h-4 w-4 mr-1" />
               <span className="text-sm font-medium">Coins</span>
             </div>
-            <span className="font-semibold">{user?.coins || 0}</span>
+            <span className="font-semibold">{user?.coin_balance || 0}</span>
           </div>
 
           <div className="flex flex-col items-center">

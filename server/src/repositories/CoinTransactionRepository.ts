@@ -5,19 +5,13 @@ import {
 } from "../models/CoinTransaction";
 import ICoinTransactionRepository from "../core/interfaces/repositories/ICoinTransactionRepository";
 import { injectable } from "inversify";
+import { CoinTransactionCreateInput } from "../core/types/CreateCoinTransaction";
 
 @injectable()
 export class CoinTransactionRepository implements ICoinTransactionRepository {
 
-    async create(input: ICoinTransaction): Promise<ICoinTransaction> {
-        return await CoinTransactionModel.create({
-        userId: input.userId,
-        type: input.type,
-        amount: input.amount,
-        coins: input.coins,
-        stripePaymentIntentId: input.stripePaymentIntentId,
-        stripeChargeId: input.stripeChargeId,
-        });
+    async create(input: CoinTransactionCreateInput): Promise<ICoinTransaction> {
+        return await CoinTransactionModel.create(input);
     }
 
     async getById(transactionId: string): Promise<ICoinTransaction | null> {
@@ -28,6 +22,10 @@ export class CoinTransactionRepository implements ICoinTransactionRepository {
         })
         .lean();
     }
+
+    async findByStripeIntentId(intentId: string): Promise<ICoinTransaction | null> {
+        return await CoinTransactionModel.findOne({ stripePaymentIntentId: intentId });
+    }      
 
     async getAll(
         page: number = 1,

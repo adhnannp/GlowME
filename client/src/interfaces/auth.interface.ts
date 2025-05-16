@@ -19,6 +19,7 @@ export interface User {
     isBlock?:boolean;
     created_at?:string;
     edited_at?: string;
+    coin_balance?:number;
 }
 
 export interface UserCredentials {
@@ -53,4 +54,5 @@ export interface UserWithBadge {
   isBlock?:boolean;
   created_at?:string;
   edited_at?: string;
+  coin_balance?:number;
 }

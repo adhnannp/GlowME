@@ -51,4 +51,25 @@ export class UserCoinPlanController implements IUserCoinPlanController{
     }
   }
 
+  async getCheckoutSessionDetails(req: Request, res: Response): Promise<void>{
+    const sessionId = req.params.sessionId;
+    try{
+      if (!sessionId) {
+        res.status(400).json({ message: 'missing data' });
+        return;
+      }
+      const {transactionData,updatedUser} = await this.coinPlanService.getCheckoutSessionDetails(sessionId);
+      res.status(200).json({
+        message: 'retrived Checkout session details successfully',
+        transactionData,
+        updatedUser,
+      });
+      return;
+    } catch (err) {
+      const error = err as Error;
+      res.status(400).json({ message: error.message });
+      return;
+    }
+  }
+
 }

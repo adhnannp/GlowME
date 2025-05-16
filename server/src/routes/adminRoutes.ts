@@ -8,6 +8,7 @@ import { IUsersController } from '../core/interfaces/controllers/admin/IUsersCon
 import { IAdminBadgeController } from '../core/interfaces/controllers/admin/IAdmin.Badge.Controller';
 import { badgeUpload } from '../config/multerConfig';
 import IAdminCoinPlanController from '../core/interfaces/controllers/admin/IAdmin.CoinPlan.Controller';
+import IAdminReportController from '../core/interfaces/controllers/admin/IAdmin.report.Controller';
 const router = express.Router();
 
 const adminAuthMiddleware = container.get<IAdminAuthMiddleware>(TYPES.AdminAuthMiddleware)
@@ -15,7 +16,8 @@ const authController = container.get<IAuthController>(TYPES.AuthController);
 const adminController = container.get<IAdminController>(TYPES.AdminController);
 const UsersController = container.get<IUsersController>(TYPES.UsersController);
 const badgeController = container.get<IAdminBadgeController>(TYPES.AdminBadgeController);
-const coinPlanController = container.get<IAdminCoinPlanController>(TYPES.AdminCoinPlanController)
+const coinPlanController = container.get<IAdminCoinPlanController>(TYPES.AdminCoinPlanController);
+const reportController = container.get<IAdminReportController>(TYPES.AdminReportController);
 
 router.post('/login', authController.loginAdmin.bind(authController));
 router.post('/refresh-token', authController.refreshToken.bind(authController));
@@ -39,4 +41,5 @@ router.patch('/coin-plans/:id',adminAuthMiddleware.handle.bind(adminAuthMiddlewa
 router.post('/coin-plans/:id/list',adminAuthMiddleware.handle.bind(adminAuthMiddleware),coinPlanController.listPlan.bind(coinPlanController));
 router.post('/coin-plans/:id/unlist',adminAuthMiddleware.handle.bind(adminAuthMiddleware),coinPlanController.unlistPlan.bind(coinPlanController));
 
+router.get('/reports/users',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reportController.getAllUserReports.bind(reportController))
 export default router;

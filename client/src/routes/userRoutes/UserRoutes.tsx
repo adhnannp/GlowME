@@ -13,6 +13,8 @@ import OtherUserProfile from "@/pages/user/othersProfile/OtherProfile";
 import Connect from "@/pages/user/connectOthers/ConnectOthers";
 import ResetPasswordForm from "@/pages/user/resetPassword/resetPassword";
 import GCoinPage from "@/pages/user/GCoin/GCoin";
+import PaymentSuccessPage from "@/pages/user/payment/PaymentSuccess";
+import PaymentCancelledPage from "@/pages/user/payment/PaymentCancelled";
 
 const UserRoutes: React.FC = () => {
 
@@ -24,6 +26,8 @@ const UserRoutes: React.FC = () => {
         <Route path="/connect" element={<Connect/>}/>
         <Route path="/user/:id" element={<OtherUserProfile/>}/>
         <Route path="/GCoin" element={<GCoinPage/>} />
+        <Route path="/payment/success" element={<PaymentSuccessPage/>} />
+        <Route path="/payment/cancel" element={<PaymentCancelledPage/>} />
       </Route>
 
       <Route element={<PublicRoute />}>

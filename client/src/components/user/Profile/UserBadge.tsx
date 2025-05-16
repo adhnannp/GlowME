@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import BadgeCard from "./BadgeCard";
 import { fetchNonAcquiredBadges, fetchUserBadges } from "@/services/user/user.badge.service";
-import toast from "react-hot-toast";
 
 interface Badge {
   _id: string;
@@ -47,7 +46,7 @@ export default function UserBadges({ userId }: { userId: string }) {
 
       setBadges(sortedBadges);
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to load badges");
+      console.log("failed to fetch badges")
     } finally {
       setLoading(false);
     }

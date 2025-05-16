@@ -8,7 +8,7 @@ export interface ICoinTransaction extends Document {
   amount: number;
   coins:number;
   stripePaymentIntentId?: string;
-  stripeChargeId?: string;
+  transactionCode?:string;
   created_at?: Date;
   edited_at?: Date;
 }
@@ -19,9 +19,16 @@ const coinTransactionSchema = new mongoose.Schema<ICoinTransaction>({
   amount: { type: Number, required: true },
   coins:{type: Number, required: true},
   stripePaymentIntentId: { type: String, required: false },
-  stripeChargeId: { type: String, required: false },
+  transactionCode: { type: String, unique: true, required: false },
 },{
    timestamps: { createdAt: 'created_at', updatedAt: 'edited_at' }
+});
+
+coinTransactionSchema.pre('save', function (next) {
+  const datePart = new Date().toISOString().replace(/[-:.TZ]/g, '').slice(0, 8);
+  const randomPart = Math.random().toString(36).substring(2, 10).toUpperCase();
+  this.transactionCode = `GCOIN_${datePart}_${randomPart}`;
+  next();
 });
 
 export const  CoinTransactionModel = mongoose.model<ICoinTransaction>('CoinTransaction', coinTransactionSchema);

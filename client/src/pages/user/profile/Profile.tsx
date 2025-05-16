@@ -231,7 +231,7 @@ export default function ProfilePage() {
                           </div>
                         </div>
                         <div>
-                          <div className="text-xl">0</div>
+                          <div className="text-xl">{user.coin_balance}</div>
                           <div className="flex items-center text-yellow-500">
                             <Coins className="w-5 h-5 mr-1" />
                             Coins

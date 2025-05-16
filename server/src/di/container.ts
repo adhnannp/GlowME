@@ -66,6 +66,10 @@ import IUserCoinPlanController from '../core/interfaces/controllers/user/IUser.C
 import { UserCoinPlanController } from '../controllers/userController/user.coinPlan.controller';
 import ICoinTransactionRepository from '../core/interfaces/repositories/ICoinTransactionRepository';
 import { CoinTransactionRepository } from '../repositories/CoinTransactionRepository';
+import IAdminReportService from '../core/interfaces/services/admin/IAdmin.Report.Service';
+import { AdminReportService } from '../services/adminService/admin.report.service';
+import IAdminReportController from '../core/interfaces/controllers/admin/IAdmin.report.Controller';
+import { AdminReportController } from '../controllers/adminController/admin.report.controller';
 
 const container = new Container();
 
@@ -83,14 +87,15 @@ container.bind<IAuthService>(TYPES.AuthService).to(AuthService);
 container.bind<IOTPService>(TYPES.OTPService).to(OTPService);
 container.bind<IUserService>(TYPES.UserService).to(UserService);
 container.bind<IAdminService>(TYPES.AdminService).to(AdminService);
-container.bind<IUsersService>(TYPES.UsersService).to(UsersService)
+container.bind<IUsersService>(TYPES.UsersService).to(UsersService);
 container.bind<IUserConnectionService>(TYPES.UserConnectionService).to(UserConnectionService);
 container.bind<IGoogleAuthService>(TYPES.GoogleAuthService).to(GoogleAuthService);
-container.bind<IUserBadgeService>(TYPES.UserBadgeService).to(UserBadgeService)
+container.bind<IUserBadgeService>(TYPES.UserBadgeService).to(UserBadgeService);
 container.bind<IAdminBadgeService>(TYPES.AdminBadgeService).to(AdminBadgeService);
 container.bind<IForgotPasswordService>(TYPES.ForgotPasswordService).to(ForgotPasswordService);
 container.bind<IAdminCoinPlanService>(TYPES.AdminCoinPlanService).to(AdminCoinPlanService);
 container.bind<IUserCoinPlanService>(TYPES.UserCoinPlanService).to(UserCoinPlanService);
+container.bind<IAdminReportService>(TYPES.AdminReportService).to(AdminReportService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -103,7 +108,8 @@ container.bind<IAdminBadgeController>(TYPES.AdminBadgeController).to(AdminBadgeC
 container.bind<IUserBadgeController>(TYPES.UserBadgeController).to(UserBadgeController);
 container.bind<IForgotPasswordcontroller>(TYPES.ForgotPasswordController).to(ForgotPasswordcontroller);
 container.bind<IAdminCoinPlanController>(TYPES.AdminCoinPlanController).to(AdminCoinPlanController)
-container.bind<IUserCoinPlanController>(TYPES.UserCoinPlanController).to(UserCoinPlanController)
+container.bind<IUserCoinPlanController>(TYPES.UserCoinPlanController).to(UserCoinPlanController);
+container.bind<IAdminReportController>(TYPES.AdminReportController).to(AdminReportController);
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

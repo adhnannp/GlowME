@@ -46,7 +46,7 @@ export default function TransactionHistorySection() {
               ))}
             </tbody>
           </table>
-          <div className="bg-gray-50 py-3 px-4 text-right border-t">
+          <div id="transaction-history" className="bg-gray-50 py-3 px-4 text-right border-t">
             <span className="font-medium">Total Spend: </span>
             <span>$100</span>
           </div>

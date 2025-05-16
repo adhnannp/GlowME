@@ -15,4 +15,6 @@ export interface IUserRepository {
   unbanExpiredUsers(): Promise<boolean> ;
   updateUserPassword(userId: string, password: string): Promise<IUser | null>;
   updateUserProfile(userId: string, data: { username: string; profile_image?: string }): Promise<SafeUser | null>;
+  incrementCoin(userId: string, coins: number): Promise<SafeUser>;
+  incrementXp(userId: string, xp: number): Promise<void>;
 }

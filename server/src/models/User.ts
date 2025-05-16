@@ -16,7 +16,6 @@ export interface IUser extends Document {
   isAdmin?: boolean;
   badges?: IUserBadge[];
   currentBadge?: mongoose.Types.ObjectId;
-  badge?: string;
   xp?: number;
   coin_balance?:number;
   questions_explored?: number;

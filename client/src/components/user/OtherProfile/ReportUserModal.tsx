@@ -4,6 +4,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import api from "@/utils/axios";
+import { handleApiError } from "@/utils/errorHandling";
+import { AxiosError } from "axios";
 
 interface ReportUserModalProps {
   open: boolean;
@@ -29,8 +31,9 @@ const ReportUserModal = ({ open, onClose, userId }: ReportUserModalProps) => {
       });
       toast.success("User reported successfully");
       handleClose();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to report user");
+    } catch (error) {
+      const err = handleApiError(error as AxiosError | Error, 'Failed to report user');
+      toast.error(err.message);
     } finally {
       setLoading(false);
     }

@@ -10,6 +10,14 @@ export class ReportRepository implements IReportRepository {
     return await ReportModel.create(report);
   }
 
+  async findPendingReport(reporterId: string, reportedId: string): Promise<IReport | null> {
+    return await ReportModel.findOne({
+      reporter: reporterId,
+      reported_user: reportedId,
+      status: 'pending',
+    });
+  }
+
   async getUserReports(userId: string): Promise<IReport[] | null> {
     return await ReportModel.find({ reported_user: userId })
       .populate('reporter', 'username')
@@ -47,23 +55,42 @@ export class ReportRepository implements IReportRepository {
 
       groupedReportsMap.get(reportedUserId)!.reports.push(report);
     });
-    return Array.from(groupedReportsMap.values());
+      const groupedReports = Array.from(groupedReportsMap.values()).filter(
+        (group) => group.reports.some((r) => r.status === 'pending')
+      );
+      return groupedReports;
   }
 
-  async rejectReport(id:string){
-    return await ReportModel.findByIdAndUpdate(id,{$set:{status:"rejected"}},{new:true});
+  async findOneReport(id:string):Promise<IReport | null>{
+    return await ReportModel.findById(id)
   }
 
-  async rejectAllUserReport(reported_user:string){
-    return await ReportModel.updateMany({reported_user,status:{$ne:"resolved"}},{$set:{status:"rejected"}})
+  async rejectReport(id: string): Promise<void> {
+    await ReportModel.updateOne(
+      { _id: id },
+      { $set: { status: "rejected" } }
+    );
   }
 
-  async resolveReport(id:string){
-    return await ReportModel.findByIdAndUpdate(id,{$set:{status:"resolved"}},{new:true});
+  async rejectAllUserReport(reported_user: string): Promise<void> {
+    await ReportModel.updateMany(
+      { reported_user, status: { $ne: "resolved" } },
+      { $set: { status: "rejected" } }
+    );
   }
 
-  async resolveAllUserReport(reported_user:string){
-    return await ReportModel.updateMany({reported_user},{$set:{status:"resolved"}})
+  async resolveReport(id: string): Promise<void> {
+    await ReportModel.updateOne(
+      { _id: id },
+      { $set: { status: "resolved" } }
+    );
+  }
+
+  async resolveAllUserReport(reported_user: string): Promise<void> {
+    await ReportModel.updateMany(
+      { reported_user, status: { $ne: "rejected" } },
+      { $set: { status: "resolved" } }
+    );
   }
 
 }

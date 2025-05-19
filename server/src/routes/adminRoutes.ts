@@ -41,5 +41,9 @@ router.patch('/coin-plans/:id',adminAuthMiddleware.handle.bind(adminAuthMiddlewa
 router.post('/coin-plans/:id/list',adminAuthMiddleware.handle.bind(adminAuthMiddleware),coinPlanController.listPlan.bind(coinPlanController));
 router.post('/coin-plans/:id/unlist',adminAuthMiddleware.handle.bind(adminAuthMiddleware),coinPlanController.unlistPlan.bind(coinPlanController));
 
-router.get('/reports/users',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reportController.getAllUserReports.bind(reportController))
+router.get('/reports/users',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reportController.getAllUserReports.bind(reportController));
+router.patch('/reports/reject/:id',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reportController.rejectOne.bind(reportController));
+router.patch('/reports/reject-all/:userId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reportController.rejectAll.bind(reportController));
+router.patch('/reports/ban-user/:userId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reportController.banUserByReport.bind(reportController))
+
 export default router;

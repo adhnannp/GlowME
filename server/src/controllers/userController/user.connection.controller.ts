@@ -55,8 +55,9 @@ export class UserConnectionController implements IUserConnectionController {
       const result = await this.userConnectionService.reportUser(reporterId, userId, reason);
       res.status(200).json(result);
       return;
-    } catch (error) {
-      res.status(400).json(error);
+    } catch (err) {
+      const error = err as Error
+      res.status(400).json({message:error.message});
     }
   }
 

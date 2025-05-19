@@ -53,19 +53,16 @@ export class UserConnectionService implements IUserConnectionService {
     reportedId: string,
     reason: string
   ): Promise<IReport | null> {
+    const existingPendingReport = await this.reportRepo.findPendingReport(reporterId, reportedId);
+    if (existingPendingReport) {
+      throw new Error('A pending report already in Process.');
+    }
+
     const report = await this.reportRepo.createReport({
       reporter: reporterId,
       reported_user: reportedId,
       reason,
     });
-
-    // await this.notificationRepo.createNotification({
-    //   user: reportedId,
-    //   type: "report",
-    //   message: "Someone reported you",
-    //   related_user: reporterId,
-    // });
-
     return report;
   }
 

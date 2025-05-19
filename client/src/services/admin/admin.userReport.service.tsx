@@ -2,25 +2,27 @@ import api from "@/utils/axios";
 import { ApiResponse } from "@/interfaces/admin.report.interface";
 import { toast } from "react-hot-toast";
 import { ADMIN_API } from "@/config/adminApi";
+import { handleApiError } from "@/utils/errorHandling";
+import { AxiosError } from "axios";
 
 export const fetchReports = async (): Promise<ApiResponse> => {
   try {
     const response = await api.get<ApiResponse>(ADMIN_API.GET_USER_REPORT);
     return response.data;
   } catch (error) {
-    console.error("Error fetching reports:", error);
-    throw error;
+    const err = handleApiError(error as AxiosError | Error, 'Error fetching reports');
+    throw err;
   }
 };
 
-export const banUser = async (userId: string): Promise<void> => {
+export const banUser = async (userId: string , duration: string): Promise<void> => {
   try {
-    await api.patch(`${ADMIN_API.BAN_USER_REPORT}/${userId}`);
+    await api.patch(`${ADMIN_API.BAN_USER_REPORT}/${userId}`,  { duration } );
     toast.success("Banned successfully");
   } catch (error) {
-    console.error("Error banning user:", error);
     toast.error("Failed to ban user");
-    throw error;
+    const err = handleApiError(error as AxiosError | Error, 'Failed to ban user');
+    throw err;
   }
 };
 
@@ -29,9 +31,9 @@ export const rejectReport = async (reportId: string): Promise<void> => {
     await api.patch(`${ADMIN_API.REJECT_USER_REPORT}/${reportId}`);
     toast.success("Report rejected successfully");
   } catch (error) {
-    console.error("Error rejecting report:", error);
     toast.error("Failed to reject report");
-    throw error;
+    const err = handleApiError(error as AxiosError | Error, 'Failed to reject report');
+    throw err;
   }
 };
 
@@ -43,7 +45,8 @@ export const rejectAllReports = async (userId: string): Promise<void> => {
   } catch (error) {
     console.error("Error rejecting all reports:", error);
     toast.error("Failed to reject all reports");
-    throw error;
+    const err = handleApiError(error as AxiosError | Error, 'Failed to reject all reports');
+    throw err;
   }
 };
 
@@ -54,6 +57,7 @@ export const sendWarning = async (reportId: string): Promise<void> => {
   } catch (error) {
     console.error("Error sending warning:", error);
     toast.error("Failed to send warning");
-    throw error;
+    const err = handleApiError(error as AxiosError | Error, 'Failed to send warning');
+    throw err;
   }
 };

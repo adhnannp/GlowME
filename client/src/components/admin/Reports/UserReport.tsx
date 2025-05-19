@@ -4,12 +4,15 @@ import ReportedUserCard from "./ReportedUserCard";
 import ReportsModal from "./UserReportsModal";
 import { ReportedUser } from "@/interfaces/admin.report.interface";
 import { fetchReports, banUser, rejectReport, sendWarning, rejectAllReports } from "@/services/admin/admin.userReport.service";
+import BanUserModal from "../users/BanUserModal";
 
 export default function UsersReport() {
   const [reportedUsers, setReportedUsers] = useState<ReportedUser[]>([]);
   const [selectedUser, setSelectedUser] = useState<ReportedUser | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isBanModalOpen, setIsBanModalOpen] = useState(false);
+  const [banUserTarget, setBanUserTarget] = useState<ReportedUser | null>(null);
   const [confirmation, setConfirmation] = useState<{
     isOpen: boolean;
     title: string;
@@ -37,12 +40,13 @@ export default function UsersReport() {
     loadReports();
   }, []);
 
-  const handleBanUser = async (userId: string) => {
-    await banUser(userId);
+  const handleBanUser = async (userId: string, duration: string) => {
+    await banUser(userId, duration);
     setReportedUsers((prev) =>
       prev.filter((user) => user.reportedUser._id !== userId)
     );
   };
+
 
   const handleRejectReport = async (reportId: string) => {
     await rejectReport(reportId);
@@ -96,13 +100,13 @@ export default function UsersReport() {
   };
 
   const confirmBanUser = (userId: string) => {
-    showConfirmation(
-      "Ban User",
-      `Are you sure you want to ban ${reportedUsers.find((u) => u.reportedUser._id === userId)?.reportedUser.username}?`,
-      () => handleBanUser(userId),
-      "bg-destructive" 
-    );
+    const user = reportedUsers.find((u) => u.reportedUser._id === userId);
+    if (user) {
+      setBanUserTarget(user);
+      setIsBanModalOpen(true);
+    }
   };
+
 
   const confirmRejectReport = (reportId: string) => {
     showConfirmation(
@@ -170,6 +174,17 @@ export default function UsersReport() {
         message={confirmation.message}
         confirmButtonColor={confirmation.confirmButtonColor}
       />
+      {banUserTarget && (
+        <BanUserModal
+          isOpen={isBanModalOpen}
+          onClose={() => {
+            setIsBanModalOpen(false);
+            setBanUserTarget(null);
+          }}
+          onConfirm={handleBanUser}
+          user={banUserTarget.reportedUser}
+        />
+      )}
     </div>
   );
 }

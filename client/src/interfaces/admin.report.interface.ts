@@ -25,6 +25,7 @@ export interface ReportedUser {
     profile_image: string;
     coin_balance: number;
     questions_explored: number;
+    isAdmin:boolean;
   };
   reports: Report[];
 }

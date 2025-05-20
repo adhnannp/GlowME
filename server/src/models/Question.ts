@@ -1,24 +1,4 @@
-import mongoose, {Document} from "mongoose";
-
-
-// Table questions {
-//     id integer [primary key]
-//     createdBy integer [ref: > users.id]
-//     type enum('descriptive', 'optionol','survey')
-//     heading varchar
-//     header_image varchar
-//     description text
-//     tags array [ref: > tags.id]
-//     options text[]
-//     correct_answer varchar
-//     bounty_coin integer [default: 0]
-//     bounty_expires timestamp  
-//     created_at timestamp
-//     edited_at timestamp
-//     is_archive bool
-//     report_count integer [default: 0]
-//   }
-//reporter: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+import mongoose, {Document, Schema} from "mongoose";
 
 export interface IQuestion extends Document{
     heading: string;
@@ -27,19 +7,21 @@ export interface IQuestion extends Document{
     description: string;
     bounty_coin?:number;
     isListed:boolean;
-    created_at:Date;
-    edited_at:Date;
+    is_archive?:boolean;
+    created_at?:Date;
+    edited_at?:Date;
 }
 
 const questionSchema = new mongoose.Schema<IQuestion>({
-    heading: { type: String, required: true, unique: true },
-    createdBy:{ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    description:{type:String, required:true},
-    header_image: { type: String, required: true },
-    isListed: {type:Boolean, default:true},
-    bounty_coin:{type:Number, required:true, default:0},
-    created_at: { type: Date, default: Date.now },
-    edited_at: { type: Date, default: Date.now },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    heading: { type: String, required: true },
+    header_image: { type: String },
+    isListed:{type:Boolean,default:true},
+    description: { type: String },
+    bounty_coin: { type: Number, default: 0 },
+    is_archive: { type: Boolean, default: false },
+},{
+    timestamps: { createdAt: 'created_at', updatedAt: 'edited_at' }
 })
 
 export const QuestionModel = mongoose.model<IQuestion>('Question', questionSchema);

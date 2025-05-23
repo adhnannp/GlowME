@@ -46,17 +46,15 @@ export class CoinTransactionRepository implements ICoinTransactionRepository {
         userId: string,
         page: number = 1,
         limit: number = 10
-    ): Promise<ICoinTransaction[]> {
-        return await CoinTransactionModel.find({
-        userId: new Types.ObjectId(userId),
-        })
-        .populate({
-            path: "userId",
-            select: "-password",
-        })
-        .sort({ created_at: -1 })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean();
+    ): Promise<{transactions:ICoinTransaction[],total:number}> {
+        const [transactions, total] = await Promise.all([
+            CoinTransactionModel.find({ userId })
+                .sort({ created_at: -1 })
+                .skip((page - 1) * limit)
+                .limit(limit)
+                .lean(),
+            CoinTransactionModel.countDocuments({ userId })
+        ]);
+        return { transactions, total };
     }
 }

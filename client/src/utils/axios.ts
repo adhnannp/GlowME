@@ -35,7 +35,11 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
-
+    if(error.response.status === 400 && error.response.data.message === 'User invalid or banned'){
+        store.dispatch(logout());
+        window.location.href = "/login";
+        return;
+    }
     if (error.response?.status === 403 && !originalRequest._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {

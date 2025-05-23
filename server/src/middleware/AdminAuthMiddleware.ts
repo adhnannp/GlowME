@@ -29,7 +29,7 @@ export default class AdminAuthMiddleware implements IAdminAuthMiddleware {
       };
       const user = await this.userRepository.findUserById(decoded.userId);
       if (!user || user.isBlock ) {
-        res.status(400).json({ message: "User invalid or banned." });
+        res.status(400).json({ message: "User invalid or banned" });
         return;
       }
       if(!user.isAdmin){

@@ -12,7 +12,7 @@ export interface Badge {
   isListed: boolean;
   requiredXp: number;
   created_at: string;
-  edited_at: string;
+  updated_at: string;
 }
 
 interface BadgeTableProps {
@@ -91,7 +91,7 @@ export default function BadgeTable({ badges, loading, onEdit, onUpdateBadge }: B
                   <span>{badge.name}</span>
                 </TableCell>
                 <TableCell>{badge.requiredXp}</TableCell>
-                <TableCell>{new Date(badge.edited_at).toLocaleDateString()}</TableCell>
+                <TableCell>{new Date(badge.updated_at).toLocaleDateString()}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <button
                     onClick={() => handleListUnlist(badge)}

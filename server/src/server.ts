@@ -8,8 +8,16 @@ import container from './di/container';
 import { TYPES } from './di/types';
 import { IUnbanUsersJob } from './core/interfaces/middlewares/IUnbanUserJob';
 import { configureCloudinary } from "./config/cloudinary";
+import logger from './utils/logger';
+
 
 dotenv.config();
+
+logger.info('Server started');
+logger.warn('This is a warning');
+logger.error('This is an error');
+logger.verbose('App is preparing');
+logger.debug('Debug info here'); 
 
 connectDB();
 connectRedis();

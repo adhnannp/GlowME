@@ -78,4 +78,12 @@ export class UserCoinPlanService implements IUserCoinPlanService{
     return {transactionData,updatedUser};
   }
 
+  async getTransactionHistoryByUser(
+    userId: string,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{ transactions: ICoinTransaction[]; total: number }> {
+      return await this.coinTransactionRepo.getByUserId(userId, page, limit);
+  }
+
 }

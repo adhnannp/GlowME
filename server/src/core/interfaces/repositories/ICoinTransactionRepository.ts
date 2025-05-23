@@ -6,5 +6,5 @@ export default interface ICoinTransactionRepository{
     getById(transactionId: string): Promise<ICoinTransaction | null>;
     getAll(page: number, limit: number): Promise<ICoinTransaction[]>;
     findByStripeIntentId(intentId: string): Promise<ICoinTransaction | null>;
-    getByUserId( userId: string,page: number,limit: number ): Promise<ICoinTransaction[]>;
+    getByUserId( userId: string,page: number,limit: number ): Promise<{transactions:ICoinTransaction[];total:number}>;
 }

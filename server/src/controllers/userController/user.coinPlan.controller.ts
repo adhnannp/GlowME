@@ -72,4 +72,30 @@ export class UserCoinPlanController implements IUserCoinPlanController{
     }
   }
 
+  async getUserTransactionHistory(req: Request, res: Response) : Promise<void> {
+    try {
+        const userId = req.userId;
+        const page = parseInt(req.query.page as string) || 1;
+        if (!userId || isNaN(page) || page < 1) {
+          res.status(400).json({ message: "No credentials found or invalid page number" });
+          return;
+        }
+        const limit = 10;
+        const { transactions, total } = await this.coinPlanService.getTransactionHistoryByUser(userId, page, limit);
+        res.status(200).json({
+            transactions,
+            pagination: {
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit),
+                totalItems: total
+            }
+        });
+        return;
+    } catch (err) {
+        const error = err as Error;
+        res.status(400).json({ message:error.message });
+    }
+  }
+
 }

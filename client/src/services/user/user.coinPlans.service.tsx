@@ -41,3 +41,13 @@ export const PaymentSuccessDetails = async (sessionId:string) => {
     throw err;
   }
 }
+
+export const transactionHistory = async(page:number)=>{
+  try {
+    const response = await api.get(`${USER_API.GCOIN_TRANSACTION}?page=${page}`)
+    return response.data;
+  } catch (error) {
+    const err = handleApiError(error as AxiosError | Error, "No transaction History Found");
+    throw err;
+  }
+}

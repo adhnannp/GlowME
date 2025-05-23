@@ -21,6 +21,7 @@
     "@types/nodemailer": "^6.4.17",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
+    "@types/winston": "^2.4.4",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"
   },
@@ -45,6 +46,7 @@
     "redis": "^4.7.0",
     "reflect-metadata": "^0.2.2",
     "stripe": "^18.1.0",
+    "winston": "^3.17.0",
     "zod": "^3.24.3"
   }
 }

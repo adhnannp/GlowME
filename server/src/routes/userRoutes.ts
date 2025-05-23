@@ -63,5 +63,6 @@ router.patch('/user/update-profile',userAuthMiddleware.handle.bind(userAuthMiddl
 router.get('/Gcoin',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.getCoinPlans.bind(coinPlanController));
 router.post('/Gcoin/checkout',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.createCoinPlanCheckoutSession.bind(coinPlanController));
 router.get('/Gcoin/success/:sessionId',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.getCheckoutSessionDetails.bind(coinPlanController));
+router.get('/Gcoin/transaction-history',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.getUserTransactionHistory.bind(coinPlanController));
 
 export default router;

@@ -9,4 +9,5 @@ export const USER_API = {
     GET_COIN_PLANS:'/Gcoin',
     GCOIN_CHECKOUT:'/Gcoin/checkout',
     GCOIN_PAYMENT_SUCCESS: '/Gcoin/success',
+    GCOIN_TRANSACTION: '/Gcoin/transaction-history',
 }

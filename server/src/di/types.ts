@@ -7,6 +7,7 @@ export const TYPES = {
     BadgeRepository: Symbol.for('BadgeRepository'),
     CoinPlanRepository: Symbol.for('CoinPlanRepository'),
     CoinTransactionRepository: Symbol.for('CoinTransactionRepository'),
+    QuestionRepository: Symbol.for('QuestionRepository'),
   
     // Services
     AuthService: Symbol.for('AuthService'),

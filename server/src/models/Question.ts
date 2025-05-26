@@ -1,7 +1,7 @@
 import mongoose, {Document, Schema} from "mongoose";
 
 export interface IQuestion extends Document{
-    heading: string;
+    title: string;
     createdBy: string | mongoose.Types.ObjectId;
     header_image: string;
     description: string;
@@ -14,7 +14,7 @@ export interface IQuestion extends Document{
 
 const questionSchema = new mongoose.Schema<IQuestion>({
     createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    heading: { type: String, required: true },
+    title: { type: String, required: true, unique: true },
     header_image: { type: String },
     isListed:{type:Boolean,default:true},
     description: { type: String },

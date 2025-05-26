@@ -70,6 +70,8 @@ import IAdminReportService from '../core/interfaces/services/admin/IAdmin.Report
 import { AdminReportService } from '../services/adminService/admin.report.service';
 import IAdminReportController from '../core/interfaces/controllers/admin/IAdmin.report.Controller';
 import { AdminReportController } from '../controllers/adminController/admin.report.controller';
+import { IQuestionRepository } from '../core/interfaces/repositories/IQuestionRepository';
+import { QuestionRepository } from '../repositories/QuestionRepository';
 
 const container = new Container();
 
@@ -81,6 +83,7 @@ container.bind<IReportRepository>(TYPES.ReportRepository).to(ReportRepository);
 container.bind<IBadgeRepository>(TYPES.BadgeRepository).to(BadgeRepository);
 container.bind<ICoinPlanRepository>(TYPES.CoinPlanRepository).to(CoinPlanRepository);
 container.bind<ICoinTransactionRepository>(TYPES.CoinTransactionRepository).to(CoinTransactionRepository)
+container.bind<IQuestionRepository>(TYPES.QuestionRepository).to(QuestionRepository)
 
 // Services
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService);

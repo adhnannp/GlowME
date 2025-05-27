@@ -6,6 +6,7 @@ export interface IQuestion extends Document{
     header_image: string;
     description: string;
     bounty_coin?:number;
+    tags?: mongoose.Types.ObjectId[]; 
     isListed:boolean;
     is_archive?:boolean;
     created_at?:Date;
@@ -19,6 +20,7 @@ const questionSchema = new mongoose.Schema<IQuestion>({
     isListed:{type:Boolean,default:true},
     description: { type: String },
     bounty_coin: { type: Number, default: 0 },
+    tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
     is_archive: { type: Boolean, default: false },
 },{
     timestamps: { createdAt: 'created_at', updatedAt: 'edited_at' }

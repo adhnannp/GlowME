@@ -1,4 +1,3 @@
-// import React, { useState, useEffect } from "react";
 import { Routes, Route, /*useLocation*/ } from "react-router-dom";
 import Login from "@/pages/user/auth/Login";
 import Register from "@/pages/user/auth/Register";
@@ -15,6 +14,7 @@ import ResetPasswordForm from "@/pages/user/resetPassword/resetPassword";
 import GCoinPage from "@/pages/user/GCoin/GCoin";
 import PaymentSuccessPage from "@/pages/user/payment/PaymentSuccess";
 import PaymentCancelledPage from "@/pages/user/payment/PaymentCancelled";
+import AskQuestionPage from "@/pages/user/askQuestion/AskQuestion";
 
 const UserRoutes: React.FC = () => {
 
@@ -28,6 +28,7 @@ const UserRoutes: React.FC = () => {
         <Route path="/GCoin" element={<GCoinPage/>} />
         <Route path="/payment/success" element={<PaymentSuccessPage/>} />
         <Route path="/payment/cancel" element={<PaymentCancelledPage/>} />
+        <Route path="/ask-question" element={<AskQuestionPage/>} />
       </Route>
 
       <Route element={<PublicRoute />}>

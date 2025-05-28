@@ -8,6 +8,7 @@ import Pagination from "@/components/admin/users/Pagination";
 import BanUserModal from "@/components/admin/users/BanUserModal";
 import UnbanUserModal from "@/components/admin/users/UnbanUserModal";
 import type { User } from "@/interfaces/auth.interface";
+import { useDebounce } from "@/components/customHooks/useDebounce";
 
 export interface ApiResponse {
   message: string;
@@ -33,6 +34,9 @@ export default function UserDashboard() {
   const [isUnbanModalOpen, setIsUnbanModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
+  // Debounce the search term with a 500ms delay
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const pageFromUrl = params.get("page");
@@ -45,7 +49,9 @@ export default function UserDashboard() {
   const fetchUsers = async (page: number) => {
     setLoading(true);
     try {
-      const searchQuery = searchTerm ? `&search=${encodeURIComponent(searchTerm)}` : "";
+      const searchQuery = debouncedSearchTerm
+        ? `&search=${encodeURIComponent(debouncedSearchTerm)}`
+        : "";
       const response = await api.get(`/admin/users?page=${page}${searchQuery}`);
       const data: ApiResponse = response.data;
 
@@ -61,7 +67,7 @@ export default function UserDashboard() {
       window.history.pushState({}, "", `${window.location.pathname}?${params.toString()}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "An unknown error occurred");
-      console.error("Failed to fetch users:", err);
+      console.error("Failed to fetch users:", error);
     } finally {
       setLoading(false);
     }
@@ -69,7 +75,7 @@ export default function UserDashboard() {
 
   useEffect(() => {
     fetchUsers(currentPage);
-  }, [currentPage, searchTerm]);
+  }, [currentPage, debouncedSearchTerm]);
 
   const handleBanUser = (user: User) => {
     setSelectedUser(user);
@@ -136,10 +142,6 @@ export default function UserDashboard() {
                 </p>
               </div>
             </div>
-
-            {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">{error}</div>
-            )}
 
             <div className="rounded-lg border overflow-hidden">
               <UserTable

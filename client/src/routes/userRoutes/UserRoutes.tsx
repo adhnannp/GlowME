@@ -15,13 +15,16 @@ import GCoinPage from "@/pages/user/GCoin/GCoin";
 import PaymentSuccessPage from "@/pages/user/payment/PaymentSuccess";
 import PaymentCancelledPage from "@/pages/user/payment/PaymentCancelled";
 import AskQuestionPage from "@/pages/user/askQuestion/AskQuestion";
+import LandingPage from "@/pages/user/landingPage/LandingPage";
 
 const UserRoutes: React.FC = () => {
 
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
+      
       <Route element={<ProtectedRoute />}>
-        <Route path="/" element={<QuestionsPage />} />
+        <Route path="/home" element={<QuestionsPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/connect" element={<Connect/>}/>
         <Route path="/user/:id" element={<OtherUserProfile/>}/>

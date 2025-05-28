@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import api from "@/utils/axios";
 import Sidebar from "@/components/admin/SideBar/Sidebar";
 import BadgeTable, { type Badge } from "@/components/admin/badges/BadgeTable";
-import SearchBar from "@/components/admin/users/SearchBar";
 import UserHeader from "@/components/admin/users/UserHeader";
 import Pagination from "@/components/admin/users/Pagination";
 import BadgeAddModal from "@/components/admin/badges/BadgeAddModal";
@@ -12,11 +11,9 @@ import toast from "react-hot-toast";
 import { ADMIN_API } from "@/config/adminApi";
 
 export default function BadgeDashboard() {
-  const [badges, setBadges] = useState<Badge[]>([]);
   const [filteredBadges, setFilteredBadges] = useState<Badge[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [searchTerm, setSearchTerm] = useState<string>("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
@@ -29,7 +26,6 @@ export default function BadgeDashboard() {
       const response = await api.get(`/admin/badges`);
       const data = response.data;
 
-      setBadges(data.badges);
       setFilteredBadges(data.badges);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "An unknown error occurred");
@@ -58,7 +54,7 @@ export default function BadgeDashboard() {
         },
       });
       const badgeFromServer = response.data.badge;
-      setBadges((prev) =>
+      setFilteredBadges((prev) =>
         prev.map((badge) => (badge._id === badgeFromServer._id ? badgeFromServer : badge))
       );
       toast.success("Badge updated successfully");
@@ -72,9 +68,6 @@ export default function BadgeDashboard() {
 
 
   const handleBadgeUpdate = (updatedBadge: Badge) => {
-    setBadges((prev) =>
-      prev.map((badge) => (badge._id === updatedBadge._id ? updatedBadge : badge))
-    );
     setFilteredBadges((prev) =>
       prev.map((badge) => (badge._id === updatedBadge._id ? updatedBadge : badge))
     );
@@ -83,13 +76,6 @@ export default function BadgeDashboard() {
   useEffect(() => {
     fetchBadges();
   }, []);
-
-  useEffect(() => {
-    const lowerSearch = searchTerm.toLowerCase();
-    const filtered = badges.filter((badge) => badge.name.toLowerCase().includes(lowerSearch));
-    setFilteredBadges(filtered);
-    setCurrentPage(1);
-  }, [searchTerm, badges]);
 
   const handleEdit = (badge: Badge) => {
     setSelectedBadge(badge);
@@ -118,7 +104,7 @@ export default function BadgeDashboard() {
       });
   
       const createdBadge = response.data.badge;
-      setBadges((prev) => [...prev, createdBadge]);
+      setFilteredBadges((prev) => [...prev, createdBadge]);
       toast.success("Badge added successfully");
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed to add badge");
@@ -141,7 +127,6 @@ export default function BadgeDashboard() {
         <header className="bg-[#FFF8F0] border-b p-4 flex items-center justify-between">
           <h1 className="text-xl font-semibold">Badge Management</h1>
           <div className="flex items-center space-x-4">
-            <SearchBar value={searchTerm} onChange={setSearchTerm} />
             <UserHeader />
           </div>
         </header>

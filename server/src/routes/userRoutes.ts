@@ -11,6 +11,8 @@ import { IForgotPasswordcontroller } from '../core/interfaces/controllers/auth/I
 import { IUserBadgeController } from '../core/interfaces/controllers/user/IUser.Badge.Controller';
 import { profile_pictureUpload } from '../config/multerConfig';
 import IUserCoinPlanController from '../core/interfaces/controllers/user/IUser.CoinPlan.controller';
+import { IUserTagController } from '../core/interfaces/controllers/user/IUser.Tag.Controller';
+import { IUserQuestionController } from '../core/interfaces/controllers/user/IUser.Question.Controller';
 
 const router = express.Router();
 
@@ -23,6 +25,8 @@ const userConnectionController = container.get<IUserConnectionController>(TYPES.
 const forgotPasswordController = container.get<IForgotPasswordcontroller>(TYPES.ForgotPasswordController);
 const badgeController = container.get<IUserBadgeController>(TYPES.UserBadgeController)
 const coinPlanController = container.get<IUserCoinPlanController>(TYPES.UserCoinPlanController)
+const tagController = container.get<IUserTagController>(TYPES.UserTagController)
+const questionController = container.get<IUserQuestionController>(TYPES.UserQuestionController);
 
 router.post('/register', authController.register.bind(authController));
 router.post('/resend-otp', authController.resendOTP.bind(authController));
@@ -64,5 +68,8 @@ router.get('/Gcoin',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanC
 router.post('/Gcoin/checkout',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.createCoinPlanCheckoutSession.bind(coinPlanController));
 router.get('/Gcoin/success/:sessionId',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.getCheckoutSessionDetails.bind(coinPlanController));
 router.get('/Gcoin/transaction-history',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.getUserTransactionHistory.bind(coinPlanController));
+
+router.get('/questions/search-tags',userAuthMiddleware.handle.bind(userAuthMiddleware),tagController.searchTag.bind(tagController));
+router.get('/questions/check-title',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.checkTitleAvailablity.bind(questionController));
 
 export default router;

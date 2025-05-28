@@ -1,14 +1,21 @@
-// import { injectable, inject } from 'inversify';
+import { injectable, inject } from 'inversify';
+import { TYPES } from '../../di/types';
+import { IQuestionRepository } from '../../core/interfaces/repositories/IQuestionRepository';
+import { IUserQuestionService } from '../../core/interfaces/services/user/IUser.Question.Service';
 
-// @injectable()
-// export class UserQuestionService {
+@injectable()
+export class UserQuestionService implements IUserQuestionService{
 
-//   constructor(
-//     @inject(TYPES.BadgeRepository) private badgeRepository: IBadgeRepository,
-//     @inject(TYPES.UserRepository) private userRepository: IUserRepository
-//   ) {}
+  constructor(
+    @inject(TYPES.QuestionRepository) private questionRepo: IQuestionRepository,
+  ) {}
 
-//   async getAvailableBadges(userId: string): Promise<IBadge[]> {
-//     return await this.badgeRepository.getAvailableBadges(userId);
-//   }
-// }
+  async checkTitleAvailablity(title:string) : Promise<boolean>{
+    const question = await this.questionRepo.getQuestionByTitle(title)
+    if(!question){
+        return true;
+    }
+    return false;
+  }
+
+}

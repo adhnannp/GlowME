@@ -4,6 +4,7 @@ import { IUser, UserModel } from '../models/User';
 import { SafeUser } from '../core/types/SafeUser';
 import bcrypt from 'bcrypt';
 import { passwordSchema, usernameSchema } from '../validators/userDataValidation';
+import { FilterQuery } from 'mongoose';
 
 @injectable()
 export class UserRepository implements IUserRepository {
@@ -25,16 +26,31 @@ export class UserRepository implements IUserRepository {
       return await UserModel.findById(id).populate('currentBadge').select("-password");
   }
 
-  async getAllUser(skip:number=0,limit:number=8): Promise<SafeUser[]| null >{
-      return await UserModel.find({isAdmin:false},'-password')
+  async getAllUser(skip: number = 0, limit: number = 8, search: string = ""): Promise<SafeUser[] | null> {
+    let query:FilterQuery<typeof UserModel> = { isAdmin: false };
+
+    if (search) {
+      query = {
+        ...query,
+        $or: [
+          { username: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+        ],
+      };
+    }
+
+    const users = await UserModel.find(query, "-password")
       .populate({
-        path: 'currentBadge',
-        select: 'name image requiredXp',
+        path: "currentBadge",
+        select: "name image requiredXp",
       })
-      .sort({ created_at: -1 })
+      .sort({ username: 1 })
       .skip(skip)
       .limit(limit)
-      .lean()
+      .lean();
+
+    if (!users.length) return null;
+    return users;
   }
 
   async getAllUsersWithFilter(
@@ -55,8 +71,19 @@ export class UserRepository implements IUserRepository {
       .lean();
   }
 
-  async totalUser(): Promise<number>{
-    return await UserModel.countDocuments({isAdmin:false});
+  async totalUser(search:string = ""): Promise<number>{
+    let query:FilterQuery<typeof UserModel> = { isAdmin: false };
+
+    if (search) {
+      query = {
+        ...query,
+        $or: [
+          { username: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+        ],
+      };
+    }
+    return await UserModel.countDocuments(query);
   }
 
   async totalUsersWithFilter(filter: any = {}): Promise<number> {

@@ -66,12 +66,12 @@ export class UserConnectionService implements IUserConnectionService {
     return report;
   }
 
-  async getUsers(skip: number,limit:number,currentUserId:string): Promise<[SafeUser[], number] | null> {
+  async getUsers(skip: number,limit:number,search:string=""): Promise<[SafeUser[], number] | null> {
     if (skip < 0) {
       return null;
     }
-    const users = await this.userRepo.getAllUsersWithFilter(skip, limit,{});
-    const TotalUsers = await this.userRepo.totalUsersWithFilter({});
+    const users = await this.userRepo.getAllUser(skip, limit,search);
+    const TotalUsers = await this.userRepo.totalUser(search);
     if (!users) return null;
     return [users, TotalUsers];
   }

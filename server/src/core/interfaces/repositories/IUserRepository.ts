@@ -6,9 +6,9 @@ export interface IUserRepository {
   createGoogleUser(user:Partial<IUser>):Promise<IUser>;
   findUserByEmail(email: string): Promise<IUser| null>;
   findUserById(id: string): Promise<Omit<IUser, "password"> |null>;
-  getAllUser(skip:number,limit:number): Promise<SafeUser[] | null>;
+  getAllUser(skip:number,limit:number,search?: string): Promise<SafeUser[] | null>;
   getAllUsersWithFilter(skip: number,limit: number,filter: any): Promise<SafeUser[] | null> 
-  totalUser(): Promise<number>;
+  totalUser(search?:string): Promise<number>;
   totalUsersWithFilter(filter?: any): Promise<number>;
   banUser(userId: string, banExpiresAt?: Date | null): Promise<SafeUser | null>;
   unbanUser(userId: string): Promise<SafeUser | null>;

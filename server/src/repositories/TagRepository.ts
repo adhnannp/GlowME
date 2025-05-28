@@ -9,6 +9,10 @@ export class TagRepository extends BaseRepository<ITag> implements ITagRepositor
     super(TagModel);
   }
 
+  async searchTag(regex:RegExp):Promise<ITag[]>{
+    return TagModel.find({ name: regex, isListed: true }).limit(5).exec();
+  }
+
   async getAllTags() :Promise<ITag[]> {
     return await TagModel.find();
   }

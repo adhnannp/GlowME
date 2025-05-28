@@ -73,13 +73,21 @@ const EditProfileModal = ({ open, onClose }: EditProfileModalProps) => {
     }
   };
 
+  const hasChanges = () => {
+    // Check if username has changed (trimmed comparison to ignore whitespace)
+    const usernameChanged = username.trim() !== (user?.username || "").trim();
+    // Check if a new cropped image exists
+    const imageChanged = croppedImageFile !== null;
+    return usernameChanged || imageChanged;
+  };
+
   const handleSubmit = async () => {
+    // Validate username with Zod
     try {
-      // Validate username with Zod
       usernameSchema.parse(username);
     } catch (error) {
       if (error instanceof z.ZodError) {
-        const errorMessage = error.errors[0].message; // Get first error message
+        const errorMessage = error.errors[0].message;
         toast.error(errorMessage);
         return;
       }
@@ -87,10 +95,16 @@ const EditProfileModal = ({ open, onClose }: EditProfileModalProps) => {
       return;
     }
 
+    // Skip API call if no changes
+    if (!hasChanges()) {
+      handleClose();
+      return;
+    }
+
     setLoading(true);
     try {
       const updatedUser = await updateUserProfile({
-        username: username.trim(), // Trim before sending
+        username: username.trim(),
         profile_image: croppedImageFile,
       });
 
@@ -104,7 +118,7 @@ const EditProfileModal = ({ open, onClose }: EditProfileModalProps) => {
   };
 
   const handleClose = () => {
-    setUsername(user?.username || "");
+    setUsername(username||"");
     setFileError(null);
     setImage(null);
     setCroppedImageFile(null);

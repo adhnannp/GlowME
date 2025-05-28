@@ -86,7 +86,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSideb
 
       <div className="flex-1">
         <nav className="space-y-1 py-2">
-          <Link to="/">
+          <Link to="/home">
             <SidebarItem
               icon={<Home className="h-5 w-5" />}
               label="Home"

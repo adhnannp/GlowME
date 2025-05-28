@@ -72,6 +72,16 @@ import IAdminReportController from '../core/interfaces/controllers/admin/IAdmin.
 import { AdminReportController } from '../controllers/adminController/admin.report.controller';
 import { IQuestionRepository } from '../core/interfaces/repositories/IQuestionRepository';
 import { QuestionRepository } from '../repositories/QuestionRepository';
+import { ITagRepository } from '../core/interfaces/repositories/ITagRepository';
+import { TagRepository } from '../repositories/TagRepository';
+import { IUserTagService } from '../core/interfaces/services/user/IUser.Tag.Service';
+import { UserTagService } from '../services/userService/user.tag.service';
+import { IUserTagController } from '../core/interfaces/controllers/user/IUser.Tag.Controller';
+import { UserTagController } from '../controllers/userController/user.tag.controller';
+import { IUserQuestionService } from '../core/interfaces/services/user/IUser.Question.Service';
+import { UserQuestionService } from '../services/userService/user.question.service';
+import { IUserQuestionController } from '../core/interfaces/controllers/user/IUser.Question.Controller';
+import { UserQuestionController } from '../controllers/userController/user.question.controller';
 
 const container = new Container();
 
@@ -82,8 +92,9 @@ container.bind<INotificationRepository>(TYPES.NotificationRepository).to(Notific
 container.bind<IReportRepository>(TYPES.ReportRepository).to(ReportRepository);
 container.bind<IBadgeRepository>(TYPES.BadgeRepository).to(BadgeRepository);
 container.bind<ICoinPlanRepository>(TYPES.CoinPlanRepository).to(CoinPlanRepository);
-container.bind<ICoinTransactionRepository>(TYPES.CoinTransactionRepository).to(CoinTransactionRepository)
-container.bind<IQuestionRepository>(TYPES.QuestionRepository).to(QuestionRepository)
+container.bind<ICoinTransactionRepository>(TYPES.CoinTransactionRepository).to(CoinTransactionRepository);
+container.bind<IQuestionRepository>(TYPES.QuestionRepository).to(QuestionRepository);
+container.bind<ITagRepository>(TYPES.TagRepository).to(TagRepository);
 
 // Services
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService);
@@ -99,6 +110,8 @@ container.bind<IForgotPasswordService>(TYPES.ForgotPasswordService).to(ForgotPas
 container.bind<IAdminCoinPlanService>(TYPES.AdminCoinPlanService).to(AdminCoinPlanService);
 container.bind<IUserCoinPlanService>(TYPES.UserCoinPlanService).to(UserCoinPlanService);
 container.bind<IAdminReportService>(TYPES.AdminReportService).to(AdminReportService);
+container.bind<IUserTagService>(TYPES.UserTagService).to(UserTagService);
+container.bind<IUserQuestionService>(TYPES.UserQuestionService).to(UserQuestionService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -113,6 +126,8 @@ container.bind<IForgotPasswordcontroller>(TYPES.ForgotPasswordController).to(For
 container.bind<IAdminCoinPlanController>(TYPES.AdminCoinPlanController).to(AdminCoinPlanController)
 container.bind<IUserCoinPlanController>(TYPES.UserCoinPlanController).to(UserCoinPlanController);
 container.bind<IAdminReportController>(TYPES.AdminReportController).to(AdminReportController);
+container.bind<IUserTagController>(TYPES.UserTagController).to(UserTagController);
+container.bind<IUserQuestionController>(TYPES.UserQuestionController).to(UserQuestionController)
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

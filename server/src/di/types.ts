@@ -8,6 +8,7 @@ export const TYPES = {
     CoinPlanRepository: Symbol.for('CoinPlanRepository'),
     CoinTransactionRepository: Symbol.for('CoinTransactionRepository'),
     QuestionRepository: Symbol.for('QuestionRepository'),
+    TagRepository: Symbol.for('TagRepository'),
   
     // Services
     AuthService: Symbol.for('AuthService'),
@@ -23,6 +24,9 @@ export const TYPES = {
     AdminCoinPlanService: Symbol.for('AdminCoinPlanService'),
     UserCoinPlanService: Symbol.for('UserCoinPlanService'),
     AdminReportService: Symbol.for('AdminReportService'),
+    UserTagService: Symbol.for('UserTagService'),
+    AdminTagService: Symbol.for('AdminTagService'),
+    UserQuestionService: Symbol.for('UserQuestionService'),
 
     // Controllers
     AuthController: Symbol.for('AuthController'),
@@ -37,6 +41,9 @@ export const TYPES = {
     AdminCoinPlanController: Symbol.for('AdminCoinPlanController'),
     UserCoinPlanController: Symbol.for('UserCoinPlanController'),
     AdminReportController: Symbol.for('AdminReportController'),
+    UserTagController: Symbol.for('UserTagController'),
+    AdminTagController: Symbol.for('AdminTagController'),
+    UserQuestionController: Symbol.for('UserQuestionController'), 
 
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),

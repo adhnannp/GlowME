@@ -10,4 +10,7 @@ export const USER_API = {
     GCOIN_CHECKOUT:'/Gcoin/checkout',
     GCOIN_PAYMENT_SUCCESS: '/Gcoin/success',
     GCOIN_TRANSACTION: '/Gcoin/transaction-history',
+    SEARCH_TAGS: '/questions/search-tags',
+    CHECK_TITLE:'/questions/check-title',
+    CHECK_SIMILAR: '/questions/similar-questions',
 }

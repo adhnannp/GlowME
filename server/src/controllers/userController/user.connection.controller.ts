@@ -64,19 +64,20 @@ export class UserConnectionController implements IUserConnectionController {
   async getUsers(req: Request, res: Response): Promise<void> {
     try {
       const userId = req.userId
+      const search = typeof req.query.search === "string" ? req.query.search : "";
       if(!userId) {
         res.status(404).json({ error: "Invalid credentails" });
         return
       } 
       const pageParam = req.query.page;
       const page = typeof pageParam === 'string' ? parseInt(pageParam) : 1;
-      const limit = 12;
+      const limit = 4;
       if (isNaN(page) || page < 1) {
         res.status(400).json({ message: 'Invalid page number' });
         return;
       }
       const skip = (page - 1) * limit;
-      const result = await this.userConnectionService.getUsers(skip, limit,userId);
+      const result = await this.userConnectionService.getUsers(skip, limit,search);
       if (!result) {
         res.status(404).json({ error: "No users found" });
         return;

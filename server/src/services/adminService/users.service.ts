@@ -11,13 +11,13 @@ export default class UsersService implements IUsersService {
         @inject(TYPES.UserRepository) private userRepository: IUserRepository
     ) {}
 
-    async getUser(skip:number,limit:number): Promise<[SafeUser[],number] | null>{
+    async getUser(skip:number,limit:number,search:string=""): Promise<[SafeUser[],number] | null>{
         if(skip<0) {
             return null;
         } 
-        const users = await this.userRepository.getAllUser(skip,limit);
-        const totalUsers = await this.userRepository.totalUser()
-        if(!users)return null;
+        const users = await this.userRepository.getAllUser(skip,limit,search);
+        const totalUsers = await this.userRepository.totalUser(search)
+        if(!users)return [[],totalUsers];
         return [users,totalUsers];
     }
 

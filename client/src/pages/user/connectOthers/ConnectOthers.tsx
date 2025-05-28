@@ -9,7 +9,7 @@ import Sidebar from "@/components/user/SideBar/SideBar";
 import { UserWithBadge } from "@/interfaces/auth.interface";
 import api from "@/utils/axios";
 import { Link } from "react-router-dom";
-
+import { useDebounce } from "@/components/customHooks/useDebounce";
 
 interface UserProps {
   user: UserWithBadge;
@@ -28,12 +28,12 @@ const UserCard: React.FC<UserProps> = ({ user }) => {
           <div className="flex items-center">
             <span className="font-medium mr-2">{user.username}</span>
             {user?.currentBadge?.image && (
-              <img 
-                src={`${import.meta.env.VITE_BASE_URL}${user.currentBadge.image}`} 
-                alt="Badge" 
-                className="w-5 h-5" 
+              <img
+                src={`${import.meta.env.VITE_BASE_URL}${user.currentBadge.image}`}
+                alt="Badge"
+                className="w-5 h-5"
               />
-            )}          
+            )}
           </div>
         </div>
         <div className="flex items-center text-sm">
@@ -52,8 +52,10 @@ export default function Connect() {
   const [totalPages, setTotalPages] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>(""); 
+  const usersPerPage = 4;
 
-  const usersPerPage = 12;
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   const toggleSidebar = () => {
     setSidebarExpanded(!sidebarExpanded);
@@ -62,7 +64,10 @@ export default function Connect() {
   const fetchUsers = async (page: number) => {
     try {
       setLoading(true);
-      const response = await api.get(`/users?page=${page}&limit=${usersPerPage}`);
+      const searchQuery = debouncedSearchTerm
+        ? `&search=${encodeURIComponent(debouncedSearchTerm)}`
+        : "";
+      const response = await api.get(`/users?page=${page}&limit=${usersPerPage}${searchQuery}`);
       const data = response.data;
 
       setUsers(Array.isArray(data.users) ? data.users : []);
@@ -78,6 +83,11 @@ export default function Connect() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    setCurrentPage(1); 
+    fetchUsers(1);
+  }, [debouncedSearchTerm]);
 
   useEffect(() => {
     fetchUsers(currentPage);
@@ -123,6 +133,8 @@ export default function Connect() {
                   type="text"
                   placeholder="Search..."
                   className="pl-4 pr-10 py-2 border rounded-md"
+                  value={searchTerm} 
+                  onChange={(e) => setSearchTerm(e.target.value)} 
                 />
                 <Button variant="ghost" size="icon" className="absolute right-0 top-0 h-full">
                   <Search className="h-4 w-4" />

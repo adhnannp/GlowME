@@ -7,9 +7,10 @@ import { MarkdownField } from './MarkdownField';
 import { TagsField } from './TagsField';
 import { BountyField } from './BountyField';
 import { SimilarQuestionsModal } from './SimilarQuestionModal';
+import { QuestionFormData } from '@/validations/question/questionSchema';
 
 interface QuestionFormProps {
-  onSubmit?: (data: any) => Promise<void>;
+  onSubmit?: (data: QuestionFormData) => Promise<void>;
 }
 
 export default function QuestionForm({ onSubmit }: QuestionFormProps) {

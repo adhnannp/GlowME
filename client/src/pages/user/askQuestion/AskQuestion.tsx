@@ -2,6 +2,8 @@ import Sidebar from "@/components/user/SideBar/SideBar";
 import QuestionForm from "@/components/user/askQuestion/QuestionForm";
 import Header from "@/components/user/Header/Header";
 import { useState } from "react";
+import { QuestionFormData } from "@/validations/question/questionSchema";
+import { createQuestion } from "@/services/user/user.AddQuestion.service";
 
 export default function AskQuestionPage() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true);
@@ -10,8 +12,28 @@ export default function AskQuestionPage() {
     setSidebarExpanded(!sidebarExpanded);
   };
 
-  const handleQuestionSubmit = async (data: any) => {
+  const handleQuestionSubmit = async (data: QuestionFormData) => {
     console.log("Question submitted:", data);
+    try {
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("problemDetails", data.problemDetails);
+      formData.append("isBounty", String(data.isBounty));
+      formData.append("bountyCoins", String(data.bountyCoins));
+      formData.append("tags", JSON.stringify(data.tags));
+      if (data.image) {
+        formData.append("image", data.image, data.image.name);
+      }
+      if (data.document) {
+        formData.append("document", data.document, data.document.name);
+      }
+      const response = await createQuestion(formData)
+      console.log("Question created successfully:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error creating question:", error);
+      throw error instanceof Error ? error : new Error("Failed to create question");
+    }
   };
 
   return (

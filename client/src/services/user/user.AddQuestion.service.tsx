@@ -53,3 +53,17 @@ export const fetchSimilarQuestions = async (title: string): Promise<SimilarQuest
     throw err;
   }
 };
+
+export const createQuestion = async (data: FormData): Promise<any> => {
+  try {
+    const response = await api.post('/questions/create', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    const err = handleApiError(error as AxiosError | Error, 'Failed to create question');
+    throw err;
+  }
+};

@@ -9,6 +9,7 @@ import { IAdminBadgeController } from '../core/interfaces/controllers/admin/IAdm
 import { badgeUpload } from '../config/multerConfig';
 import IAdminCoinPlanController from '../core/interfaces/controllers/admin/IAdmin.CoinPlan.Controller';
 import IAdminReportController from '../core/interfaces/controllers/admin/IAdmin.report.Controller';
+import { IAdminTagController } from '../core/interfaces/controllers/admin/IAdmin.Tag.Controller';
 const router = express.Router();
 
 const adminAuthMiddleware = container.get<IAdminAuthMiddleware>(TYPES.AdminAuthMiddleware)
@@ -18,6 +19,7 @@ const UsersController = container.get<IUsersController>(TYPES.UsersController);
 const badgeController = container.get<IAdminBadgeController>(TYPES.AdminBadgeController);
 const coinPlanController = container.get<IAdminCoinPlanController>(TYPES.AdminCoinPlanController);
 const reportController = container.get<IAdminReportController>(TYPES.AdminReportController);
+const tagController = container.get<IAdminTagController>(TYPES.AdminTagController);
 
 router.post('/login', authController.loginAdmin.bind(authController));
 router.post('/refresh-token', authController.refreshToken.bind(authController));
@@ -45,5 +47,11 @@ router.get('/reports/users',adminAuthMiddleware.handle.bind(adminAuthMiddleware)
 router.patch('/reports/reject/:id',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reportController.rejectOne.bind(reportController));
 router.patch('/reports/reject-all/:userId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reportController.rejectAll.bind(reportController));
 router.patch('/reports/ban-user/:userId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reportController.banUserByReport.bind(reportController))
+
+router.get('/tags',adminAuthMiddleware.handle.bind(adminAuthMiddleware),tagController.getAllTags.bind(tagController))
+router.post('/tags',adminAuthMiddleware.handle.bind(adminAuthMiddleware),tagController.createTag.bind(tagController))
+router.patch('/tags/:id',adminAuthMiddleware.handle.bind(adminAuthMiddleware),tagController.editTagName.bind(tagController))
+router.patch('/tags/list/:id',adminAuthMiddleware.handle.bind(adminAuthMiddleware),tagController.listTag.bind(tagController))
+router.patch('/tags/unlist/:id',adminAuthMiddleware.handle.bind(adminAuthMiddleware),tagController.unlistTag.bind(tagController))
 
 export default router;

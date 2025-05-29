@@ -10,4 +10,10 @@ export const ADMIN_API = {
     REJECT_USER_REPORT:'/admin/reports/reject',
     REJECT_ALL_USER_REPORT:'/admin/reports/reject-all',
     WARNING_USER_REPORT:'/admin/reports/warning',
+    GET_TAG: "/admin/tags",
+    ADD_TAG: "/admin/tags",
+    EDIT_TAG: "/admin/tags",
+    LIST_TAG: "/admin/tags/list",
+    UNLIST_TAG: "/admin/tags/unlist",
+
 }

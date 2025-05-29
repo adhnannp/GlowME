@@ -62,7 +62,7 @@ const RegisterForm: React.FC = () => {
       if (token) {
         localStorage.setItem('accessToken', token);
         toast.success('Google login successful!');
-        navigate('/');
+        navigate('/home');
       } else {
         toast.error('Google login failed.');
       }

@@ -72,7 +72,7 @@ export default function LandingPage() {
         <p className="text-lg text-gray-600 mb-8 max-w-xl mx-auto">
           Sign up today to join a community of learners and earners. Ask questions, share knowledge, and unlock amazing rewards!
         </p>
-        <Link to={isLoggedIn ? "/home" : "/signup"}>
+        <Link to={isLoggedIn ? "/home" : "/register"}>
           <Button className="bg-black text-white px-6 py-3 text-lg hover:bg-gray-800">
             {isLoggedIn ? "Go to Home" : "Sign Up Now"}
           </Button>

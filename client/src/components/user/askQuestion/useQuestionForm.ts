@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { baseQuestionFormSchema, questionFormSchema, QuestionFormData } from '../../../validations/question/questionSchema';
 import { useDebounce } from '@/components/customHooks/useDebounce';
 import { checkTitleAvailability, fetchSimilarQuestions } from '@/services/user/user.AddQuestion.service';
+import toast from 'react-hot-toast';
 
 export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<void>) {
   const [formData, setFormData] = useState<QuestionFormData>({
@@ -144,6 +145,7 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
 
     try {
       await onSubmit?.(result.data);
+      toast.success('question posted successfully');
       setFormData({
         title: '',
         problemDetails: '',
@@ -155,6 +157,8 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
       setTitleStatus({ status: 'idle' });
       setSimilarQuestions([]);
     } catch (error) {
+      const err = error as Error
+      toast.error(err.message);
       console.error('Error submitting question:', error);
       setFormErrors({ general: 'Failed to post question. Please try again.' });
     } finally {

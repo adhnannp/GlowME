@@ -10,6 +10,10 @@ export class AdminTagService implements IAdminTagService {
     @inject(TYPES.TagRepository)private tagRepository: ITagRepository
   ) {}
 
+  async getAllTags(): Promise<ITag[]> {
+    return this.tagRepository.findAll();
+  }
+
   async createTag(name: string): Promise<ITag> {
     return this.tagRepository.create({ name });
   }

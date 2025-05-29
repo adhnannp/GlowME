@@ -49,7 +49,7 @@ const LoginForm: React.FC = () => {
       if (token) {
         localStorage.setItem('accessToken', token);
         toast.success('Google login successful!');
-        navigate('/');
+        navigate('/home');
       } else {
         toast.error('Google login failed.');
       }
@@ -69,7 +69,7 @@ const LoginForm: React.FC = () => {
       const result = await dispatch(userLogin(data) as any);
       if (userLogin.fulfilled.match(result)) {
         toast.success('Login successful!');
-        navigate('/');
+        navigate('/home');
       } else {
         toast.error(result.payload || 'Login failed. Please try again.');
       }

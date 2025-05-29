@@ -8,29 +8,9 @@ import AdminProtectedRoute from "@/routes/adminRoutes/AdminProtectedRoute";
 import BadgeDashboard from "@/pages/admin/badges/Badges";
 import GCoinDashboard from "@/pages/admin/GCoin/GCoinDashboard";
 import CouponDashboard from "@/pages/admin/coupons/CouponDashboard";
+import TagDashboard from "@/pages/admin/tags/TagDashboard";
 
 const AdminRoutes:React.FC = () => {
-  // const [isLoading, setIsLoading] = useState(true);
-  // const location = useLocation();
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-
-  //   // Simulate a 3-second loading time
-  //   const timer = setTimeout(() => {
-  //     setIsLoading(false);
-  //   }, 3000);
-
-  //   return () => clearTimeout(timer);
-  // }, [location]);
-
-  // if (isLoading) {
-  //   return (
-  //     <div className="flex items-center justify-center h-screen bg-white">
-  //       <img src="/loading.gif" alt="Loading..." className="w-10 h-10" />
-  //     </div>
-  //   );
-  // }
 
   return (
     <Routes>
@@ -43,6 +23,7 @@ const AdminRoutes:React.FC = () => {
         <Route path="/GCoins" element={<GCoinDashboard />} />
         <Route path="/coupons" element={<CouponDashboard />} />
         <Route path="/reports" element={<ReportsPage />} />
+        <Route path="/tags" element={<TagDashboard />} />
       </Route>
     </Routes>
   );

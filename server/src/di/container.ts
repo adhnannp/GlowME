@@ -82,6 +82,10 @@ import { IUserQuestionService } from '../core/interfaces/services/user/IUser.Que
 import { UserQuestionService } from '../services/userService/user.question.service';
 import { IUserQuestionController } from '../core/interfaces/controllers/user/IUser.Question.Controller';
 import { UserQuestionController } from '../controllers/userController/user.question.controller';
+import { IAdminTagController } from '../core/interfaces/controllers/admin/IAdmin.Tag.Controller';
+import { AdminTagController } from '../controllers/adminController/admin.tag.controller';
+import { IAdminTagService } from '../core/interfaces/services/admin/IAdmin.Tag.Service';
+import { AdminTagService } from '../services/adminService/admin.tag.service';
 
 const container = new Container();
 
@@ -111,6 +115,7 @@ container.bind<IAdminCoinPlanService>(TYPES.AdminCoinPlanService).to(AdminCoinPl
 container.bind<IUserCoinPlanService>(TYPES.UserCoinPlanService).to(UserCoinPlanService);
 container.bind<IAdminReportService>(TYPES.AdminReportService).to(AdminReportService);
 container.bind<IUserTagService>(TYPES.UserTagService).to(UserTagService);
+container.bind<IAdminTagService>(TYPES.AdminTagService).to(AdminTagService)
 container.bind<IUserQuestionService>(TYPES.UserQuestionService).to(UserQuestionService);
 
 // Controllers
@@ -128,6 +133,7 @@ container.bind<IUserCoinPlanController>(TYPES.UserCoinPlanController).to(UserCoi
 container.bind<IAdminReportController>(TYPES.AdminReportController).to(AdminReportController);
 container.bind<IUserTagController>(TYPES.UserTagController).to(UserTagController);
 container.bind<IUserQuestionController>(TYPES.UserQuestionController).to(UserQuestionController)
+container.bind<IAdminTagController>(TYPES.AdminTagController).to(AdminTagController)
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

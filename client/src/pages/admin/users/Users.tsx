@@ -34,7 +34,6 @@ export default function UserDashboard() {
   const [isUnbanModalOpen, setIsUnbanModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  // Debounce the search term with a 500ms delay
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   useEffect(() => {

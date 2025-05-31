@@ -13,12 +13,21 @@ export class TagRepository extends BaseRepository<ITag> implements ITagRepositor
     return TagModel.find({ name: regex, isListed: true }).limit(5).exec();
   }
 
-  async getAllTags() :Promise<ITag[]> {
-    return await TagModel.find();
+  async getAllTags(skip: number, limit: number, search: string): Promise<[ITag[], number]> {
+    const query = search
+      ? { name: { $regex: search, $options: "i" } }
+      : {};
+    const tags = await TagModel.find(query).skip(skip).limit(limit).exec();
+    const totalTags = await TagModel.countDocuments(query);
+    return [tags, totalTags];
   }
 
   async getListedTags() :Promise<ITag[]> {
     return await TagModel.find({isListed:true});
-  }  
+  }
+  
+  async getTagByName(name:string): Promise<ITag | null> {
+    return await TagModel.findOne({name})
+  }
 
 }

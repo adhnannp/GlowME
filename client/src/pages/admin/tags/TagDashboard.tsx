@@ -10,40 +10,55 @@ import { format } from "date-fns";
 import { fetchTags, addTag, updateTag, listTag, unlistTag, Tag } from "@/services/admin/admin.tag.service";
 import TagForm from "@/components/admin/Tag/TagForm";
 import TagConfirmationDialog from "@/components/admin/Tag/TagConformDialog";
+import SearchBar from "@/components/admin/users/SearchBar";
+import { useDebounce } from "@/components/customHooks/useDebounce";
 
 export default function TagDashboard() {
   const [filteredTags, setFilteredTags] = useState<Tag[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalItems, setTotalItems] = useState<number>(0);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [action, setAction] = useState<"list" | "unlist">("list");
   const itemsPerPage = 8;
 
-  // Fetch tags on component mount
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
+
   useEffect(() => {
     const loadTags = async () => {
       try {
-        const fetchedTags = await fetchTags();
-        setFilteredTags(fetchedTags);
+        const result = await fetchTags(currentPage, itemsPerPage, debouncedSearchTerm);
+        setFilteredTags(result.tags);
+        setTotalPages(result.pagination.totalPages);
+        setTotalItems(result.pagination.totalItems);
       } catch (error) {
+        toast.error("Failed to fetch tags");
       }
     };
     loadTags();
-  }, []);
+  }, [currentPage, debouncedSearchTerm]);
 
   const handleAddTag = async (
     newTag: Omit<Tag, "_id" | "isListed" | "created_at" | "edited_at">,
     id?: string
   ) => {
+    console.log(id)
     try {
-      console.log(id)  
       const createdTag = await addTag(newTag);
       setFilteredTags((prev) => [...prev, createdTag]);
       toast.success("Tag added successfully");
       setIsAddModalOpen(false);
+      const result = await fetchTags(currentPage, itemsPerPage, debouncedSearchTerm);
+      setFilteredTags(result.tags);
+      setTotalPages(result.pagination.totalPages);
+      setTotalItems(result.pagination.totalItems);
     } catch (error) {
+      const err = error as Error;
+      toast.error(err.message || "Tag adding failed, try again");
     }
   };
 
@@ -63,10 +78,12 @@ export default function TagDashboard() {
       toast.success("Tag updated successfully");
       setIsEditModalOpen(false);
     } catch (error) {
+      const err = error as Error;
+      toast.error(err.message || "Tag editing failed, try again");
     }
   };
 
-  const handleListUnlist = (tag: Tag) => {
+  const handleListUnlist = async (tag: Tag) => {
     setSelectedTag(tag);
     setAction(tag.isListed ? "unlist" : "list");
     setIsConfirmationOpen(true);
@@ -84,7 +101,8 @@ export default function TagDashboard() {
       toast.success(`Tag ${selectedTag.isListed ? "unlisted" : "listed"} successfully`);
       setIsConfirmationOpen(false);
     } catch (error) {
-      // Error is already handled in listTag/unlistTag with toast via handleApiError
+      const err = error as Error;
+      toast.error(err.message || "Tag update failed, try again");
     }
   };
 
@@ -93,11 +111,6 @@ export default function TagDashboard() {
     setIsEditModalOpen(true);
   };
 
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentTags = filteredTags.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredTags.length / itemsPerPage);
-
   return (
     <div className="flex h-screen bg-[#FFF8F0]">
       <Sidebar />
@@ -105,6 +118,7 @@ export default function TagDashboard() {
         <header className="bg-[#FFF8F0] border-b p-4 flex items-center justify-between">
           <h1 className="text-xl font-semibold">Tag Management</h1>
           <div className="flex items-center space-x-4">
+            <SearchBar value={searchTerm} onChange={setSearchTerm} />
             <UserHeader />
           </div>
         </header>
@@ -137,14 +151,14 @@ export default function TagDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentTags.length === 0 ? (
+                  {filteredTags.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={4} className="text-center py-8">
                         No tags found
                       </TableCell>
                     </TableRow>
                   ) : (
-                    currentTags.map((tag) => (
+                    filteredTags.map((tag) => (
                       <TableRow key={tag._id}>
                         <TableCell className="font-medium">{tag.name}</TableCell>
                         <TableCell>{tag.isListed ? "Listed" : "Unlisted"}</TableCell>
@@ -175,7 +189,7 @@ export default function TagDashboard() {
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
-              totalItems={filteredTags.length}
+              totalItems={totalItems}
               itemsPerPage={itemsPerPage}
               onPageChange={setCurrentPage}
             />
@@ -183,7 +197,6 @@ export default function TagDashboard() {
         </main>
       </div>
 
-      {/* Add Tag Dialog */}
       <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
@@ -196,7 +209,6 @@ export default function TagDashboard() {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Tag Dialog */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

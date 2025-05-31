@@ -3,6 +3,7 @@ import api from "@/utils/axios";
 import { ADMIN_API } from "@/config/adminApi";
 import { handleApiError } from "@/utils/errorHandling";
 import { AxiosError } from "axios";
+import { tagNameSchema } from "@/validations/tag/tagValidation";
 
 export interface Tag {
   _id: string;
@@ -12,13 +13,13 @@ export interface Tag {
   edited_at?: Date;
 }
 
-export const fetchTags = async (): Promise<Tag[]> => {
+export const fetchTags = async (page: number, limit: number, searchQuery: string): Promise<{ tags: Tag[], pagination: { totalItems: number, totalPages: number, currentPage: number, perPage: number, hasNextPage: boolean, hasPrevPage: boolean } }> => {
   try {
-    const response = await api.get(ADMIN_API.GET_TAG);
-    return response.data.tags;
+    const query = `page=${page}&limit=${limit}${searchQuery ? `&search=${encodeURIComponent(searchQuery)}` : ""}`;
+    const response = await api.get(`${ADMIN_API.GET_TAG}?${query}`);
+    return response.data;
   } catch (err) {
     const error = handleApiError(err as AxiosError | Error, "Failed to fetch tags");
-    console.error("Failed to fetch tags:", err);
     throw error;
   }
 };
@@ -26,12 +27,15 @@ export const fetchTags = async (): Promise<Tag[]> => {
 export const addTag = async (
   newTag: Omit<Tag, "_id" | "isListed" | "created_at" | "edited_at">
 ): Promise<Tag> => {
+  const result = tagNameSchema.safeParse(newTag.name);
+  if (!result.success) {
+    throw new Error(result.error.errors[0].message);
+  }
   try {
     const response = await api.post(ADMIN_API.ADD_TAG, newTag);
     return response.data.tag;
   } catch (err) {
     const error = handleApiError(err as AxiosError | Error, "Failed to add tag");
-    console.error("Failed to add tag:", err);
     throw error;
   }
 };
@@ -39,12 +43,15 @@ export const addTag = async (
 export const updateTag = async (
   updatedTag: Omit<Tag, "isListed" | "created_at" | "edited_at"> & { _id: string }
 ): Promise<Tag> => {
+  const result = tagNameSchema.safeParse(updatedTag.name);
+  if (!result.success) {
+    throw new Error(result.error.errors[0].message);
+  }
   try {
     const response = await api.patch(`${ADMIN_API.EDIT_TAG}/${updatedTag._id}`, updatedTag);
     return response.data.tag;
   } catch (err) {
     const error = handleApiError(err as AxiosError | Error, "Failed to update tag");
-    console.error("Failed to update tag:", err);
     throw error;
   }
 };
@@ -55,7 +62,6 @@ export const listTag = async (tagId: string): Promise<Tag> => {
     return response.data.tag;
   } catch (err) {
     const error = handleApiError(err as AxiosError | Error, "Failed to list tag");
-    console.error("Failed to list tag:", err);
     throw error;
   }
 };
@@ -66,7 +72,6 @@ export const unlistTag = async (tagId: string): Promise<Tag> => {
     return response.data.tag;
   } catch (err) {
     const error = handleApiError(err as AxiosError | Error, "Failed to unlist tag");
-    console.error("Failed to unlist tag:", err);
     throw error;
   }
 };

@@ -12,11 +12,40 @@ export class AdminTagController implements IAdminTagController {
 
   async getAllTags(req: Request, res: Response): Promise<void> {
     try {
-      const tags = await this.tagService.getAllTags();
-      res.status(200).json({ tags });
+      const pageParam = req.query.page;
+      const search = typeof req.query.search === "string" ? req.query.search : "";
+      const page = typeof pageParam === "string" ? parseInt(pageParam) : 1;
+      const limit = 8;
+
+      if (isNaN(page) || page < 1) {
+        res.status(400).json({ message: "Invalid page number" });
+        return;
+      }
+
+      const skip = (page - 1) * limit;
+      const result = await this.tagService.getAllTags(skip, limit, search);
+
+      if (!result) {
+        res.status(404).json({ message: "No tags found" });
+        return;
+      }
+
+      const [tags, totalTags] = result;
+      const totalPages = Math.ceil(totalTags / limit);
+
+      res.status(200).json({
+        message: "Tags fetched successfully",
+        tags,
+        pagination: {
+          totalItems: totalTags,
+          currentPage: page,
+          totalPages,
+          perPage: limit,
+        },
+      });
     } catch (error) {
       res.status(400).json({
-        message: error instanceof Error ? error.message : 'Unknown error',
+        message: error instanceof Error ? error.message : "Unknown error",
       });
     }
   }

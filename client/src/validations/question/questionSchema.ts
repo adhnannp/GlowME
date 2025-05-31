@@ -7,11 +7,12 @@ export const baseQuestionFormSchema = z.object({
   image: z.instanceof(File).refine(
     (file) => file.type.startsWith("image/"),
     "Only image files are allowed"
-  ).optional(),
+  ).nullable() 
+  .optional(),
   document: z.instanceof(File).refine(
     (file) => ["application/pdf", "text/plain", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"].includes(file.type),
     "Only PDF, TXT, DOC, or DOCX files are allowed"
-  ).optional(),
+  ).optional().nullable() ,
   isBounty: z.boolean(),
   bountyCoins: z.number().min(0).default(0),
 });

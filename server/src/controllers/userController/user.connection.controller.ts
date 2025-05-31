@@ -71,7 +71,7 @@ export class UserConnectionController implements IUserConnectionController {
       } 
       const pageParam = req.query.page;
       const page = typeof pageParam === 'string' ? parseInt(pageParam) : 1;
-      const limit = 4;
+      const limit = 12;
       if (isNaN(page) || page < 1) {
         res.status(400).json({ message: 'Invalid page number' });
         return;

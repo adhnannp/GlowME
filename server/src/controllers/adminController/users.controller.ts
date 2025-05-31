@@ -3,6 +3,8 @@ import { inject, injectable } from 'inversify';
 import { IUsersService } from '../../core/interfaces/services/admin/IUsersService';
 import { IUsersController } from '../../core/interfaces/controllers/admin/IUsersController';
 import { TYPES } from '../../di/types';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
 
 @injectable()
 export class UsersController implements IUsersController {
@@ -18,7 +20,7 @@ export class UsersController implements IUsersController {
       const limit = 8;
 
       if (isNaN(page) || page < 1) {
-        res.status(400).json({ message: "Invalid page number" });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_PAGE_NUMBER });
         return;
       }
 
@@ -26,15 +28,15 @@ export class UsersController implements IUsersController {
       const result = await this.usersService.getUser(skip, limit, search);
 
       if (!result) {
-        res.status(404).json({ message: "No users found"});
+        res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.NO_USERS_FOUND});
         return;
       }
 
       const [users, totalUsers] = result;
       const totalPages = Math.ceil(totalUsers / limit);
 
-      res.status(200).json({
-        message: "Users fetched successfully",
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.USERS_FETCHED,
         users,
         pagination: {
           totalItems: totalUsers,
@@ -46,7 +48,8 @@ export class UsersController implements IUsersController {
         },
       });
     } catch (error) {
-      res.status(500).json({ message: "Internal server error", error });
+      const err = error as Error
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
     }
   }
 
@@ -56,18 +59,19 @@ export class UsersController implements IUsersController {
       const { duration } = req.body;
   
       if (!userId || !duration) {
-        res.status(400).json({ message: 'User ID and duration are required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.BAN_USER_ID_DURATION_RRQUIRED });
         return;
       }
   
       const user = await this.usersService.banUser(userId, duration);
-      res.status(200).json({
-        message: 'User banned successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.BAN_SUCCESS,
         user,
       });
       return
     } catch (error) {
-      res.status(400).json({ message:error });
+      const err = error as Error
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message:err.message });
       return
     }
   }
@@ -77,16 +81,16 @@ export class UsersController implements IUsersController {
       const userId = req.params.userId;
   
       if (!userId) {
-        res.status(400).json({ message: 'User ID is required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.USER_ID_REQUIRED });
         return;
       }
   
       const user = await this.usersService.unbanUser(userId);
   
-      res.status(200).json({ message: 'User unbanned successfully', user });
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.UNBAN_SUCCESS, user });
       return
     } catch (error) {
-      res.status(400).json({ message:error });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message:error });
       return
     }
   }

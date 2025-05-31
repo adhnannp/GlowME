@@ -4,6 +4,8 @@ import { TYPES } from "../../di/types";
 import IAdminReportController from "../../core/interfaces/controllers/admin/IAdmin.report.Controller";
 import IAdminReportService from "../../core/interfaces/services/admin/IAdmin.Report.Service";
 import { IUsersService } from "../../core/interfaces/services/admin/IUsersService";
+import { STATUS_CODES } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/ResponseMessages";
 
 @injectable()
 export class AdminReportController implements IAdminReportController {
@@ -17,12 +19,12 @@ export class AdminReportController implements IAdminReportController {
     try {
       const reports = await this.reportService.getUserGroupedReports();
       res
-        .status(200)
-        .json({ message: "reports fetrched successfully", reports });
+        .status(STATUS_CODES.OK)
+        .json({ message: MESSAGES.REPORTS_FETCHED, reports });
       return;
     } catch (error) {
       const err = error as Error;
-      res.status(400).json({ message: err.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
       return;
     }
   }
@@ -31,11 +33,11 @@ export class AdminReportController implements IAdminReportController {
     const { id } = req.params;
     try {
       await this.reportService.rejectOne(id);
-      res.status(200).json({ message: "Report rejected successfully." });
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.REPORT_REJECTED });
       return;
     } catch (error) {
       const err = error as Error;
-      res.status(400).json({ message: err.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
       return;
     }
   }
@@ -44,11 +46,11 @@ export class AdminReportController implements IAdminReportController {
     const { userId } = req.params;
     try {
       await this.reportService.rejectAll(userId);
-      res.status(200).json({ message: "All reports rejected for user." });
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.ALL_REPORTS_REJECTED });
       return;
     } catch (error) {
       const err = error as Error;
-      res.status(400).json({ message: err.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
       return;
     }
   }
@@ -57,11 +59,11 @@ export class AdminReportController implements IAdminReportController {
     const { id } = req.params;
     try {
       await this.reportService.resolveOne(id);
-      res.status(200).json({ message: "Report resolved successfully." });
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.REPORT_RESOLVED });
       return;
     } catch (error) {
       const err = error as Error;
-      res.status(400).json({ message: err.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
       return;
     }
   }
@@ -72,11 +74,11 @@ export class AdminReportController implements IAdminReportController {
     try {
       await this.usersService.banUser(userId, duration);
       await this.reportService.resolveAll(userId)
-      res.status(200).json({ message: `User banned based on reports.` });
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.REPORT_USER_BANNED });
       return;
     } catch (error) {
       const err = error as Error;
-      res.status(400).json({ message: err.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
       return;
     }
   }

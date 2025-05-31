@@ -82,18 +82,22 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0] || null; 
     if (file) {
       if (!file.type.startsWith('image/')) {
         setFormErrors((prev) => ({ ...prev, image: 'Only image files are allowed' }));
         return;
       }
+      setFormErrors((prev) => ({ ...prev, image: undefined })); 
       handleChange('image', file);
+    } else {
+      setFormErrors((prev) => ({ ...prev, image: undefined })); 
+      handleChange('image', null);
     }
   };
 
   const handleDocumentUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0] || null;
     if (file) {
       const allowedTypes = [
         'application/pdf',
@@ -105,7 +109,11 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
         setFormErrors((prev) => ({ ...prev, document: 'Only PDF, TXT, DOC, or DOCX files are allowed' }));
         return;
       }
+      setFormErrors((prev) => ({ ...prev, document: undefined }));
       handleChange('document', file);
+    } else {
+      setFormErrors((prev) => ({ ...prev, document: undefined }));
+      handleChange('document', null);
     }
   };
 

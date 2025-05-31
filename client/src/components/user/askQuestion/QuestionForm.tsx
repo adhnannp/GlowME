@@ -8,6 +8,9 @@ import { TagsField } from './TagsField';
 import { BountyField } from './BountyField';
 import { SimilarQuestionsModal } from './SimilarQuestionModal';
 import { QuestionFormData } from '@/validations/question/questionSchema';
+import { useEffect, useState } from 'react';
+import { cn } from '@/lib/utils'; 
+import { Loader2 } from 'lucide-react';
 
 interface QuestionFormProps {
   onSubmit?: (data: QuestionFormData) => Promise<void>;
@@ -32,11 +35,66 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
     removeTag,
   } = useQuestionForm(onSubmit);
 
+  const [isFileFieldsEnabled, setIsFileFieldsEnabled] = useState(false);
+  const [isMarkdownFieldEnabled, setIsMarkdownFieldEnabled] = useState(false);
+  const [isTagsFieldEnabled, setIsTagsFieldEnabled] = useState(false);
+  const [isBountyFieldEnabled, setIsBountyFieldEnabled] = useState(false);
+  const [isSubmitEnabled, setIsSubmitEnabled] = useState(false);
+
+  const isTitleValid: boolean = !!formData.title && formData.title.length > 0 && !formErrors.title && titleStatus.status === 'available';
+  const isProblemDetailsValid: boolean = !!formData.problemDetails && formData.problemDetails.length >= 20 && !formErrors.problemDetails;
+  const isTagsValid: boolean = !!formData.tags && formData.tags.length > 0 && !formErrors.tags;
+  const isBountyValid: boolean = !formData.isBounty || (formData.isBounty && formData.bountyCoins >= 10 && !formErrors.bountyCoins);
+
+  useEffect(() => {
+    setIsFileFieldsEnabled(isTitleValid);
+    setIsMarkdownFieldEnabled(isTitleValid);
+    setIsTagsFieldEnabled(isTitleValid && isProblemDetailsValid);
+    setIsBountyFieldEnabled(isTitleValid && isProblemDetailsValid && isTagsValid);
+    setIsSubmitEnabled(isTitleValid && isProblemDetailsValid && isTagsValid && isBountyValid);
+  }, [isTitleValid, isProblemDetailsValid, isTagsValid, isBountyValid]);
+
+  const progressSteps = [
+    { valid: isTitleValid, label: 'Title' },
+    { valid: isProblemDetailsValid, label: 'Details' },
+    { valid: isTagsValid, label: 'Tags' },
+    { valid: isBountyValid, label: 'Bounty' },
+  ];
+  const completedSteps = progressSteps.filter((step) => step.valid).length;
+  const progressPercentage = (completedSteps / progressSteps.length) * 100;
+
   return (
-    <div className="max-w-4xl mx-auto pb-6 space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold">How to Ask a Good Question</CardTitle>
+    <div className="max-w-4xl mx-auto pb-6 space-y-6 px-4 sm:px-0">
+      <h1 className="text-3xl font-bold text-gray-900">Ask a Question</h1>
+      <div className="w-full bg-gray-200 rounded-full h-2.5">
+        <div
+          className="bg-black h-2.5 rounded-full transition-all duration-300"
+          style={{ width: `${progressPercentage}%` }}
+          role="progressbar"
+          aria-valuenow={progressPercentage}
+          aria-valuemin={0}
+          aria-valuemax={100}
+        />
+        <div className="flex justify-between mt-2 bg-white">
+          {progressSteps.map((step, index) => (
+            <span
+              key={index}
+              className={cn(
+                "text-sm",
+                step.valid ? "text-green-600" : "text-gray-400"
+              )}
+            >
+              {step.valid ? "✓" : "○"} {step.label}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <Card className="border-none shadow-sm bg-gray-50 rounded-lg">
+        <CardHeader className="pb-4">
+          <CardTitle className="text-xl font-semibold text-gray-800">
+            How to Ask a Good Question
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <ul className="list-disc pl-5 space-y-2 text-gray-600">
@@ -50,11 +108,8 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Ask a Question</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card className="border-none shadow-sm bg-gray-50 rounded-lg">
+        <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <TextField
@@ -65,15 +120,16 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
                 placeholder="e.g. Is there an R function for finding the index of an element in a vector?"
                 error={formErrors.title}
                 description="Be specific and imagine you're asking a question to another person."
+                className="transition-opacity duration-200"
               />
               {titleStatus.status === 'loading' && (
                 <p className="text-sm text-gray-500">Checking availability...</p>
               )}
               {titleStatus.status === 'available' && (
-                <p className="text-sm text-green-500">Title is available</p>
+                <p className="text-sm text-green-500">✓ Title is available</p>
               )}
               {titleStatus.status === 'unavailable' && (
-                <p className="text-sm text-red-500">Title is not available</p>
+                <p className="text-sm text-red-500">○ Title is not available</p>
               )}
               {titleStatus.status === 'error' && (
                 <p className="text-sm text-red-500">{titleStatus.message}</p>
@@ -82,14 +138,15 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(true)}
-                  className="text-sm text-blue-500 hover:underline"
+                  className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
+                  aria-label="Check for similar questions"
                 >
                   Check similar questions
                 </button>
               )}
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex flex-col sm:flex-row gap-4">
               <FileField
                 id="image-upload"
                 label="Attach Image"
@@ -98,6 +155,8 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
                 file={formData.image}
                 error={formErrors.image}
                 isImage
+                disabled={!isFileFieldsEnabled}
+                className={cn("transition-opacity duration-200", isFileFieldsEnabled ? '' : 'opacity-50')}
               />
               <FileField
                 id="document-upload"
@@ -106,6 +165,8 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
                 onChange={handleDocumentUpload}
                 file={formData.document}
                 error={formErrors.document}
+                disabled={!isFileFieldsEnabled}
+                className={cn("transition-opacity duration-200", isFileFieldsEnabled ? '' : 'opacity-50')}
               />
             </div>
 
@@ -115,6 +176,8 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
               onChange={(value) => handleChange('problemDetails', value)}
               error={formErrors.problemDetails}
               description="Introduce the problem and expand on what you put in the title. Minimum 20 characters."
+              disabled={!isMarkdownFieldEnabled}
+              className={cn("transition-opacity duration-200", isMarkdownFieldEnabled ? '' : 'opacity-50')}
             />
 
             <TagsField
@@ -126,6 +189,8 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
               onRemoveTag={removeTag}
               error={formErrors.tags}
               description="Add up to 5 tags to categorize your question (e.g., mongodb, wordpress, iphone)."
+              disabled={!isTagsFieldEnabled}
+              className={cn("transition-opacity duration-200", isTagsFieldEnabled ? '' : 'opacity-50')}
             />
 
             <BountyField
@@ -137,16 +202,31 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
               }}
               onBountyCoinsChange={(value) => handleChange('bountyCoins', value)}
               error={formErrors.bountyCoins}
+              disabled={!isBountyFieldEnabled}
+              className={cn("transition-opacity duration-200", isBountyFieldEnabled ? '' : 'opacity-50')}
             />
 
-            <div className="flex justify-end">
-              {formErrors.general && <p className="text-sm text-red-500 mr-4">{formErrors.general}</p>}
+            <div className="flex justify-end items-center gap-4">
+              {formErrors.general && (
+                <p className="text-sm text-red-500">{formErrors.general}</p>
+              )}
               <Button
                 type="submit"
-                disabled={isSubmitting || titleStatus.status === 'unavailable'}
-                className="px-8 py-2 bg-black text-white hover:bg-gray-800 disabled:opacity-50 cursor-pointer"
+                disabled={isSubmitting || !isSubmitEnabled}
+                className={cn(
+                  "px-8 py-2 bg-black text-white hover:bg-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-colors",
+                  isSubmitEnabled ? '' : 'opacity-50'
+                )}
+                aria-label={isSubmitting ? "Submitting question" : "Submit question"}
               >
-                {isSubmitting ? 'Asking...' : 'ASK'}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Asking...
+                  </>
+                ) : (
+                  'ASK'
+                )}
               </Button>
             </div>
           </form>

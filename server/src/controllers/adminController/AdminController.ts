@@ -3,6 +3,8 @@ import { inject, injectable } from 'inversify';
 import { IAdminService } from '../../core/interfaces/services/admin/IAdminService';
 import { IAdminController } from '../../core/interfaces/controllers/admin/IAdminController';
 import { TYPES } from '../../di/types';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
 
 @injectable()
 export class AdminController implements IAdminController{
@@ -12,17 +14,17 @@ export class AdminController implements IAdminController{
         try {
             const { email } = req.query;
             if (!email || typeof email !== "string") {
-                res.status(400).json({ message: "Email is required and must be a string" });
+                res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.STRING_EMAIL_REQUIRED });
                 return 
             }
             const user = await this.adminService.getAdminByEmail(email);
             if (!user) {
-                res.status(404).json({ message: 'User not found' });
+                res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.USER_NOT_FOUND });
                 return
             }
-            res.status(200).json({message:"user fetched successsfully",user});
+            res.status(STATUS_CODES.OK).json({message:MESSAGES.USER_FETCHED ,user});
         } catch (error) {
-            res.status(400).json({ message: 'Login Failed', error:(error as Error).message });
+            res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.LOGIN_FAILED, error:(error as Error).message });
         }
     }
 }

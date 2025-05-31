@@ -3,6 +3,8 @@ import { Request, Response } from 'express';
 import { TYPES } from '../../di/types';
 import { IAdminTagController } from '../../core/interfaces/controllers/admin/IAdmin.Tag.Controller';
 import { IAdminTagService } from '../../core/interfaces/services/admin/IAdmin.Tag.Service';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
 
 @injectable()
 export class AdminTagController implements IAdminTagController {
@@ -18,7 +20,7 @@ export class AdminTagController implements IAdminTagController {
       const limit = 8;
 
       if (isNaN(page) || page < 1) {
-        res.status(400).json({ message: "Invalid page number" });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_PAGE_NUMBER });
         return;
       }
 
@@ -26,15 +28,15 @@ export class AdminTagController implements IAdminTagController {
       const result = await this.tagService.getAllTags(skip, limit, search);
 
       if (!result) {
-        res.status(404).json({ message: "No tags found" });
+        res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.NO_TAGS_FOUND });
         return;
       }
 
       const [tags, totalTags] = result;
       const totalPages = Math.ceil(totalTags / limit);
 
-      res.status(200).json({
-        message: "Tags fetched successfully",
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.TAGS_FETCHED,
         tags,
         pagination: {
           totalItems: totalTags,
@@ -44,8 +46,9 @@ export class AdminTagController implements IAdminTagController {
         },
       });
     } catch (error) {
-      res.status(400).json({
-        message: error instanceof Error ? error.message : "Unknown error",
+      const err = error as Error
+      res.status(STATUS_CODES.BAD_REQUEST).json({
+        message: err.message,
       });
     }
   }
@@ -54,14 +57,15 @@ export class AdminTagController implements IAdminTagController {
     try {
       const { name } = req.body;
       if (!name || typeof name !== 'string') {
-        res.status(400).json({ message: 'Tag name is required and must be a string' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.TAG_NAME_REQUIRED });
         return;
       }
       const tag = await this.tagService.createTag(name);
-      res.status(201).json({ tag });
+      res.status(STATUS_CODES.CREATED).json({ tag });
     } catch (error) {
-      res.status(400).json({
-        message: error instanceof Error ? error.message : 'Unknown error',
+      const err = error as Error
+      res.status(STATUS_CODES.BAD_REQUEST).json({
+        message: err.message,
       });
     }
   }
@@ -71,18 +75,19 @@ export class AdminTagController implements IAdminTagController {
       const { id } = req.params;
       const { name } = req.body;
       if (!id || !name || typeof name !== 'string') {
-        res.status(400).json({ message: 'Tag ID and name are required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.TAG_ID_NAME_REQUIRED });
         return;
       }
       const tag = await this.tagService.editTagName(id, name);
       if (!tag) {
-        res.status(400).json({ message: 'Tag not found' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.TAG_NOT_FOUND });
         return;
       }
-      res.status(200).json({ tag });
+      res.status(STATUS_CODES.OK).json({ tag });
     } catch (error) {
-      res.status(400).json({
-        message: error instanceof Error ? error.message : 'Unknown error',
+      const err = error as Error
+      res.status(STATUS_CODES.BAD_REQUEST).json({
+        message: err.message,
       });
     }
   }
@@ -91,18 +96,19 @@ export class AdminTagController implements IAdminTagController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'Tag ID is required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.TAG_ID_REQUIRED });
         return;
       }
       const tag = await this.tagService.listTag(id);
       if (!tag) {
-        res.status(404).json({ message: 'Tag not found' });
+        res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.TAG_NOT_FOUND });
         return;
       }
-      res.status(200).json({ tag });
+      res.status(STATUS_CODES.OK).json({ tag });
     } catch (error) {
-      res.status(400).json({
-        message: error instanceof Error ? error.message : 'Unknown error',
+      const err = error as Error
+      res.status(STATUS_CODES.BAD_REQUEST).json({
+        message: err.message,
       });
     }
   }
@@ -111,18 +117,19 @@ export class AdminTagController implements IAdminTagController {
     try {
       const { id } = req.params;
       if (!id) {
-        res.status(400).json({ message: 'Tag ID is required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.TAG_ID_REQUIRED });
         return;
       }
       const tag = await this.tagService.unlistTag(id);
       if (!tag) {
-        res.status(404).json({ message: 'Tag not found' });
+        res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.TAG_NOT_FOUND });
         return;
       }
-      res.status(200).json({ tag });
+      res.status(STATUS_CODES.OK).json({ tag });
     } catch (error) {
-      res.status(400).json({
-        message: error instanceof Error ? error.message : 'Unknown error',
+      const err = error as Error
+      res.status(STATUS_CODES.BAD_REQUEST).json({
+        message: err.message,
       });
     }
   }

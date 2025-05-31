@@ -53,7 +53,7 @@ export default function Connect() {
   const [totalUsers, setTotalUsers] = useState(0);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState<string>(""); 
-  const usersPerPage = 4;
+  const usersPerPage = 12;
 
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 

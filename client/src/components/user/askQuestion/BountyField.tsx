@@ -1,5 +1,6 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils"; // Assuming Shadcn/UI's class utility
 
 interface BountyFieldProps {
   isBounty: boolean;
@@ -7,6 +8,8 @@ interface BountyFieldProps {
   onBountyToggle: (checked: boolean) => void;
   onBountyCoinsChange: (value: number) => void;
   error?: string;
+  disabled?: boolean; 
+  className?: string;
 }
 
 export function BountyField({
@@ -15,24 +18,33 @@ export function BountyField({
   onBountyToggle,
   onBountyCoinsChange,
   error,
+  disabled,
+  className,
 }: BountyFieldProps) {
   return (
-    <div className="space-y-2">
+    <div className={cn("space-y-2", className, disabled && "opacity-50")}>
       <div className="flex items-center gap-2">
         <input
           type="checkbox"
           id="bounty-toggle"
           checked={isBounty}
-          onChange={(e) => onBountyToggle(e.target.checked)}
-          className="h-4 w-4"
+          onChange={(e) => !disabled && onBountyToggle(e.target.checked)} 
+          className={cn("h-4 w-4", disabled && "cursor-not-allowed")}
+          disabled={disabled} 
         />
-        <Label htmlFor="bounty-toggle" className="text-lg font-semibold">
+        <Label
+          htmlFor="bounty-toggle"
+          className={cn("text-lg font-semibold", disabled && "text-gray-400")}
+        >
           Make this a bounty question
         </Label>
       </div>
       {isBounty && (
         <div className="space-y-2 pl-6">
-          <Label htmlFor="bounty-coins" className="text-base font-medium">
+          <Label
+            htmlFor="bounty-coins"
+            className={cn("text-base font-medium", disabled && "text-gray-400")}
+          >
             Bounty Coins (minimum 10)
           </Label>
           <Input
@@ -40,9 +52,10 @@ export function BountyField({
             type="number"
             min="10"
             value={bountyCoins}
-            onChange={(e) => onBountyCoinsChange(parseInt(e.target.value) || 0)}
+            onChange={(e) => !disabled && onBountyCoinsChange(parseInt(e.target.value) || 0)}
             placeholder="Enter bounty coins"
-            className="w-32"
+            className={cn("w-32", disabled && "cursor-not-allowed")}
+            disabled={disabled}
           />
           {error && <p className="text-sm text-red-500">{error}</p>}
         </div>

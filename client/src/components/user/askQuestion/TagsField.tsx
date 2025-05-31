@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { fetchTags } from '@/services/user/user.AddQuestion.service';
 import { Tag } from '@/interfaces/user.tag.interface';
+import { cn } from "@/lib/utils"; // Assuming Shadcn/UI's class utility
 
 interface TagsFieldProps {
   label: string;
@@ -13,6 +14,8 @@ interface TagsFieldProps {
   onRemoveTag: (tag: string) => void;
   error?: string;
   description?: string;
+  disabled?: boolean;
+  className?: string;
 }
 
 export function TagsField({
@@ -24,6 +27,8 @@ export function TagsField({
   onRemoveTag,
   error,
   description,
+  disabled,
+  className,
 }: TagsFieldProps) {
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -34,15 +39,14 @@ export function TagsField({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const shouldFocusRef = useRef<boolean>(false);
 
-  // Track when input should retain focus
   useEffect(() => {
-    if (inputRef.current && shouldFocusRef.current) {
+    if (inputRef.current && shouldFocusRef.current && !disabled) {
       inputRef.current.focus();
     }
-  }, [availableTags, fetchError, isDropdownOpen, tagNameMap]);
+  }, [availableTags, fetchError, isDropdownOpen, tagNameMap, disabled]);
 
   useEffect(() => {
-    if (!tagInput.trim()) {
+    if (!tagInput.trim() || disabled) {
       setAvailableTags([]);
       setFetchError(null);
       setIsDropdownOpen(false);
@@ -69,7 +73,7 @@ export function TagsField({
         setIsDropdownOpen(false);
       } finally {
         setIsLoading(false);
-        if (shouldFocusRef.current && inputRef.current) {
+        if (shouldFocusRef.current && inputRef.current && !disabled) {
           setTimeout(() => {
             inputRef.current?.focus();
           }, 0);
@@ -79,7 +83,7 @@ export function TagsField({
 
     const timeoutId = setTimeout(fetchAvailableTags, 300);
     return () => clearTimeout(timeoutId);
-  }, [tagInput, tags]);
+  }, [tagInput, tags, disabled]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -92,6 +96,7 @@ export function TagsField({
   }, []);
 
   const handleSelectTag = (tagId: string) => {
+    if (disabled) return;
     if (tagId && !tags.includes(tagId) && tags.length < 5) {
       onAddTag(tagId);
       onTagInputChange('');
@@ -102,20 +107,32 @@ export function TagsField({
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onTagInputChange(e.target.value);
-    setIsDropdownOpen(!!e.target.value.trim());
-    shouldFocusRef.current = true;
+    if (!disabled) {
+      onTagInputChange(e.target.value);
+      setIsDropdownOpen(!!e.target.value.trim());
+      shouldFocusRef.current = true;
+    }
   };
 
   const handleInputFocus = () => {
-    setIsDropdownOpen(availableTags.length > 0);
-    shouldFocusRef.current = true;
+    if (!disabled) {
+      setIsDropdownOpen(availableTags.length > 0);
+      shouldFocusRef.current = true;
+    }
   };
 
   return (
-    <div className="space-y-2">
-      <Label className="text-lg font-semibold">{label}</Label>
-      {description && <p className="text-sm text-gray-600">{description}</p>}
+    <div className={cn("space-y-2", className, disabled && "opacity-50")}>
+      <Label
+        className={cn("text-lg font-semibold", disabled && "text-gray-400")}
+      >
+        {label}
+      </Label>
+      {description && (
+        <p className={cn("text-sm", disabled ? "text-gray-400" : "text-gray-600")}>
+          {description}
+        </p>
+      )}
       <div className="space-y-2 relative" ref={dropdownRef}>
         <Input
           ref={inputRef}
@@ -123,11 +140,11 @@ export function TagsField({
           onChange={handleInputChange}
           onFocus={handleInputFocus}
           placeholder={isLoading ? 'Loading tags...' : 'Type to search tags (e.g., mongodb)'}
-          className="text-base"
-          disabled={isLoading}
+          className={cn("text-base", disabled && "cursor-not-allowed")}
+          disabled={isLoading || disabled}
         />
         {fetchError && <p className="text-sm text-red-500">{fetchError}</p>}
-        {isDropdownOpen && availableTags.length > 0 && (
+        {isDropdownOpen && availableTags.length > 0 && !disabled && (
           <div
             role="listbox"
             aria-label="Tag selection"
@@ -137,7 +154,10 @@ export function TagsField({
               <div
                 key={tag._id}
                 role="option"
-                className="px-4 py-2 text-base cursor-pointer hover:bg-blue-50 text-gray-800"
+                className={cn(
+                  "px-4 py-2 text-base cursor-pointer hover:bg-blue-50 text-gray-800",
+                  disabled && "cursor-not-allowed"
+                )}
                 onClick={() => handleSelectTag(tag._id)}
               >
                 {tag.name}
@@ -150,13 +170,20 @@ export function TagsField({
             {tags.map((tagId, index) => (
               <span
                 key={index}
-                className="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm"
+                className={cn(
+                  "inline-flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm",
+                  disabled && "bg-blue-50 text-blue-400"
+                )}
               >
                 {tagNameMap[tagId] || tagId}
                 <button
                   type="button"
-                  onClick={() => onRemoveTag(tagId)}
-                  className="ml-1 text-blue-600 hover:text-blue-800"
+                  onClick={() => !disabled && onRemoveTag(tagId)} 
+                  className={cn(
+                    "ml-1 text-blue-600 hover:text-blue-800",
+                    disabled && "text-blue-400 cursor-not-allowed"
+                  )}
+                  disabled={disabled}
                 >
                   ×
                 </button>
@@ -164,7 +191,9 @@ export function TagsField({
             ))}
           </div>
         )}
-        <div className="text-xs text-gray-500">{tags.length}/5 tags</div>
+        <div className={cn("text-xs", disabled ? "text-gray-400" : "text-gray-500")}>
+          {tags.length}/5 tags
+        </div>
         {error && <p className="text-sm text-red-500">{error}</p>}
       </div>
     </div>

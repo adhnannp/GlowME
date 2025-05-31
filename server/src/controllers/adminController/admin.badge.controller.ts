@@ -3,6 +3,8 @@ import { Request, Response } from 'express';
 import { IAdminBadgeService } from '../../core/interfaces/services/admin/IAdmin.Badge.Service';
 import { TYPES } from '../../di/types';
 import { IAdminBadgeController } from '../../core/interfaces/controllers/admin/IAdmin.Badge.Controller';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
 
 @injectable()
 export class AdminBadgeController implements IAdminBadgeController{
@@ -17,21 +19,21 @@ export class AdminBadgeController implements IAdminBadgeController{
       const imageFile = req.file;
 
       if (!name || !requiredXp || !imageFile) {
-        res.status(400).json({ message: 'Name, required XP, and image are required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.BADGE_FIELD_REQUIRED });
         return;
       }
 
       const parsedRequiredXp = parseInt(requiredXp, 10);
       if (isNaN(parsedRequiredXp) || parsedRequiredXp < 0) {
-        res.status(400).json({ message: 'Required XP must be a non-negative number' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.XP_NON_NEGETIVE });
         return;
       }
 
       const badge = await this.badgeService.createBadge(name, parsedRequiredXp, imageFile);
-      res.status(201).json({badge , message:'successfully created the badge'});
+      res.status(STATUS_CODES.CREATED).json({badge , message: MESSAGES.BADGE_CREATED});
     } catch (err) {
         const error = err as Error
-        res.status(400).json({ message:error });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message:error });
         return;
     }
   }
@@ -43,7 +45,7 @@ export class AdminBadgeController implements IAdminBadgeController{
       const imageFile = req.file;
   
       if (!badgeId) {
-        res.status(400).json({ message: 'Badge ID is required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.BADGE_ID_REQUIRED });
         return;
       }
   
@@ -51,29 +53,29 @@ export class AdminBadgeController implements IAdminBadgeController{
       if (requiredXp !== undefined) {
         const num = Number(requiredXp);
         if (isNaN(num)) {
-          res.status(400).json({ message: 'requiredXp must be a valid number' });
+          res.status(STATUS_CODES.BAD_REQUEST).json({ message:MESSAGES.VALID_XP });
           return;
         }
         if (num < 0) {
-          res.status(400).json({ message: 'requiredXp must be a non-negative number' });
+          res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.XP_NON_NEGETIVE });
           return;
         }
         parsedRequiredXp = num;
       }
   
       if (!name && !imageFile && parsedRequiredXp === undefined) {
-        res.status(400).json({
-          message: 'At least one of name, requiredXp, or image must be provided',
+        res.status(STATUS_CODES.BAD_REQUEST).json({
+          message: MESSAGES.BADGE_FIELD_ONE_REQUIRED,
         });
         return;
       }
 
       const badge = await this.badgeService.updateBadge(badgeId, name, parsedRequiredXp, imageFile);
-      res.status(200).json({ badge, message: 'Successfully updated the badge' });
+      res.status(STATUS_CODES.OK).json({ badge, message: MESSAGES.BADGE_UPDATED });
       return
     } catch (err) {
       const error = err as Error
-      res.status(400).json({ message: error.message || 'Failed to update badge' });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
       return;
     }
   }
@@ -82,15 +84,15 @@ export class AdminBadgeController implements IAdminBadgeController{
     try {
       const { badgeId } = req.params;
       if (!badgeId) {
-        res.status(400).json({ message: 'Badge ID is required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.BADGE_ID_REQUIRED });
         return;
       }
       const badge = await this.badgeService.listBadge(badgeId);
-      res.status(200).json({ badge, message: 'Badge listed successfully' });
+      res.status(STATUS_CODES.OK).json({ badge, message: MESSAGES.BADGE_LISTED });
       return
     } catch (error) {
       const err = error as Error
-      res.status(400).json({ message: err.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
     }
   }
 
@@ -98,24 +100,24 @@ export class AdminBadgeController implements IAdminBadgeController{
     try {
       const { badgeId } = req.params;
       if (!badgeId) {
-        res.status(400).json({ message: 'Badge ID is required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.BADGE_ID_REQUIRED });
         return;
       }
       const badge = await this.badgeService.unlistBadge(badgeId);
-      res.status(200).json({ badge, message: 'Badge unlisted successfully' });
+      res.status(STATUS_CODES.OK).json({ badge, message: MESSAGES.BADGE_UNLISTED });
     } catch (error) {
       const err = error as Error
-      res.status(400).json({ message: err.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
     }
   }
 
   async getAllBadges(req: Request, res: Response): Promise<void> {
     try {
       const badges = await this.badgeService.getAllBadges();
-      res.status(200).json({badges , message:'successfully fetched all the badge'});
+      res.status(STATUS_CODES.OK).json({badges , message:MESSAGES.BADGE_FETCHED});
     } catch (error) {
       const err = error as Error
-        res.status(400).json({ message:err.message });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message:err.message });
         return;
     }
   }

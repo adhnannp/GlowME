@@ -4,6 +4,9 @@ import { IAdminCoinPlanService } from '../../core/interfaces/services/admin/IAdm
 import { ICoinPlan } from '../../models/CoinPlan';
 import { TYPES } from '../../di/types';
 import IAdminCoinPlanController from '../../core/interfaces/controllers/admin/IAdmin.CoinPlan.Controller';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
+
 
 @injectable()
 export class AdminCoinPlanController implements IAdminCoinPlanController{
@@ -15,14 +18,14 @@ export class AdminCoinPlanController implements IAdminCoinPlanController{
     try {
       const data: Partial<ICoinPlan> = req.body;
       const coinPlan = await this.coinPlanService.createPlan(data);
-      res.status(201).json({
-        message: 'Coin plan created successfully',
+      res.status(STATUS_CODES.CREATED).json({
+        message: MESSAGES.COIN_PLAN_CREATED,
         data: coinPlan,
       });
       return;
     } catch (err) {
       const error = err as Error;  
-      res.status(400).json({ message: error.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
       return;
     }
   }
@@ -31,17 +34,17 @@ export class AdminCoinPlanController implements IAdminCoinPlanController{
     try {
       const coinPlans = await this.coinPlanService.getAllPlans();
       if (!coinPlans) {
-        res.status(404).json({ message: 'No coin plans found' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.NO_COIN_PLANS_FOUND });
         return;
       }
-      res.status(200).json({
-        message: 'Coin plans retrieved successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.COIN_PLANS_RETRIEVED,
         data: coinPlans,
       });
       return;
     } catch (err) {
       const error = err as Error;  
-      res.status(400).json({ message: error.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
       return;
     }
   }
@@ -51,14 +54,14 @@ export class AdminCoinPlanController implements IAdminCoinPlanController{
       const { id } = req.params;
       const data: Partial<ICoinPlan> = req.body;
       const updatedPlan = await this.coinPlanService.updatePlan(id, data);
-      res.status(200).json({
-        message: 'Coin plan updated successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.COIN_PLAN_UPDATED,
         data: updatedPlan,
       });
       return;
     } catch (err) {
       const error = err as Error;    
-      res.status(400).json({ message: error.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
       return;
     }
   }
@@ -67,14 +70,14 @@ export class AdminCoinPlanController implements IAdminCoinPlanController{
     try {
       const { id } = req.params;
       const listedPlan = await this.coinPlanService.listPlan(id);
-      res.status(200).json({
-        message: 'Coin plan listed successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.COIN_PLAN_LISTED,
         data: listedPlan,
       });
       return;
     } catch (err) {
       const error = err as Error;
-      res.status(400).json({ message: error.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
       return;
     }
   }
@@ -83,14 +86,14 @@ export class AdminCoinPlanController implements IAdminCoinPlanController{
     try {
       const { id } = req.params;
       const unlistedPlan = await this.coinPlanService.unlistPlan(id);
-      res.status(200).json({
-        message: 'Coin plan unlisted successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.COIN_PLAN_UNLISTED,
         data: unlistedPlan,
       });
       return;
     } catch (err) {
       const error = err as Error;  
-      res.status(400).json({ message: error.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
       return;
     }
   }

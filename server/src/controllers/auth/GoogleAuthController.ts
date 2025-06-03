@@ -5,6 +5,8 @@ import { IGoogleAuthService } from '../../core/interfaces/services/auth/IGoogleA
 import { TYPES } from '../../di/types';
 import { setRefreshTokens } from '../../utils/setRefreshToken';
 import dotenv from 'dotenv';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
 
 dotenv.config();
 
@@ -18,22 +20,22 @@ export class GoogleAuthController implements IGoogleAuthController {
     try {
       const profile = req.user as any;
       if(!profile){
-        res.status(401).json({ message: 'Authentication failed' });
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.AUTH_FAILED });
         return;
       }
       const result = await this.googleAuthService.validateOrCreateUser(profile);
       if (!result) {
-        res.status(400).json({ message: 'Invalid Google account data' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.GOOGLE_INVALID });
         return;
       }
       const { user, accessToken, refreshToken } = result;
       if (user.isAdmin) {
-        res.status(400).json({ message: 'Access Denied' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.ACCESS_DENIED });
         return;
       }
       setRefreshTokens(res,refreshToken)
       if (user.isAdmin) {
-        res.status(400).json({ message: 'Access Denied' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.ACCESS_DENIED });
         return;
       }
       setRefreshTokens(res, refreshToken);

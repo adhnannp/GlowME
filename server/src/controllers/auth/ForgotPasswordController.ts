@@ -3,6 +3,8 @@ import { Request, Response } from 'express';
 import { IForgotPasswordService } from '../../core/interfaces/services/auth/IForgotPasswordService';
 import { TYPES } from '../../di/types';
 import { IForgotPasswordcontroller } from '../../core/interfaces/controllers/auth/IforgotPasswordController';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
 
 @injectable()
 export class ForgotPasswordcontroller implements IForgotPasswordcontroller{
@@ -14,15 +16,15 @@ export class ForgotPasswordcontroller implements IForgotPasswordcontroller{
     try {
       const { email } = req.body;
       if (!email || typeof email !== 'string') {
-        res.status(400).json({ message: 'Valid email is required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.FORGOT_PASSWORD_EMAIL_REQUIRED });
         return;
       }
       await this.forgotPasswordService.requestPasswordReset(email);
-      res.status(200).json({ message: 'If the email exists, a reset link has been sent.' });
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.FORGOT_PASSWORD_SUCCESS });
     } catch (err) {
       const error = err as Error
       console.error('Error in forgotPassword:', error);
-      res.status(400).json({ message: error.message});
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message});
     }
   }
 
@@ -30,15 +32,15 @@ export class ForgotPasswordcontroller implements IForgotPasswordcontroller{
     try {
       const { token, password } = req.body;
       if (!token || typeof token !== 'string' || !password || typeof password !== 'string') {
-        res.status(400).json({ message: 'Token and password are required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.RESET_PASSWORD_REQUIRED_FIELDS });
         return;
       }
       await this.forgotPasswordService.resetPassword(token, password);
-      res.status(200).json({ message: 'Password reset successful' });
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.RESET_PASSWORD_SUCCESS });
     } catch (err) {
       const error = err as Error
       console.error('Error in resetPassword:', error);
-      res.status(400).json({ message: error.message || 'Invalid or expired token' });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
     }
   }
 }

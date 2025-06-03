@@ -5,6 +5,8 @@ import { IUserConnectionService } from '../../core/interfaces/services/user/IUse
 import { TYPES } from '../../di/types';
 import { IUserConnectionController } from '../../core/interfaces/controllers/user/IUserConnectionController';
 import { IConnection } from '../../models/Connection';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
 
 @injectable()
 export class UserConnectionController implements IUserConnectionController {
@@ -17,14 +19,14 @@ export class UserConnectionController implements IUserConnectionController {
       const userId = req.userId;
       const { followingId } = req.body;
       if (!userId || !followingId) {
-        res.status(401).json({ message: 'Invalid credentials' });
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.INVALID_CREDENTIALS });
         return;
       }
       const result = await this.userConnectionService.followUser(userId, followingId);
-      res.status(200).json({ result, message: "Followed successfully" });
+      res.status(STATUS_CODES.OK).json({ result, message: MESSAGES.FOLLOWED_SUCCESS });
       return;
     } catch (error) {
-      res.status(400).json(error);
+      res.status(STATUS_CODES.BAD_REQUEST).json(error);
       return;
     }
   }
@@ -34,13 +36,13 @@ export class UserConnectionController implements IUserConnectionController {
       const userId = req.userId;
       const { followingId } = req.body;
       if (!userId || !followingId) {
-        res.status(401).json({ message: 'Invalid credentials' });
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.INVALID_CREDENTIALS });
         return;
       }
       await this.userConnectionService.unfollowUser(userId, followingId);
-      res.status(200).json({ message: "Successfully unfollowed" });
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.UNFOLLOWED_SUCCESS });
     } catch (error) {
-      res.status(400).json(error);
+      res.status(STATUS_CODES.BAD_REQUEST).json(error);
     }
   }
 
@@ -49,15 +51,15 @@ export class UserConnectionController implements IUserConnectionController {
       const reporterId = req.userId;
       const { userId, reason } = req.body; 
       if (!reporterId || !userId || !reason) {
-        res.status(401).json({ message: 'Invalid credentials' });
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.INVALID_CREDENTIALS });
         return;
       }
       const result = await this.userConnectionService.reportUser(reporterId, userId, reason);
-      res.status(200).json(result);
+      res.status(STATUS_CODES.OK).json(result);
       return;
     } catch (err) {
       const error = err as Error
-      res.status(400).json({message:error.message});
+      res.status(STATUS_CODES.BAD_REQUEST).json({message:error.message});
     }
   }
 
@@ -66,25 +68,25 @@ export class UserConnectionController implements IUserConnectionController {
       const userId = req.userId
       const search = typeof req.query.search === "string" ? req.query.search : "";
       if(!userId) {
-        res.status(404).json({ error: "Invalid credentails" });
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ error: MESSAGES.INVALID_CREDENTIALS });
         return
       } 
       const pageParam = req.query.page;
       const page = typeof pageParam === 'string' ? parseInt(pageParam) : 1;
       const limit = 12;
       if (isNaN(page) || page < 1) {
-        res.status(400).json({ message: 'Invalid page number' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_PAGE_NUMBER });
         return;
       }
       const skip = (page - 1) * limit;
       const result = await this.userConnectionService.getUsers(skip, limit,search);
       if (!result) {
-        res.status(404).json({ error: "No users found" });
+        res.status(STATUS_CODES.NOT_FOUND).json({ error: MESSAGES.NO_USERS_FOUND });
         return;
       }
       const [users, total] = result;
-      res.status(200).json({
-        message: 'Users fetched successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.USERS_FETCHED,
         users,
         total,
         skip,
@@ -92,7 +94,7 @@ export class UserConnectionController implements IUserConnectionController {
       });
       return;
     } catch (error) {
-      res.status(400).json(error);
+      res.status(STATUS_CODES.BAD_REQUEST).json(error);
     }
   }
 
@@ -101,15 +103,15 @@ export class UserConnectionController implements IUserConnectionController {
       const { id } = req.params;
       const currentUserId = req.userId!
       if(!currentUserId || !id){
-        res.status(401).json({ error: "Invalid credential" });
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ error: MESSAGES.INVALID_CREDENTIALS });
       }
       const result = await this.userConnectionService.findUserById(id,currentUserId);
       if (!result) {
-        res.status(404).json({ error: "User not found" });
+        res.status(STATUS_CODES.NOT_FOUND).json({ error: MESSAGES.USER_NOT_FOUND });
         return;
       }
       const [user, followerCount,followingCount,isFollowing] = result;
-      res.status(200).json({
+      res.status(STATUS_CODES.OK).json({
         user,
         followerCount,
         followingCount,
@@ -117,7 +119,7 @@ export class UserConnectionController implements IUserConnectionController {
       });
     } catch (err) {
       const error = err as Error
-      res.status(400).json({ message: error.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
     }
   }
 
@@ -125,22 +127,22 @@ export class UserConnectionController implements IUserConnectionController {
     try {
       const userId = req.userId!;
       if(!userId){
-        res.status(400).json({ message: 'No Credential provided' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_CREDENTIALS });
         return;
       }
       const followers: IConnection[] | null = await this.userConnectionService.getFollowers(userId);
       
       if (!followers) {
-        res.status(400).json({ message: 'No followers found' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.FOLLOWERS_NOT_FOUND });
         return;
       }
 
-      res.status(200).json({
-        message: 'Followers retrieved successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.FOLLOWERS_RETRIEVED,
         data: followers,
       });
     } catch (error) {
-      res.status(400).json({ message: `Error fetching followers: ${(error as Error).message}` });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: `${MESSAGES.ERROR_FETCHING_FOLLOWERS}: ${(error as Error).message}` });
     }
   }
 
@@ -148,22 +150,22 @@ export class UserConnectionController implements IUserConnectionController {
     try {
       const userId  = req.userId!;
       if(!userId){
-        res.status(400).json({ message: 'No Credential provided' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_CREDENTIALS });
         return
       }
       const following: IConnection[] | null = await this.userConnectionService.getFollowing(userId);
       
       if (!following) {
-        res.status(400).json({ message: 'No following found' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.FOLLOWING_NOT_FOUND });
         return;
       }
 
-      res.status(200).json({
-        message: 'Following retrieved successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.FOLLOWING_USERS_RETRIEVED,
         data: following,
       });
     } catch (error) {
-      res.status(400).json({ message: `Error fetching following: ${(error as Error).message}` });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: `${MESSAGES.ERROR_FETCHING_FOLLOWING}: ${(error as Error).message}` });
     }
   }
 }

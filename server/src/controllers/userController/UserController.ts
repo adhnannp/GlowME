@@ -3,6 +3,8 @@ import { inject, injectable } from 'inversify';
 import { IUserService } from '../../core/interfaces/services/user/IUserService';
 import { IUserController } from '../../core/interfaces/controllers/user/IUserController';
 import { TYPES } from '../../di/types';
+import { MESSAGES } from '../../utils/ResponseMessages';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
 
 @injectable()
 export class UserController implements IUserController{
@@ -13,18 +15,18 @@ export class UserController implements IUserController{
             const { email } = req.query;
             console.log(email)
             if (!email || typeof email !== "string") {
-                res.status(400).json({ message: "Email is required and must be a string" });
+                res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.STRING_EMAIL_REQUIRED });
                 return 
             }
             const user = await this.userService.getUserByEmail(email);
             if (!user) {
-                res.status(404).json({ message: 'User not found' });
+                res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.USER_NOT_FOUND });
                 return
             }
-            res.status(200).json({message:"user fetched successsfully",user});
+            res.status(STATUS_CODES.OK).json({message: MESSAGES.USER_FETCHED ,user});
             return
         } catch (error) {
-            res.status(500).json({ message: 'Internal Server Error', error});
+            res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: MESSAGES.INTERNAL_SERVER_ERROR , error});
         }
     }
 
@@ -32,16 +34,16 @@ export class UserController implements IUserController{
         try {
             const userId = req.userId;
             if (!userId) {
-                res.status(401).json({ message: 'Unauthorized: User ID not found' });
+                res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED_USER_ID });
                 return;
             }
             const hasPassword = await this.userService.hasPassword(userId);
-            res.status(200).json({ hasPassword });
+            res.status(STATUS_CODES.OK).json({ hasPassword });
             return;
         } catch (err) {
             const error = err as Error
-            res.status(400).json({ 
-                message: error.message || 'Failed to check password status', 
+            res.status(STATUS_CODES.BAD_REQUEST).json({ 
+                message: error.message || MESSAGES.FAILED_CHECKING_PASSWORD_STATUS, 
                 error 
             });
         }
@@ -51,13 +53,13 @@ export class UserController implements IUserController{
         try {
             const userId = req.userId;
             if (!userId) {
-                res.status(401).json({ message: 'Unauthorized: User ID not found' });
+                res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED_USER_ID });
                 return;
             }
             const { current_password, new_password, googleUser } = req.body;
 
             if (!new_password) {
-                res.status(400).json({ message: 'New password is required' });
+                res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.NEW_PASSWORD_REQUIRED });
                 return;
             }
 
@@ -67,15 +69,15 @@ export class UserController implements IUserController{
                 new_password,
                 googleUser || false
             );
-            res.status(200).json({ 
-                message: 'Password changed successfully', 
+            res.status(STATUS_CODES.OK).json({ 
+                message: MESSAGES.PASSWORD_CHANGED, 
                 user: updatedUser 
             });
             return;
         } catch (err) {
             const error = err as Error
-            res.status(400).json({ 
-                message: error.message || 'Failed to change password', 
+            res.status(STATUS_CODES.BAD_REQUEST).json({ 
+                message: error.message || MESSAGES.PASSWORD_CHANGE_FAILED, 
                 error 
             });
         }
@@ -85,27 +87,27 @@ export class UserController implements IUserController{
         try {
           const userId = req.userId;
           if (!userId) {
-            res.status(401).json({ message: "Unauthorized: User ID not found" });
+            res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED_USER_ID });
             return 
           }
           const { username } = req.body;
           const profile_image = req.file;
           if (!username) {
-            res.status(400).json({ message: "Username is required" });
+            res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.USER_NAME_REQUIRED });
             return 
           }
           const updatedUser = await this.userService.updateUserProfile(userId, {
             username,
             profile_image: profile_image || null,
           });
-          res.status(200).json({
-              message: "Profile updated successfully",
+          res.status(STATUS_CODES.OK).json({
+              message: MESSAGES.PROFILE_UPDATED_SUCCESS,
               user: updatedUser,
             });
           return 
         } catch (error) {
           const err = error as Error;
-          res.status(400).json({ message: err.message || "Failed to update profile" });
+          res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message || MESSAGES.PROFILE_UPDATED_FAILED });
           return 
         }
     }

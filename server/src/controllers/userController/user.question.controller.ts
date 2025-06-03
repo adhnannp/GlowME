@@ -3,6 +3,8 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../../di/types";
 import { IUserQuestionController } from "../../core/interfaces/controllers/user/IUser.Question.Controller";
 import { IUserQuestionService } from "../../core/interfaces/services/user/IUser.Question.Service";
+import { STATUS_CODES } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/ResponseMessages";
 
 @injectable()
 export class UserQuestionController implements IUserQuestionController {
@@ -15,18 +17,18 @@ export class UserQuestionController implements IUserQuestionController {
         const title = ( req.query.title as string)?.trim();
         console.log(title)
         if(!title){
-            res.status(400).json({message:'invalid title'});
+            res.status(STATUS_CODES.BAD_REQUEST).json({message:MESSAGES.INVALID_TITLE});
             return;
         }
         const isAvailable = await this.userquestionService.checkTitleAvailablity(title);
         const message = isAvailable
-            ? 'Title is available'
-            : 'Title is not available';
-        res.status(200).json({isAvailable,message})
+            ? MESSAGES.TITLE_AVAILABLE
+            : MESSAGES.TITLE_UNAVAILABLE;
+        res.status(STATUS_CODES.OK).json({isAvailable,message})
         return;
     } catch (error) {
         const err = error as Error  
-        res.status(400).json({ message: err.message });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
         return
     }
   }

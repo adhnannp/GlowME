@@ -3,6 +3,8 @@ import { inject, injectable } from "inversify";
 import { TYPES } from "../../di/types";
 import { IUserTagService } from "../../core/interfaces/services/user/IUser.Tag.Service";
 import { IUserTagController } from "../../core/interfaces/controllers/user/IUser.Tag.Controller";
+import { STATUS_CODES } from "../../utils/HTTPStatusCode";
+import { MESSAGES } from "../../utils/ResponseMessages";
 
 @injectable()
 export class UserTagController implements IUserTagController {
@@ -15,15 +17,15 @@ export class UserTagController implements IUserTagController {
       const query = (req.query.query as string)?.trim();
       if (!query) {
         res
-          .status(400)
-          .json({ message: "no Query provided" });
+          .status(STATUS_CODES.BAD_REQUEST)
+          .json({ message: MESSAGES.NO_QUERY_PROVIDED });
         return;
       }
       const tags = await this.userTagService.searchTags(query);
-      res.status(200).json({tags});
+      res.status(STATUS_CODES.OK).json({tags});
     } catch (error) {
       const err = error as Error  
-      res.status(400).json({ message: err.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
       return
     }
   }

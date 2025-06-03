@@ -3,6 +3,8 @@ import { Request, Response } from 'express';
 import { IUserBadgeService } from '../../core/interfaces/services/user/IUser.Badge.Service';
 import { TYPES } from '../../di/types';
 import { IUserBadgeController } from '../../core/interfaces/controllers/user/IUser.Badge.Controller';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
 
 @injectable()
 export class UserBadgeController implements IUserBadgeController{
@@ -15,15 +17,15 @@ export class UserBadgeController implements IUserBadgeController{
     try {
       const {userId} = req.params;
       if (!userId) {
-        res.status(401).json({ message: 'User not authenticated' });
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.USER_NOT_AUTHENTICATED });
         return;
       }
 
       const badges = await this.badgeService.getAvailableBadges(userId);
-      res.status(200).json({badges, message:'successfully fetched all the badges'});
+      res.status(STATUS_CODES.OK).json({badges, message: MESSAGES.BADGE_FETCHED });
     } catch (error) {
         const err= error as Error
-        res.status(400).json({ message: err.message });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
         return;
     }
   }
@@ -34,19 +36,19 @@ export class UserBadgeController implements IUserBadgeController{
       const { badgeId } = req.body;
 
       if (!userId) {
-        res.status(401).json({ message: 'User is not authenticated' });
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.USER_NOT_AUTHENTICATED });
         return;
       }
       if (!badgeId) {
-        res.status(400).json({ message: 'Badge ID is required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.BADGE_ID_REQUIRED });
         return;
       }
 
       const user = await this.badgeService.unlockBadge(userId, badgeId);
-      res.status(200).json({user, message:"successfully unlocked the badge"});
+      res.status(STATUS_CODES.OK).json({user, message: MESSAGES.BADGE_UNLOCKED });
     } catch (error) {
         const err = error as Error
-        res.status(400).json({ message: err.message });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
         return;
     }
   }
@@ -57,19 +59,19 @@ export class UserBadgeController implements IUserBadgeController{
       const { badgeId } = req.body;
 
       if (!userId) {
-        res.status(401).json({ message: 'User not authenticated' });
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.USER_NOT_AUTHENTICATED });
         return;
       }
       if (!badgeId) {
-        res.status(400).json({ message: 'Badge ID is required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.BADGE_ID_REQUIRED });
         return;
       }
 
       const user = await this.badgeService.setCurrentBadge(userId, badgeId);
-      res.status(200).json({user,message:"successfully changed the current badge"});
+      res.status(STATUS_CODES.OK).json({user,message: MESSAGES.CURRENT_BADGE_CHANGED });
     } catch (error) {
         const err = error as Error
-        res.status(400).json({ message: err.message });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
         return;
     }
   }
@@ -78,15 +80,15 @@ export class UserBadgeController implements IUserBadgeController{
     try {
       const {userId} = req.params;
       if (!userId) {
-        res.status(401).json({ message: 'User not authenticated' });
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.USER_NOT_AUTHENTICATED });
         return;
       }
 
       const badges = await this.badgeService.getUserBadges(userId);
-      res.status(200).json({badges,message:"fetched all badge acquired by the user"});
+      res.status(STATUS_CODES.OK).json({badges,message: MESSAGES.FETCHED_USER_BADGES });
     } catch (error) {
         const err = error as Error
-        res.status(400).json({ message: err.message });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
         return;
     }
   }

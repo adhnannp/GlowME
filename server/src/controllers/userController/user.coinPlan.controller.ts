@@ -4,6 +4,8 @@ import IUserCoinPlanService from '../../core/interfaces/services/user/IUser.Coin
 import { ICoinPlan } from '../../models/CoinPlan';
 import { TYPES } from '../../di/types';
 import IUserCoinPlanController from '../../core/interfaces/controllers/user/IUser.CoinPlan.controller';
+import { MESSAGES } from '../../utils/ResponseMessages';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
 
 @injectable()
 export class UserCoinPlanController implements IUserCoinPlanController{
@@ -15,17 +17,17 @@ export class UserCoinPlanController implements IUserCoinPlanController{
     try {
       const coinPlans = await this.coinPlanService.getPlans();
       if (!coinPlans) {
-        res.status(404).json({ message: 'No coin plans found' });
+        res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.NO_COIN_PLANS_FOUND });
         return;
       }
-      res.status(200).json({
-        message: 'Coin plans retrieved successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.COIN_PLANS_RETRIEVED,
         data: coinPlans,
       });
       return;
     } catch (err) {
       const error = err as Error;  
-      res.status(400).json({ message: error.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
       return;
     }
   }
@@ -35,18 +37,18 @@ export class UserCoinPlanController implements IUserCoinPlanController{
       const { planId } = req.body;
       const userId = req.userId;
       if (!userId || !planId) {
-        res.status(400).json({ message: 'userId and planId are required' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.COIN_PLAN_SESSION_REQUIRED_FIELDS });
         return;
       }
       const { sessionId } = await this.coinPlanService.createCoinPlanCheckoutSession(userId, planId);
-      res.status(200).json({
-        message: 'Checkout session created successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.COIN_PLAN_SESSION_CREATED,
         sessionId,
       });
       return;
     } catch (err) {
       const error = err as Error;
-      res.status(400).json({ message: error.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
       return;
     }
   }
@@ -55,19 +57,19 @@ export class UserCoinPlanController implements IUserCoinPlanController{
     const sessionId = req.params.sessionId;
     try{
       if (!sessionId) {
-        res.status(400).json({ message: 'missing data' });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.COIN_PLAN_SESSION_DETAILS_MISSING });
         return;
       }
       const {transactionData,updatedUser} = await this.coinPlanService.getCheckoutSessionDetails(sessionId);
-      res.status(200).json({
-        message: 'retrived Checkout session details successfully',
+      res.status(STATUS_CODES.OK).json({
+        message: MESSAGES.COIN_PLAN_SESSION_DETAILS_RETRIEVED,
         transactionData,
         updatedUser,
       });
       return;
     } catch (err) {
       const error = err as Error;
-      res.status(400).json({ message: error.message });
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
       return;
     }
   }
@@ -77,12 +79,12 @@ export class UserCoinPlanController implements IUserCoinPlanController{
         const userId = req.userId;
         const page = parseInt(req.query.page as string) || 1;
         if (!userId || isNaN(page) || page < 1) {
-          res.status(400).json({ message: "No credentials found or invalid page number" });
+          res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.USER_TRANSACTION_HISTORY_INVALID });
           return;
         }
         const limit = 10;
         const { transactions, total } = await this.coinPlanService.getTransactionHistoryByUser(userId, page, limit);
-        res.status(200).json({
+        res.status(STATUS_CODES.OK).json({
             transactions,
             pagination: {
                 page,
@@ -94,7 +96,7 @@ export class UserCoinPlanController implements IUserCoinPlanController{
         return;
     } catch (err) {
         const error = err as Error;
-        res.status(400).json({ message:error.message });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message:error.message });
     }
   }
 

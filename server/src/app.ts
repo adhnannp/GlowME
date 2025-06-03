@@ -10,6 +10,8 @@ import passport from './config/passport';
 import path from 'path';
 import { requestLogger } from './middleware/Logger.Middleware';
 import { errorLogger } from './middleware/Error.Middleware';
+import { MESSAGES } from './utils/ResponseMessages';
+import { STATUS_CODES } from './utils/HTTPStatusCode';
 
 const app = express();
 
@@ -29,7 +31,7 @@ app.use('/api', userRoutes);
 app.use('/api/admin', adminRoutes); 
 
 app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
+  res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.ROUTE_NOT_FOUND });
 });
 
 

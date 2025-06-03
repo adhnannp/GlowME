@@ -1,5 +1,8 @@
 //massages
 export const MESSAGES = {
+
+    ROUTE_NOT_FOUND: 'Route not found',
+
     BADGE_CREATED: 'successfully created the badge',
     BADGE_FIELD_REQUIRED: 'Name, required XP, and image are required',
     XP_NON_NEGETIVE:'Required XP must be a non-negative number',
@@ -10,6 +13,9 @@ export const MESSAGES = {
     BADGE_LISTED: 'Badge listed successfully',
     BADGE_UNLISTED: 'Badge unlisted successfully',
     BADGE_FETCHED: 'successfully fetched all the badge',
+    BADGE_UNLOCKED: 'successfully unlocked the badge',
+    CURRENT_BADGE_CHANGED: 'successfully changed the current badge',
+    FETCHED_USER_BADGES: 'fetched all badge acquired by the user',
 
     COIN_PLAN_CREATED: 'Coin plan created successfully',
     COIN_PLANS_RETRIEVED: 'Coin plans retrieved successfully',
@@ -18,17 +24,30 @@ export const MESSAGES = {
     COIN_PLAN_UNLISTED: 'Coin plan unlisted successfully',
     NO_COIN_PLANS_FOUND: 'No coin plans found',
     COIN_PLAN_NOT_FOUND: 'Coin plan not found',
+
+    COIN_PLAN_SESSION_REQUIRED_FIELDS: "userId and planId are required",
+    COIN_PLAN_SESSION_CREATED: "Checkout session created successfully",
+    COIN_PLAN_SESSION_DETAILS_MISSING: "Missing session ID",
+    COIN_PLAN_SESSION_DETAILS_RETRIEVED: "Retrieved checkout session details successfully",
+
+    USER_TRANSACTION_HISTORY_INVALID: "No credentials found or invalid page number",
     
     //basic
     INVALID_INPUT: 'Invalid input provided',
     INTERNAL_SERVER_ERROR: 'Internal server error',
     USER_NOT_FOUND: 'User not found',
     NO_USERS_FOUND: 'No users found',
+    USER_NOT_AUTHENTICATED: 'User not authenticated',
     INVALID_PAGE_NUMBER: 'Invalid page number',
     USER_FETCHED: "user fetched successsfully",
     USERS_FETCHED:'users fetched successsfully',
     LOGIN_FAILED: 'Login Failed',
     USER_ID_REQUIRED: 'User ID is required',
+    LOGIN_SUCCESS: "Login successful",
+    LOGOUT_SUCCESS: "Logged out successfully",
+    NO_QUERY_PROVIDED: 'no Query provided',
+    INVALID_CREDENTIALS: 'Invalid credentials',
+    UNAUTHORIZED_USER_ID: 'Unauthorized: User ID not found',
     //
 
     REPORTS_FETCHED: 'Reports fetched successfully',
@@ -51,8 +70,62 @@ export const MESSAGES = {
     TAG_ID_REQUIRED: 'Tag ID is required',
 
     STRING_EMAIL_REQUIRED: "Email is required and must be a string",
+    USER_NAME_REQUIRED: 'User Name Is Required',
+    PROFILE_UPDATED_SUCCESS: 'Profile updated successfully',
+    PROFILE_UPDATED_FAILED: 'Failed to update profile',
 
     BAN_USER_ID_DURATION_RRQUIRED: 'User ID and duration are required',
     BAN_SUCCESS: 'User banned successfully',
     UNBAN_SUCCESS: 'User unbanned successfully',
+
+    REGISTER_SUCCESS: "Registered successfully, please check your email for OTP",
+    REGISTER_FAILED: "Registration failed",
+
+    OTP_VERIFY_SUCCESS: "OTP verified successfully",
+    OTP_VERIFY_FAILED: "OTP verification failed",
+
+    OTP_RESEND_SUCCESS: "OTP resent successfully",
+    OTP_RESEND_EXPIRED: "User data expired or not found. Please restart the verification process.",
+    OTP_RESEND_REDIS_ISSUE: "Internal server error: Redis issue. Please try again later.",
+    OTP_RESEND_LIMIT: "OTP already resent. Please wait before requesting again.",
+    OTP_RESEND_FAILED: "Resend OTP failed. Please try again.",
+
+    REFRESH_TOKEN_MISSING: "No refresh token provided",
+    REFRESH_TOKEN_SUCCESS: "Token refreshed",
+    REFRESH_TOKEN_FAILED: "Refreshing tokens failed",
+    REFRESH_TOKEN_INVALID: "Invalid refresh token",
+    
+    USER_INVALID_OR_BANNED: 'User invalid or banned',
+    INVALID_TOKEN: "Invalid token",
+    INVALID_OR_EXPIRED_TOKEN: 'Invalid or expired token',
+    NO_TOKEN_PROVIDED: 'No token provided',
+    VERIFY_USER_MISSING: "No credentials added",
+    VERIFY_USER_SUCCESS: "Got user by ID successfully",
+    AUTH_FAILED: 'Authentication failed',
+    GOOGLE_INVALID:'Invalid Google account data',
+    ACCESS_DENIED:'Access Denied',
+
+    FORGOT_PASSWORD_EMAIL_REQUIRED: "Valid email is required",
+    FORGOT_PASSWORD_SUCCESS: "If the email exists, a reset link has been sent.",
+
+    RESET_PASSWORD_REQUIRED_FIELDS: "Token and password are required",
+    RESET_PASSWORD_SUCCESS: "Password reset successful",
+
+    FAILED_CHECKING_PASSWORD_STATUS: 'Failed to check password status',
+    NEW_PASSWORD_REQUIRED: 'New password is required',
+    PASSWORD_CHANGED: 'Password changed successfully',
+    PASSWORD_CHANGE_FAILED: 'Failed to change password',
+
+    INVALID_TITLE: 'invalid title',
+    TITLE_AVAILABLE: 'Title is available',
+    TITLE_UNAVAILABLE: 'Title is available',
+
+    FOLLOWED_SUCCESS:'Followed successfully',
+    UNFOLLOWED_SUCCESS:'Unfollowed successfully',
+    FOLLOWERS_NOT_FOUND: 'No followers found',
+    FOLLOWERS_RETRIEVED: 'Followers retrieved successfully',
+    ERROR_FETCHING_FOLLOWERS: 'Error fetching followers',
+    FOLLOWING_NOT_FOUND: 'No following found',
+    FOLLOWING_USERS_RETRIEVED: 'Following users retrieved successfully',
+    ERROR_FETCHING_FOLLOWING : 'Error fetching following',
 };

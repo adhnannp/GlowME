@@ -4,6 +4,8 @@ import { injectable, inject } from "inversify";
 import { IUserRepository } from "../core/interfaces/repositories/IUserRepository";
 import { IAdminAuthMiddleware } from "../core/interfaces/middlewares/IAdminAuthMiddleware";
 import { TYPES } from "../di/types";
+import { STATUS_CODES } from '../utils/HTTPStatusCode';
+import { MESSAGES } from '../utils/ResponseMessages';
 
 declare global {
   namespace Express {
@@ -19,7 +21,7 @@ export default class AdminAuthMiddleware implements IAdminAuthMiddleware {
   async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(403).json({ error: "No token provided" });
+      res.status(STATUS_CODES.FORBIDDEN).json({ error: MESSAGES.NO_TOKEN_PROVIDED });
       return;
     }
     const token = authHeader.split(" ")[1];
@@ -29,17 +31,17 @@ export default class AdminAuthMiddleware implements IAdminAuthMiddleware {
       };
       const user = await this.userRepository.findUserById(decoded.userId);
       if (!user || user.isBlock ) {
-        res.status(400).json({ message: "User invalid or banned" });
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.USER_INVALID_OR_BANNED });
         return;
       }
       if(!user.isAdmin){
-        res.status(401).json({message:"Access denied"})
+        res.status(STATUS_CODES.UNAUTHORIZED).json({message:MESSAGES.ACCESS_DENIED})
         return;
       }
       req.userId = decoded.userId;
       next();
     } catch (error) {
-      res.status(403).json({ message: "Invalid or expired token" });
+      res.status(STATUS_CODES.FORBIDDEN).json({ message: MESSAGES.INVALID_OR_EXPIRED_TOKEN });
       return;
     }
   }

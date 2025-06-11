@@ -2,8 +2,10 @@ import mongoose, {Document, Schema} from "mongoose";
 
 export interface IQuestion extends Document{
     title: string;
+    slug: string;
     createdBy: string | mongoose.Types.ObjectId;
-    header_image: string;
+    header_image?: string;
+    document?: string;
     description: string;
     bounty_coin?:number;
     tags?: mongoose.Types.ObjectId[]; 
@@ -16,7 +18,9 @@ export interface IQuestion extends Document{
 const questionSchema = new mongoose.Schema<IQuestion>({
     createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     title: { type: String, required: true, unique: true },
+    slug: { type: String, required: true, unique: true },
     header_image: { type: String },
+    document: { type: String },
     isListed:{type:Boolean,default:true},
     description: { type: String },
     bounty_coin: { type: Number, default: 0 },

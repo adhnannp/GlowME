@@ -128,4 +128,8 @@ export const MESSAGES = {
     FOLLOWING_NOT_FOUND: 'No following found',
     FOLLOWING_USERS_RETRIEVED: 'Following users retrieved successfully',
     ERROR_FETCHING_FOLLOWING : 'Error fetching following',
+
+    QUESTION_CREATED: 'Question created successfully',
+    INVALID_DOC_TYPE: 'Invalid document type',
+    INVALID_IMG_TYPE: 'Invalid IMG Type',
 };

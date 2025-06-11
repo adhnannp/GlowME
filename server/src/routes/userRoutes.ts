@@ -9,7 +9,7 @@ import { IGoogleAuthController } from '../core/interfaces/controllers/auth/IGoog
 import passport from '../config/passport';
 import { IForgotPasswordcontroller } from '../core/interfaces/controllers/auth/IforgotPasswordController';
 import { IUserBadgeController } from '../core/interfaces/controllers/user/IUser.Badge.Controller';
-import { profile_pictureUpload } from '../config/multerConfig';
+import { profile_pictureUpload, questionUploads } from '../config/multerConfig';
 import IUserCoinPlanController from '../core/interfaces/controllers/user/IUser.CoinPlan.controller';
 import { IUserTagController } from '../core/interfaces/controllers/user/IUser.Tag.Controller';
 import { IUserQuestionController } from '../core/interfaces/controllers/user/IUser.Question.Controller';
@@ -71,5 +71,6 @@ router.get('/Gcoin/transaction-history',userAuthMiddleware.handle.bind(userAuthM
 
 router.get('/questions/search-tags',userAuthMiddleware.handle.bind(userAuthMiddleware),tagController.searchTag.bind(tagController));
 router.get('/questions/check-title',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.checkTitleAvailablity.bind(questionController));
+router.post('/questions/create',userAuthMiddleware.handle.bind(userAuthMiddleware),questionUploads.fields([{ name: 'image', maxCount: 1 },{ name: 'document', maxCount: 1 },]),questionController.createQuestion.bind(questionController));
 
 export default router;

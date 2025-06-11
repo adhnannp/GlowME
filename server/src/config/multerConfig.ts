@@ -2,7 +2,7 @@ import multer from 'multer';
 import path from 'path';
 import { Request } from 'express';
 
-const ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
+const ALLOWED_IMAGE_EXTENSIONS = ['.png', '.jpg', '.jpeg'];
 
 const badgeStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -20,7 +20,7 @@ const badgeFileFilter = (
   cb: multer.FileFilterCallback
 ) => {
   const ext = path.extname(file.originalname).toLowerCase();
-  if (ALLOWED_EXTENSIONS.includes(ext)) {
+  if (ALLOWED_IMAGE_EXTENSIONS.includes(ext)) {
     cb(null, true);
   } else {
     cb(new Error('Invalid image format. Only PNG, JPG, and JPEG are allowed'));
@@ -48,4 +48,32 @@ export const profile_pictureUpload = multer({
     }
     cb(null, true);
   },
+});
+
+const QuestionfileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+) => {
+  const ext = path.extname(file.originalname).toLowerCase();
+  const field = file.fieldname;
+
+  const imageExts = ['.jpg', '.jpeg', '.png'];
+  const docExts = ['.pdf', '.doc', '.docx'];
+
+  if (field === 'image' && imageExts.includes(ext)) {
+    return cb(null, true);
+  }
+
+  if (field === 'document' && docExts.includes(ext)) {
+    return cb(null, true);
+  }
+
+  return cb(new Error(`Invalid file type for field ${field}`));
+};
+
+export const questionUploads = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: QuestionfileFilter,
 });

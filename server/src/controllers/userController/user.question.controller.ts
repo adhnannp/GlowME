@@ -5,6 +5,8 @@ import { IUserQuestionController } from "../../core/interfaces/controllers/user/
 import { IUserQuestionService } from "../../core/interfaces/services/user/IUser.Question.Service";
 import { STATUS_CODES } from "../../utils/HTTPStatusCode";
 import { MESSAGES } from "../../utils/ResponseMessages";
+import logger from "../../utils/logger";
+import { baseQuestionForm } from "../../validators/baseQuestionForm";
 
 @injectable()
 export class UserQuestionController implements IUserQuestionController {
@@ -32,4 +34,57 @@ export class UserQuestionController implements IUserQuestionController {
         return
     }
   }
+
+  async createQuestion(req: Request, res: Response): Promise<void> {
+    try {
+      const body = req.body;
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      const userId = req.userId;
+      if(!userId){
+        res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.USER_NOT_AUTHENTICATED });
+        return;
+      }
+      const parsed = baseQuestionForm.safeParse(body);
+      if (!parsed.success) {
+        const errorMsg = parsed.error.errors.map((e) => e.message).join(', ');
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: `Validation failed: ${errorMsg}` });
+        return;
+      }
+      const imageFile = files?.image?.[0];
+      const docFile = files?.document?.[0];
+      let imageUrl: string | undefined;
+      let documentUrl: string | undefined;
+      if (imageFile) {
+        if (!imageFile.mimetype.startsWith('image/')) {
+          res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_IMG_TYPE });
+          return;
+        }
+        imageUrl = await this.userquestionService.uploadToCloudinary(imageFile);
+      }
+      if (docFile) {
+        const allowedDocs = [
+          'application/pdf',
+          'text/plain',
+          'application/msword',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        ];
+        if (!allowedDocs.includes(docFile.mimetype)) {
+          res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_DOC_TYPE });
+          return;
+        }
+        documentUrl = await this.userquestionService.uploadToS3(docFile);
+      }
+      await this.userquestionService.createQuestion({
+        ...parsed.data,
+        createdBy:userId, 
+        imageUrl,
+        documentUrl,
+      });
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.QUESTION_CREATED });
+    } catch (error) {
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
+      logger.error(error);
+    }
+  }
+
 }

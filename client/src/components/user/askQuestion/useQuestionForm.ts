@@ -83,9 +83,11 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null; 
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+
     if (file) {
-      if (!file.type.startsWith('image/')) {
-        setFormErrors((prev) => ({ ...prev, image: 'Only image files are allowed' }));
+      if (!allowedTypes.includes(file.type)) {
+        setFormErrors((prev) => ({ ...prev, image: 'Only PNG, JPG, or JPEG files are allowed' }));
         return;
       }
       setFormErrors((prev) => ({ ...prev, image: undefined })); 

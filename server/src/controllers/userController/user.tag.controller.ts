@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import { inject, injectable } from "inversify";
-import { TYPES } from "../../di/types";
-import { IUserTagService } from "../../core/interfaces/services/user/IUser.Tag.Service";
-import { IUserTagController } from "../../core/interfaces/controllers/user/IUser.Tag.Controller";
-import { STATUS_CODES } from "../../utils/HTTPStatusCode";
-import { MESSAGES } from "../../utils/ResponseMessages";
+import { Request, Response } from 'express';
+import { inject, injectable } from 'inversify';
+import { TYPES } from '../../di/types';
+import { IUserTagService } from '../../core/interfaces/services/user/IUser.Tag.Service';
+import { IUserTagController } from '../../core/interfaces/controllers/user/IUser.Tag.Controller';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
 
 @injectable()
 export class UserTagController implements IUserTagController {
@@ -24,9 +24,9 @@ export class UserTagController implements IUserTagController {
       const tags = await this.userTagService.searchTags(query);
       res.status(STATUS_CODES.OK).json({tags});
     } catch (error) {
-      const err = error as Error  
+      const err = error as Error;  
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
-      return
+      return;
     }
   }
 }

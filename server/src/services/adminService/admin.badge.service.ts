@@ -58,7 +58,7 @@ export class AdminBadgeService implements IAdminBadgeService{
     const badge = await this.badgeRepository.findBadgeById(badgeId);
     if (!badge || badge.isListed) throw new Error('Badge not found or allready listed');
     const listedBadge = await this.badgeRepository.listBadge(badgeId);
-    if(!listedBadge) throw new Error ('Failed to list the badge')
+    if(!listedBadge) throw new Error ('Failed to list the badge');
     return listedBadge;
   }
 
@@ -66,7 +66,7 @@ export class AdminBadgeService implements IAdminBadgeService{
     const badge = await this.badgeRepository.findBadgeById(badgeId);
     if (!badge || !badge.isListed) throw new Error('Badge not found or allready unlisted');
     const listedBadge = await this.badgeRepository.unlistBadge(badgeId);
-    if(!listedBadge) throw new Error ('Failed to unlist the badge')
+    if(!listedBadge) throw new Error ('Failed to unlist the badge');
     return listedBadge;
   }
 

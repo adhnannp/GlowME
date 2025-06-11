@@ -22,7 +22,7 @@ export class ForgotPasswordcontroller implements IForgotPasswordcontroller{
       await this.forgotPasswordService.requestPasswordReset(email);
       res.status(STATUS_CODES.OK).json({ message: MESSAGES.FORGOT_PASSWORD_SUCCESS });
     } catch (err) {
-      const error = err as Error
+      const error = err as Error;
       console.error('Error in forgotPassword:', error);
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message});
     }
@@ -38,7 +38,7 @@ export class ForgotPasswordcontroller implements IForgotPasswordcontroller{
       await this.forgotPasswordService.resetPassword(token, password);
       res.status(STATUS_CODES.OK).json({ message: MESSAGES.RESET_PASSWORD_SUCCESS });
     } catch (err) {
-      const error = err as Error
+      const error = err as Error;
       console.error('Error in resetPassword:', error);
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
     }

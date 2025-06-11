@@ -1,4 +1,4 @@
-import { Request,Response } from "express";
+import { Request,Response } from 'express';
 
 export default interface IAdminReportController{
     getAllUserReports(req:Request,res:Response): Promise<void>;
@@ -6,4 +6,4 @@ export default interface IAdminReportController{
     rejectAll(req: Request, res: Response) : Promise<void>;
     resolveOne(req: Request, res: Response) : Promise<void>;
     banUserByReport(req: Request, res: Response) : Promise<void>;
-}
+};

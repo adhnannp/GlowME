@@ -15,7 +15,7 @@ export class TagRepository extends BaseRepository<ITag> implements ITagRepositor
 
   async getAllTags(skip: number, limit: number, search: string): Promise<[ITag[], number]> {
     const query = search
-      ? { name: { $regex: search, $options: "i" } }
+      ? { name: { $regex: search, $options: 'i' } }
       : {};
     const tags = await TagModel.find(query).skip(skip).limit(limit).exec();
     const totalTags = await TagModel.countDocuments(query);
@@ -27,7 +27,7 @@ export class TagRepository extends BaseRepository<ITag> implements ITagRepositor
   }
   
   async getTagByName(name:string): Promise<ITag | null> {
-    return await TagModel.findOne({name})
+    return await TagModel.findOne({name});
   }
 
 }

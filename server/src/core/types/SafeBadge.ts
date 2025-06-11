@@ -1,4 +1,4 @@
-import { IBadge } from "../../models/Badge";
+import { IBadge } from '../../models/Badge';
 
 export interface SafeBadge {
     badges: {

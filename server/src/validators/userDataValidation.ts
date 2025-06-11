@@ -1,10 +1,10 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 
 export const passwordSchema = z
   .string()
-  .min(6, "Password must be at least 6 characters")
-  .nonempty("Password is required");
+  .min(6, 'Password must be at least 6 characters')
+  .nonempty('Password is required');
 
 export const usernameSchema = z
   .string()
@@ -13,8 +13,8 @@ export const usernameSchema = z
 
 export const emailSchema = z
   .string()
-  .email("Please enter a valid email")
-  .nonempty("Email is required")  
+  .email('Please enter a valid email')
+  .nonempty('Email is required');  
 
 export const registerSchema = z.object({
   username: usernameSchema,

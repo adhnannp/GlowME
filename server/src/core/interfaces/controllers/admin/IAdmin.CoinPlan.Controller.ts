@@ -6,4 +6,4 @@ export default interface IAdminCoinPlanController{
     updatePlan(req: Request, res: Response): Promise<void>;
     listPlan(req: Request, res: Response): Promise<void>;
     unlistPlan(req: Request, res: Response): Promise<void>;
-}
+};

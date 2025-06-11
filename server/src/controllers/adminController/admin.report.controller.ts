@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
-import { injectable, inject } from "inversify";
-import { TYPES } from "../../di/types";
-import IAdminReportController from "../../core/interfaces/controllers/admin/IAdmin.report.Controller";
-import IAdminReportService from "../../core/interfaces/services/admin/IAdmin.Report.Service";
-import { IUsersService } from "../../core/interfaces/services/admin/IUsersService";
-import { STATUS_CODES } from "../../utils/HTTPStatusCode";
-import { MESSAGES } from "../../utils/ResponseMessages";
+import { Request, Response } from 'express';
+import { injectable, inject } from 'inversify';
+import { TYPES } from '../../di/types';
+import IAdminReportController from '../../core/interfaces/controllers/admin/IAdmin.report.Controller';
+import IAdminReportService from '../../core/interfaces/services/admin/IAdmin.Report.Service';
+import { IUsersService } from '../../core/interfaces/services/admin/IUsersService';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
+import { MESSAGES } from '../../utils/ResponseMessages';
 
 @injectable()
 export class AdminReportController implements IAdminReportController {
@@ -73,7 +73,7 @@ export class AdminReportController implements IAdminReportController {
     const { duration } = req.body;
     try {
       await this.usersService.banUser(userId, duration);
-      await this.reportService.resolveAll(userId)
+      await this.reportService.resolveAll(userId);
       res.status(STATUS_CODES.OK).json({ message: MESSAGES.REPORT_USER_BANNED });
       return;
     } catch (error) {

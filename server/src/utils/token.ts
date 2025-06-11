@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-type expires="7d"|"1h"|"1s"
+type expires='7d'|'1h'|'1s'
 
 export const signJWT = (payload: object): string => {
   const expiresIn = process.env.JWT_EXPIRES_IN as expires;

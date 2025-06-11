@@ -58,18 +58,18 @@ export class UserConnectionController implements IUserConnectionController {
       res.status(STATUS_CODES.OK).json(result);
       return;
     } catch (err) {
-      const error = err as Error
+      const error = err as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({message:error.message});
     }
   }
 
   async getUsers(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.userId
-      const search = typeof req.query.search === "string" ? req.query.search : "";
+      const userId = req.userId;
+      const search = typeof req.query.search === 'string' ? req.query.search : '';
       if(!userId) {
         res.status(STATUS_CODES.UNAUTHORIZED).json({ error: MESSAGES.INVALID_CREDENTIALS });
-        return
+        return;
       } 
       const pageParam = req.query.page;
       const page = typeof pageParam === 'string' ? parseInt(pageParam) : 1;
@@ -101,7 +101,7 @@ export class UserConnectionController implements IUserConnectionController {
   async getUserById(req: Request, res: Response): Promise<void> {
     try {
       const { id } = req.params;
-      const currentUserId = req.userId!
+      const currentUserId = req.userId!;
       if(!currentUserId || !id){
         res.status(STATUS_CODES.UNAUTHORIZED).json({ error: MESSAGES.INVALID_CREDENTIALS });
       }
@@ -118,7 +118,7 @@ export class UserConnectionController implements IUserConnectionController {
         isFollowing,
       });
     } catch (err) {
-      const error = err as Error
+      const error = err as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
     }
   }
@@ -151,7 +151,7 @@ export class UserConnectionController implements IUserConnectionController {
       const userId  = req.userId!;
       if(!userId){
         res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_CREDENTIALS });
-        return
+        return;
       }
       const following: IConnection[] | null = await this.userConnectionService.getFollowing(userId);
       

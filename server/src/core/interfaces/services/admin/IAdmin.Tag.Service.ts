@@ -1,4 +1,4 @@
-import { ITag } from "../../../../models/Tag";
+import { ITag } from '../../../../models/Tag';
 
 export interface IAdminTagService {
   getAllTags(skip: number, limit: number, search: string): Promise<[ITag[], number]>

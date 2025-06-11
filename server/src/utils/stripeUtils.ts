@@ -38,7 +38,7 @@ export async function createStripeCheckoutSession(
     });
     return session.id;
   } catch (error) {
-    const err = error as Error
+    const err = error as Error;
     throw new Error(err.message);
   }
 }

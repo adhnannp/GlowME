@@ -4,7 +4,7 @@ import { IUserRepository } from '../../core/interfaces/repositories/IUserReposit
 import { IUser } from '../../models/User';
 import { IOTPService } from '../../core/interfaces/services/auth/IOTPService';
 import { signJWT, signRefreshToken,verifyRefreshToken  } from '../../utils/token';
-import { redisClient } from "../../config/redis";
+import { redisClient } from '../../config/redis';
 import { TYPES } from '../../di/types';
 import { comparePassword } from '../../validators/comparePasswrod';
 import { registerSchema } from '../../validators/userDataValidation';
@@ -31,21 +31,21 @@ export class AuthService implements IAuthService {
   async loginUser(email: string, password: string): Promise<{ accessToken: string; refreshToken: string } | string> {
     const user = await this.userRepository.findUserByEmail(email);
     if (!user || user.isAdmin) {
-      throw new Error("No User Found");
+      throw new Error('No User Found');
     }
     if (user.isBlock) {
       if (user.ban_expires_at) {
         const banExpires = new Date(user.ban_expires_at);
         throw new Error(`You are banned. Ban will expire at: ${banExpires.toLocaleString()}`);
       }
-      throw new Error("You are banned Permenently");
+      throw new Error('You are banned Permenently');
     }
     if(!user.password ){
-      throw new Error("Please Login With Google Or try Forgot Password");
+      throw new Error('Please Login With Google Or try Forgot Password');
     }
     const validPass = await comparePassword(password, user.password!);
     if(!validPass){
-      throw new Error("incorrect password")
+      throw new Error('incorrect password');
     }
     const accessToken = signJWT({ userId: user._id , isAdmin:user.isAdmin});
     const refreshToken = signRefreshToken({ userId: user._id, isAdmin:user.isAdmin });
@@ -55,11 +55,11 @@ export class AuthService implements IAuthService {
   async loginAdmin(email: string, password: string): Promise<{ accessToken: string; refreshToken: string } | string> {
     const user = await this.userRepository.findUserByEmail(email);
     if (!user || !user.isAdmin) {
-      throw new Error("No Admin Found");
+      throw new Error('No Admin Found');
     }
     const validPass = await comparePassword(password, user.password!);
     if(!validPass){
-      throw new Error("incorrect password")
+      throw new Error('incorrect password');
     }
     const accessToken = signJWT({ userId: user._id , isAdmin:user.isAdmin});
     const refreshToken = signRefreshToken({ userId: user._id, isAdmin:user.isAdmin });
@@ -68,24 +68,24 @@ export class AuthService implements IAuthService {
 
   async resendOTP(email: string): Promise<string> {
     await this.otpService.resendOTP(email);
-    return "OTP has been resent.";
+    return 'OTP has been resent.';
   }
 
   async verifyOTP(email: string, otp: string): Promise<{ accessToken: string; refreshToken: string } | string> {
     const isVerified = await this.otpService.verifyOTP(email, otp);
     if(!isVerified){
-      throw new Error("not verified");
+      throw new Error('not verified');
     }
     const storedData = await redisClient.get(email);
     if (!storedData) {
-      throw new Error("User data expired or does not exist in Redis.");
+      throw new Error('User data expired or does not exist in Redis.');
     }
     const {user} = JSON.parse(storedData);
     const savedUser = await this.userRepository.createUser(user);
     const accessToken = signJWT({ userId: savedUser._id, isAdmin:user.isAdmin });
     const refreshToken = signRefreshToken({ userId: savedUser._id , isAdmin:user.isAdmin});
     await redisClient.del(email);
-    return {accessToken,refreshToken}
+    return {accessToken,refreshToken};
   }
 
   async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
@@ -102,8 +102,8 @@ export class AuthService implements IAuthService {
     };
   }
 
-  async verifyUser(userId:string): Promise<Omit<IUser, "password"> |null>{
-    const userData = await this.userRepository.findUserById(userId)
+  async verifyUser(userId:string): Promise<Omit<IUser, 'password'> |null>{
+    const userData = await this.userRepository.findUserById(userId);
     if(!userData) return null;
     return userData;
   }

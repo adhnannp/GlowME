@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify';
 import { IOTPService } from '../../core/interfaces/services/auth/IOTPService';
-import { redisClient } from "../../config/redis";
+import { redisClient } from '../../config/redis';
 import { generateOTP, sendOTPEmail } from '../../utils/otp';
 import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
 import { IUser } from '../../models/User';
@@ -25,11 +25,11 @@ export class OTPService implements IOTPService {
   async resendOTP(email: string): Promise<void> {
     const storedData = await redisClient.get(email);
     if (!storedData) {
-      throw new Error("User data expired or does not exist in Redis.");
+      throw new Error('User data expired or does not exist in Redis.');
     }
-    const ttl = await redisClient.ttl(email)
+    const ttl = await redisClient.ttl(email);
     if(!ttl || ttl<=50){
-      throw new Error("Resent OTP limit exceeds")
+      throw new Error('Resent OTP limit exceeds');
     }
     const userData = JSON.parse(storedData);
     const newOTP = this.generateOTP();
@@ -42,7 +42,7 @@ export class OTPService implements IOTPService {
     try {
       const storedData = await redisClient.get(email);
       if (!storedData) {
-        throw new Error("User data expired or does not exist in Redis.");
+        throw new Error('User data expired or does not exist in Redis.');
       }
       const {otp:storedOTP} = JSON.parse(storedData);
       return storedOTP === otp;

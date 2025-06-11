@@ -13,14 +13,14 @@ export class AdminController implements IAdminController{
     async getAdminByEmail(req: Request, res: Response) {
         try {
             const { email } = req.query;
-            if (!email || typeof email !== "string") {
+            if (!email || typeof email !== 'string') {
                 res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.STRING_EMAIL_REQUIRED });
-                return 
+                return; 
             }
             const user = await this.adminService.getAdminByEmail(email);
             if (!user) {
                 res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.USER_NOT_FOUND });
-                return
+                return;
             }
             res.status(STATUS_CODES.OK).json({message:MESSAGES.USER_FETCHED ,user});
         } catch (error) {

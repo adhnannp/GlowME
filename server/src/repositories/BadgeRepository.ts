@@ -111,26 +111,26 @@ export class BadgeRepository implements IBadgeRepository{
         $addFields: {
           badges: {
             $map: {
-              input: "$badges",
-              as: "badge",
+              input: '$badges',
+              as: 'badge',
               in: {
                 badgeId: {
                   $arrayElemAt: [
                     {
                       $filter: {
-                        input: "$populatedBadges",
-                        as: "pb",
-                        cond: { $eq: ["$$pb._id", "$$badge.badgeId"] }
+                        input: '$populatedBadges',
+                        as: 'pb',
+                        cond: { $eq: ['$$pb._id', '$$badge.badgeId'] }
                       }
                     },
                     0
                   ]
                 },
-                acquiredAt: "$$badge.acquiredAt"
+                acquiredAt: '$$badge.acquiredAt'
               }
             }
           },
-          currentBadge: { $arrayElemAt: ["$currentBadge", 0] }
+          currentBadge: { $arrayElemAt: ['$currentBadge', 0] }
         }
       },
       {

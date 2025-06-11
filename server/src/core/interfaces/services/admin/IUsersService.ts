@@ -1,4 +1,4 @@
-import { SafeUser } from "../../../types/SafeUser";
+import { SafeUser } from '../../../types/SafeUser';
 
 export interface IUsersService {
     getUser(skip:number,limit:number,search?:string): Promise<[SafeUser[],number] | null>;

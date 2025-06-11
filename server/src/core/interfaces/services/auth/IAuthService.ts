@@ -7,5 +7,5 @@ export interface IAuthService {
   verifyOTP(email: string, otp: string): Promise<{ accessToken: string; refreshToken: string }| string>;
   refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }>;
   resendOTP(email: string): Promise<string>;
-  verifyUser(userId:string):Promise<Omit<IUser, "password"> |null>;
+  verifyUser(userId:string):Promise<Omit<IUser, 'password'> |null>;
 }

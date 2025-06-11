@@ -13,18 +13,18 @@ export class UserController implements IUserController{
     async getUserByEmail(req: Request, res: Response):Promise<void> {
         try {
             const { email } = req.query;
-            console.log(email)
-            if (!email || typeof email !== "string") {
+            console.log(email);
+            if (!email || typeof email !== 'string') {
                 res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.STRING_EMAIL_REQUIRED });
-                return 
+                return; 
             }
             const user = await this.userService.getUserByEmail(email);
             if (!user) {
                 res.status(STATUS_CODES.NOT_FOUND).json({ message: MESSAGES.USER_NOT_FOUND });
-                return
+                return;
             }
             res.status(STATUS_CODES.OK).json({message: MESSAGES.USER_FETCHED ,user});
-            return
+            return;
         } catch (error) {
             res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: MESSAGES.INTERNAL_SERVER_ERROR , error});
         }
@@ -41,7 +41,7 @@ export class UserController implements IUserController{
             res.status(STATUS_CODES.OK).json({ hasPassword });
             return;
         } catch (err) {
-            const error = err as Error
+            const error = err as Error;
             res.status(STATUS_CODES.BAD_REQUEST).json({ 
                 message: error.message || MESSAGES.FAILED_CHECKING_PASSWORD_STATUS, 
                 error 
@@ -75,7 +75,7 @@ export class UserController implements IUserController{
             });
             return;
         } catch (err) {
-            const error = err as Error
+            const error = err as Error;
             res.status(STATUS_CODES.BAD_REQUEST).json({ 
                 message: error.message || MESSAGES.PASSWORD_CHANGE_FAILED, 
                 error 
@@ -88,13 +88,13 @@ export class UserController implements IUserController{
           const userId = req.userId;
           if (!userId) {
             res.status(STATUS_CODES.UNAUTHORIZED).json({ message: MESSAGES.UNAUTHORIZED_USER_ID });
-            return 
+            return; 
           }
           const { username } = req.body;
           const profile_image = req.file;
           if (!username) {
             res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.USER_NAME_REQUIRED });
-            return 
+            return; 
           }
           const updatedUser = await this.userService.updateUserProfile(userId, {
             username,
@@ -104,11 +104,11 @@ export class UserController implements IUserController{
               message: MESSAGES.PROFILE_UPDATED_SUCCESS,
               user: updatedUser,
             });
-          return 
+          return; 
         } catch (error) {
           const err = error as Error;
           res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message || MESSAGES.PROFILE_UPDATED_FAILED });
-          return 
+          return; 
         }
     }
 

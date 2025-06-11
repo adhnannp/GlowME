@@ -115,7 +115,7 @@ container.bind<IAdminCoinPlanService>(TYPES.AdminCoinPlanService).to(AdminCoinPl
 container.bind<IUserCoinPlanService>(TYPES.UserCoinPlanService).to(UserCoinPlanService);
 container.bind<IAdminReportService>(TYPES.AdminReportService).to(AdminReportService);
 container.bind<IUserTagService>(TYPES.UserTagService).to(UserTagService);
-container.bind<IAdminTagService>(TYPES.AdminTagService).to(AdminTagService)
+container.bind<IAdminTagService>(TYPES.AdminTagService).to(AdminTagService);
 container.bind<IUserQuestionService>(TYPES.UserQuestionService).to(UserQuestionService);
 
 // Controllers
@@ -128,12 +128,12 @@ container.bind<IGoogleAuthController>(TYPES.GoogleAuthController).to(GoogleAuthC
 container.bind<IAdminBadgeController>(TYPES.AdminBadgeController).to(AdminBadgeController);
 container.bind<IUserBadgeController>(TYPES.UserBadgeController).to(UserBadgeController);
 container.bind<IForgotPasswordcontroller>(TYPES.ForgotPasswordController).to(ForgotPasswordcontroller);
-container.bind<IAdminCoinPlanController>(TYPES.AdminCoinPlanController).to(AdminCoinPlanController)
+container.bind<IAdminCoinPlanController>(TYPES.AdminCoinPlanController).to(AdminCoinPlanController);
 container.bind<IUserCoinPlanController>(TYPES.UserCoinPlanController).to(UserCoinPlanController);
 container.bind<IAdminReportController>(TYPES.AdminReportController).to(AdminReportController);
 container.bind<IUserTagController>(TYPES.UserTagController).to(UserTagController);
-container.bind<IUserQuestionController>(TYPES.UserQuestionController).to(UserQuestionController)
-container.bind<IAdminTagController>(TYPES.AdminTagController).to(AdminTagController)
+container.bind<IUserQuestionController>(TYPES.UserQuestionController).to(UserQuestionController);
+container.bind<IAdminTagController>(TYPES.AdminTagController).to(AdminTagController);
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

@@ -18,7 +18,7 @@ export class UserQuestionService implements IUserQuestionService{
   ) {}
 
   async checkTitleAvailablity(title:string) : Promise<boolean>{
-    const question = await this.questionRepo.getQuestionByTitle(title)
+    const question = await this.questionRepo.getQuestionByTitle(title);
     if(!question){
         return true;
     }

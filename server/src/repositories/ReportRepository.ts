@@ -62,34 +62,34 @@ export class ReportRepository implements IReportRepository {
   }
 
   async findOneReport(id:string):Promise<IReport | null>{
-    return await ReportModel.findById(id)
+    return await ReportModel.findById(id);
   }
 
   async rejectReport(id: string): Promise<void> {
     await ReportModel.updateOne(
       { _id: id },
-      { $set: { status: "rejected" } }
+      { $set: { status: 'rejected' } }
     );
   }
 
   async rejectAllUserReport(reported_user: string): Promise<void> {
     await ReportModel.updateMany(
-      { reported_user, status: { $ne: "resolved" } },
-      { $set: { status: "rejected" } }
+      { reported_user, status: { $ne: 'resolved' } },
+      { $set: { status: 'rejected' } }
     );
   }
 
   async resolveReport(id: string): Promise<void> {
     await ReportModel.updateOne(
       { _id: id },
-      { $set: { status: "resolved" } }
+      { $set: { status: 'resolved' } }
     );
   }
 
   async resolveAllUserReport(reported_user: string): Promise<void> {
     await ReportModel.updateMany(
-      { reported_user, status: { $ne: "rejected" } },
-      { $set: { status: "resolved" } }
+      { reported_user, status: { $ne: 'rejected' } },
+      { $set: { status: 'resolved' } }
     );
   }
 

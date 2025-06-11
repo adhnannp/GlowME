@@ -15,8 +15,8 @@ export class UsersController implements IUsersController {
   async getAllUsers(req: Request, res: Response): Promise<void> {
     try {
       const pageParam = req.query.page;
-      const search = typeof req.query.search === "string" ? req.query.search : "";
-      const page = typeof pageParam === "string" ? parseInt(pageParam) : 1;
+      const search = typeof req.query.search === 'string' ? req.query.search : '';
+      const page = typeof pageParam === 'string' ? parseInt(pageParam) : 1;
       const limit = 8;
 
       if (isNaN(page) || page < 1) {
@@ -48,7 +48,7 @@ export class UsersController implements IUsersController {
         },
       });
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
     }
   }
@@ -68,11 +68,11 @@ export class UsersController implements IUsersController {
         message: MESSAGES.BAN_SUCCESS,
         user,
       });
-      return
+      return;
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({ message:err.message });
-      return
+      return;
     }
   }
 
@@ -88,10 +88,10 @@ export class UsersController implements IUsersController {
       const user = await this.usersService.unbanUser(userId);
   
       res.status(STATUS_CODES.OK).json({ message: MESSAGES.UNBAN_SUCCESS, user });
-      return
+      return;
     } catch (error) {
       res.status(STATUS_CODES.BAD_REQUEST).json({ message:error });
-      return
+      return;
     }
   }
   

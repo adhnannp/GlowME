@@ -1,6 +1,6 @@
 // src/models/User.ts
 import mongoose, { Document } from 'mongoose';
-import bcrypt from "bcrypt" 
+import bcrypt from 'bcrypt'; 
 
 
 export interface IUserBadge {
@@ -47,9 +47,9 @@ const userSchema = new mongoose.Schema<IUser>({
   timestamps: { createdAt: 'created_at', updatedAt: 'edited_at' }
 });
 
-userSchema.pre("save", async function (next) {
+userSchema.pre('save', async function (next) {
   const user = this as IUser;
-  if (!user.password || !user.isModified("password")) {
+  if (!user.password || !user.isModified('password')) {
     return next();
   }
   try {

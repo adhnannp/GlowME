@@ -1,4 +1,4 @@
-import { ICoinPlan } from "../../../../models/CoinPlan";
+import { ICoinPlan } from '../../../../models/CoinPlan';
 
 export interface IAdminCoinPlanService{
     createPlan(data: Partial<ICoinPlan>): Promise<ICoinPlan>;

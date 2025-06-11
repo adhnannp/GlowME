@@ -22,27 +22,27 @@ export class UserRepository implements IUserRepository {
     return await UserModel.findOne({ email }).populate('currentBadge');
   }
 
-  async findUserById(id: string): Promise<Omit<IUser, "password"> |null> {
-      return await UserModel.findById(id).populate('currentBadge').select("-password");
+  async findUserById(id: string): Promise<Omit<IUser, 'password'> |null> {
+      return await UserModel.findById(id).populate('currentBadge').select('-password');
   }
 
-  async getAllUser(skip: number = 0, limit: number = 8, search: string = ""): Promise<SafeUser[] | null> {
+  async getAllUser(skip: number = 0, limit: number = 8, search: string = ''): Promise<SafeUser[] | null> {
     let query:FilterQuery<typeof UserModel> = { isAdmin: false };
 
     if (search) {
       query = {
         ...query,
         $or: [
-          { username: { $regex: search, $options: "i" } },
-          { email: { $regex: search, $options: "i" } },
+          { username: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } },
         ],
       };
     }
 
-    const users = await UserModel.find(query, "-password")
+    const users = await UserModel.find(query, '-password')
       .populate({
-        path: "currentBadge",
-        select: "name image requiredXp",
+        path: 'currentBadge',
+        select: 'name image requiredXp',
       })
       .sort({ username: 1 })
       .skip(skip)
@@ -71,15 +71,15 @@ export class UserRepository implements IUserRepository {
       .lean();
   }
 
-  async totalUser(search:string = ""): Promise<number>{
+  async totalUser(search:string = ''): Promise<number>{
     let query:FilterQuery<typeof UserModel> = { isAdmin: false };
 
     if (search) {
       query = {
         ...query,
         $or: [
-          { username: { $regex: search, $options: "i" } },
-          { email: { $regex: search, $options: "i" } },
+          { username: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } },
         ],
       };
     }
@@ -136,7 +136,7 @@ export class UserRepository implements IUserRepository {
         },
       }
     );
-    console.log(result)
+    console.log(result);
     return result.acknowledged === true;
   }
   
@@ -165,7 +165,7 @@ export class UserRepository implements IUserRepository {
     if (data.profile_image) {
       updateData.profile_image = data.profile_image;
     }
-    return UserModel.findByIdAndUpdate(userId, updateData, { new: true }).populate("currentBadge").select("-password");
+    return UserModel.findByIdAndUpdate(userId, updateData, { new: true }).populate('currentBadge').select('-password');
   }
 
   async incrementCoin(userId: string, coins: number): Promise<SafeUser> {
@@ -173,7 +173,7 @@ export class UserRepository implements IUserRepository {
       { _id: userId },
       { $inc: { coin_balance: coins } },
       { new: true }
-    ).populate("currentBadge").select("-password");
+    ).populate('currentBadge').select('-password');
   }
 
   async incrementXp(userId: string, xp: number): Promise<void> {
@@ -181,7 +181,7 @@ export class UserRepository implements IUserRepository {
       { _id: userId },
       { $inc: { xp } },
       { new: true }
-    ).populate("currentBadge").select("-password");
+    ).populate('currentBadge').select('-password');
   }
 
 }

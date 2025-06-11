@@ -32,7 +32,7 @@ export class AdminBadgeController implements IAdminBadgeController{
       const badge = await this.badgeService.createBadge(name, parsedRequiredXp, imageFile);
       res.status(STATUS_CODES.CREATED).json({badge , message: MESSAGES.BADGE_CREATED});
     } catch (err) {
-        const error = err as Error
+        const error = err as Error;
         res.status(STATUS_CODES.BAD_REQUEST).json({ message:error });
         return;
     }
@@ -72,9 +72,9 @@ export class AdminBadgeController implements IAdminBadgeController{
 
       const badge = await this.badgeService.updateBadge(badgeId, name, parsedRequiredXp, imageFile);
       res.status(STATUS_CODES.OK).json({ badge, message: MESSAGES.BADGE_UPDATED });
-      return
+      return;
     } catch (err) {
-      const error = err as Error
+      const error = err as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: error.message });
       return;
     }
@@ -89,9 +89,9 @@ export class AdminBadgeController implements IAdminBadgeController{
       }
       const badge = await this.badgeService.listBadge(badgeId);
       res.status(STATUS_CODES.OK).json({ badge, message: MESSAGES.BADGE_LISTED });
-      return
+      return;
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
     }
   }
@@ -106,7 +106,7 @@ export class AdminBadgeController implements IAdminBadgeController{
       const badge = await this.badgeService.unlistBadge(badgeId);
       res.status(STATUS_CODES.OK).json({ badge, message: MESSAGES.BADGE_UNLISTED });
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: err.message });
     }
   }
@@ -116,7 +116,7 @@ export class AdminBadgeController implements IAdminBadgeController{
       const badges = await this.badgeService.getAllBadges();
       res.status(STATUS_CODES.OK).json({badges , message:MESSAGES.BADGE_FETCHED});
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
         res.status(STATUS_CODES.BAD_REQUEST).json({ message:err.message });
         return;
     }

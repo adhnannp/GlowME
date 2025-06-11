@@ -3,11 +3,11 @@ import dotenv from 'dotenv';
 import connectDB from './config/db';
 import { connectRedis } from './config/redis';
 import app from './app';
-import "reflect-metadata"; 
+import 'reflect-metadata'; 
 import container from './di/container';
 import { TYPES } from './di/types';
 import { IUnbanUsersJob } from './core/interfaces/middlewares/IUnbanUserJob';
-import { configureCloudinary } from "./config/cloudinary";
+import { configureCloudinary } from './config/cloudinary';
 import logger from './utils/logger';
 
 

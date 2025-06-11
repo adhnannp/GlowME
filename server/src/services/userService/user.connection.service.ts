@@ -1,14 +1,14 @@
-import { injectable, inject } from "inversify";
-import { IConnectionRepository } from "../../core/interfaces/repositories/IConnectionRepository";
-import { INotificationRepository } from "../../core/interfaces/repositories/INotificationRepository";
-import { IReportRepository } from "../../core/interfaces/repositories/IReportRepository";
-import { TYPES } from "../../di/types";
-import { IUserConnectionService } from "../../core/interfaces/services/user/IUserConnectionService";
-import { SafeUser } from "../../core/types/SafeUser";
-import { IUserRepository } from "../../core/interfaces/repositories/IUserRepository";
-import { IUser } from "../../models/User";
-import { IConnection } from "../../models/Connection";
-import { IReport } from "../../models/Report";
+import { injectable, inject } from 'inversify';
+import { IConnectionRepository } from '../../core/interfaces/repositories/IConnectionRepository';
+import { INotificationRepository } from '../../core/interfaces/repositories/INotificationRepository';
+import { IReportRepository } from '../../core/interfaces/repositories/IReportRepository';
+import { TYPES } from '../../di/types';
+import { IUserConnectionService } from '../../core/interfaces/services/user/IUserConnectionService';
+import { SafeUser } from '../../core/types/SafeUser';
+import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
+import { IUser } from '../../models/User';
+import { IConnection } from '../../models/Connection';
+import { IReport } from '../../models/Report';
 
 @injectable()
 export class UserConnectionService implements IUserConnectionService {
@@ -26,7 +26,7 @@ export class UserConnectionService implements IUserConnectionService {
     followingId: string
   ): Promise<IConnection | null> {
     if (followerId === followingId) {
-      throw new Error("Cannot follow yourself");
+      throw new Error('Cannot follow yourself');
     }
 
     const connection = await this.connectionRepo.followUser(
@@ -66,7 +66,7 @@ export class UserConnectionService implements IUserConnectionService {
     return report;
   }
 
-  async getUsers(skip: number,limit:number,search:string=""): Promise<[SafeUser[], number] | null> {
+  async getUsers(skip: number,limit:number,search:string=''): Promise<[SafeUser[], number] | null> {
     if (skip < 0) {
       return null;
     }
@@ -76,12 +76,12 @@ export class UserConnectionService implements IUserConnectionService {
     return [users, TotalUsers];
   }
 
-  async findUserById(id: string,currentUserId:string): Promise<[Omit<IUser, "password">, number,number,boolean] | null> {
+  async findUserById(id: string,currentUserId:string): Promise<[Omit<IUser, 'password'>, number,number,boolean] | null> {
     const user = await this.userRepo.findUserById(id);
     if (!user ) return null;
     const followerCount = await this.connectionRepo.getFollowerCount(id);
     const followingCount = await this.connectionRepo.getFlollowingCount(id);
-    const isFollowing = await this.connectionRepo.isFollowing(currentUserId,id)
+    const isFollowing = await this.connectionRepo.isFollowing(currentUserId,id);
     return [user, followerCount,followingCount,isFollowing];
   }
 

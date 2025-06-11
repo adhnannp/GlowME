@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { injectable, inject } from "inversify";
-import { IUserRepository } from "../core/interfaces/repositories/IUserRepository";
-import { IAdminAuthMiddleware } from "../core/interfaces/middlewares/IAdminAuthMiddleware";
-import { TYPES } from "../di/types";
+import { injectable, inject } from 'inversify';
+import { IUserRepository } from '../core/interfaces/repositories/IUserRepository';
+import { IAdminAuthMiddleware } from '../core/interfaces/middlewares/IAdminAuthMiddleware';
+import { TYPES } from '../di/types';
 import { STATUS_CODES } from '../utils/HTTPStatusCode';
 import { MESSAGES } from '../utils/ResponseMessages';
 
@@ -20,11 +20,11 @@ export default class AdminAuthMiddleware implements IAdminAuthMiddleware {
   constructor( @inject(TYPES.UserRepository) private userRepository: IUserRepository) {}
   async handle(req: Request, res: Response, next: NextFunction): Promise<void> {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
       res.status(STATUS_CODES.FORBIDDEN).json({ error: MESSAGES.NO_TOKEN_PROVIDED });
       return;
     }
-    const token = authHeader.split(" ")[1];
+    const token = authHeader.split(' ')[1];
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as {
         userId: string;
@@ -35,7 +35,7 @@ export default class AdminAuthMiddleware implements IAdminAuthMiddleware {
         return;
       }
       if(!user.isAdmin){
-        res.status(STATUS_CODES.UNAUTHORIZED).json({message:MESSAGES.ACCESS_DENIED})
+        res.status(STATUS_CODES.UNAUTHORIZED).json({message:MESSAGES.ACCESS_DENIED});
         return;
       }
       req.userId = decoded.userId;

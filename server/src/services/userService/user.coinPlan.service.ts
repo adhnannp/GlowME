@@ -42,7 +42,7 @@ export class UserCoinPlanService implements IUserCoinPlanService{
       planId: planId,
     });
     if(!sessionId){
-      throw new Error('session creating failed please try again later')
+      throw new Error('session creating failed please try again later');
     }
     return { sessionId };
   }
@@ -62,12 +62,12 @@ export class UserCoinPlanService implements IUserCoinPlanService{
     const coins = parseInt(metadata.coins, 10);
     const amount = session.amount_total / 100; 
     const stripePaymentIntentId = session.payment_intent?.toString() || '';
-    const existingUser = await this.userRepo.findUserById(metadata.userId)
+    const existingUser = await this.userRepo.findUserById(metadata.userId);
     const existingTransaction = await this.coinTransactionRepo.findByStripeIntentId(stripePaymentIntentId);
     if (existingTransaction) {
       return {transactionData:existingTransaction,updatedUser:existingUser};
     }
-    const updatedUser = await this.userRepo.incrementCoin(metadata.userId,coins)
+    const updatedUser = await this.userRepo.incrementCoin(metadata.userId,coins);
     const transactionData = await this.coinTransactionRepo.create({
       userId,
       type: 'purchase',

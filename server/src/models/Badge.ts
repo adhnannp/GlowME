@@ -1,4 +1,4 @@
-import mongoose, {Document} from "mongoose";
+import mongoose, {Document} from 'mongoose';
 
 export interface IBadge extends Document{
     name: string;
@@ -17,6 +17,6 @@ const badgeSchema = new mongoose.Schema<IBadge>({
 },
 {
     timestamps: { createdAt: 'created_at', updatedAt: 'edited_at' }
-})
+});
 
 export const BadgeModel = mongoose.model<IBadge>('Badge', badgeSchema);

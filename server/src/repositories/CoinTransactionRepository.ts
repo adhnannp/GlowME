@@ -1,10 +1,10 @@
 import {
   CoinTransactionModel,
   ICoinTransaction,
-} from "../models/CoinTransaction";
-import ICoinTransactionRepository from "../core/interfaces/repositories/ICoinTransactionRepository";
-import { injectable } from "inversify";
-import { CoinTransactionCreateInput } from "../core/types/CreateCoinTransaction";
+} from '../models/CoinTransaction';
+import ICoinTransactionRepository from '../core/interfaces/repositories/ICoinTransactionRepository';
+import { injectable } from 'inversify';
+import { CoinTransactionCreateInput } from '../core/types/CreateCoinTransaction';
 
 @injectable()
 export class CoinTransactionRepository implements ICoinTransactionRepository {
@@ -16,8 +16,8 @@ export class CoinTransactionRepository implements ICoinTransactionRepository {
     async getById(transactionId: string): Promise<ICoinTransaction | null> {
         return await CoinTransactionModel.findById(transactionId)
         .populate({
-            path: "userId",
-            select: "-password",
+            path: 'userId',
+            select: '-password',
         })
         .lean();
     }
@@ -32,8 +32,8 @@ export class CoinTransactionRepository implements ICoinTransactionRepository {
     ): Promise<ICoinTransaction[]> {
         return await CoinTransactionModel.find()
         .populate({
-            path: "userId",
-            select: "-password",
+            path: 'userId',
+            select: '-password',
         })
         .sort({ created_at: -1 })
         .skip((page - 1) * limit)

@@ -5,7 +5,7 @@ import { IUser } from '../../models/User';
 import { TYPES } from '../../di/types';
 import { SafeUser } from '../../core/types/SafeUser';
 import { comparePassword } from '../../validators/comparePasswrod';
-import cloudinary from "../../config/cloudinary";
+import cloudinary from '../../config/cloudinary';
 import extractCloudinaryPublicId from '../../utils/extractCloudinaryPublicId';
 
 
@@ -55,12 +55,12 @@ export class UserService implements IUserService {
 
     async updateUserProfile(userId: string, data: UpdateProfileData): Promise<SafeUser> {
         if (!userId || !data.username) {
-            throw new Error("Invalid Credentials");
+            throw new Error('Invalid Credentials');
         }
 
         const currentUser = await this.userRepository.findUserById(userId);
         if (!currentUser) {
-            throw new Error("User not found");
+            throw new Error('User not found');
         }
 
         let profileImageUrl: string | undefined;
@@ -69,19 +69,19 @@ export class UserService implements IUserService {
                 try {
                   const publicId = extractCloudinaryPublicId(currentUser.profile_image);
                   if (publicId) {
-                    await cloudinary.uploader.destroy(publicId, { resource_type: "image" });
+                    await cloudinary.uploader.destroy(publicId, { resource_type: 'image' });
                   }
                 } catch (err) {
                   const error = err as Error;
                   console.warn(`Failed to delete old profile image: ${error.message}`);
                 }
             }
-            const base64Image = `data:${data.profile_image.mimetype};base64,${data.profile_image.buffer.toString("base64")}`;
+            const base64Image = `data:${data.profile_image.mimetype};base64,${data.profile_image.buffer.toString('base64')}`;
             const uploadResult = await cloudinary.uploader.upload(
               base64Image,
               {
-                folder: "profile_images",
-                resource_type: "image",
+                folder: 'profile_images',
+                resource_type: 'image',
               }
             );
             profileImageUrl = uploadResult.secure_url;
@@ -92,7 +92,7 @@ export class UserService implements IUserService {
         });
 
         if (!updatedUser) {
-          throw new Error("User not found");
+          throw new Error('User not found');
         }
         return updatedUser;
     }

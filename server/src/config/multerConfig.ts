@@ -42,9 +42,9 @@ export const profile_pictureUpload = multer({
     fileSize: 5 * 1024 * 1024,
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
     if (!allowedTypes.includes(file.mimetype)) {
-      return cb(new Error("Only JPG, JPEG, or PNG files are allowed"));
+      return cb(new Error('Only JPG, JPEG, or PNG files are allowed'));
     }
     cb(null, true);
   },

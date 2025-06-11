@@ -26,7 +26,7 @@ export class GoogleAuthService implements IGoogleAuthService {
           const banExpires = new Date(existing.ban_expires_at);
           throw new Error(`You are banned. Ban will expire at: ${banExpires.toLocaleString()}`);
         }
-        throw new Error("You are banned permanently.");
+        throw new Error('You are banned permanently.');
       }
       const accessToken = signJWT({ userId: existing._id, isAdmin: existing.isAdmin });
       const refreshToken = signRefreshToken({ userId: existing._id, isAdmin: existing.isAdmin });

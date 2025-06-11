@@ -1,4 +1,4 @@
-import mongoose, {Document, Schema} from "mongoose";
+import mongoose, {Document, Schema} from 'mongoose';
 
 export interface IQuestion extends Document{
     title: string;
@@ -28,6 +28,6 @@ const questionSchema = new mongoose.Schema<IQuestion>({
     is_archive: { type: Boolean, default: false },
 },{
     timestamps: { createdAt: 'created_at', updatedAt: 'edited_at' }
-})
+});
 
 export const QuestionModel = mongoose.model<IQuestion>('Question', questionSchema);

@@ -33,7 +33,7 @@ export class GoogleAuthController implements IGoogleAuthController {
         res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.ACCESS_DENIED });
         return;
       }
-      setRefreshTokens(res,refreshToken)
+      setRefreshTokens(res,refreshToken);
       if (user.isAdmin) {
         res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.ACCESS_DENIED });
         return;
@@ -54,7 +54,7 @@ export class GoogleAuthController implements IGoogleAuthController {
         </html>
       `);      
     } catch (err) {
-      const error = err as Error
+      const error = err as Error;
       next(error.message);
     }
   }

@@ -15,8 +15,8 @@ export class AdminTagController implements IAdminTagController {
   async getAllTags(req: Request, res: Response): Promise<void> {
     try {
       const pageParam = req.query.page;
-      const search = typeof req.query.search === "string" ? req.query.search : "";
-      const page = typeof pageParam === "string" ? parseInt(pageParam) : 1;
+      const search = typeof req.query.search === 'string' ? req.query.search : '';
+      const page = typeof pageParam === 'string' ? parseInt(pageParam) : 1;
       const limit = 8;
 
       if (isNaN(page) || page < 1) {
@@ -46,7 +46,7 @@ export class AdminTagController implements IAdminTagController {
         },
       });
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({
         message: err.message,
       });
@@ -63,7 +63,7 @@ export class AdminTagController implements IAdminTagController {
       const tag = await this.tagService.createTag(name);
       res.status(STATUS_CODES.CREATED).json({ tag });
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({
         message: err.message,
       });
@@ -85,7 +85,7 @@ export class AdminTagController implements IAdminTagController {
       }
       res.status(STATUS_CODES.OK).json({ tag });
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({
         message: err.message,
       });
@@ -106,7 +106,7 @@ export class AdminTagController implements IAdminTagController {
       }
       res.status(STATUS_CODES.OK).json({ tag });
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({
         message: err.message,
       });
@@ -127,7 +127,7 @@ export class AdminTagController implements IAdminTagController {
       }
       res.status(STATUS_CODES.OK).json({ tag });
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
       res.status(STATUS_CODES.BAD_REQUEST).json({
         message: err.message,
       });

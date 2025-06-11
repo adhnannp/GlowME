@@ -17,15 +17,15 @@ import { IUserQuestionController } from '../core/interfaces/controllers/user/IUs
 const router = express.Router();
 
 
-const userAuthMiddleware = container.get<IUserAuthMiddleware>(TYPES.UserAuthMiddleware)
-const googleAuth = container.get<IGoogleAuthController>(TYPES.GoogleAuthController)
+const userAuthMiddleware = container.get<IUserAuthMiddleware>(TYPES.UserAuthMiddleware);
+const googleAuth = container.get<IGoogleAuthController>(TYPES.GoogleAuthController);
 const authController = container.get<IAuthController>(TYPES.AuthController);
-const userController = container.get<IUserController>(TYPES.UserController)
+const userController = container.get<IUserController>(TYPES.UserController);
 const userConnectionController = container.get<IUserConnectionController>(TYPES.UserConnectionController);
 const forgotPasswordController = container.get<IForgotPasswordcontroller>(TYPES.ForgotPasswordController);
-const badgeController = container.get<IUserBadgeController>(TYPES.UserBadgeController)
-const coinPlanController = container.get<IUserCoinPlanController>(TYPES.UserCoinPlanController)
-const tagController = container.get<IUserTagController>(TYPES.UserTagController)
+const badgeController = container.get<IUserBadgeController>(TYPES.UserBadgeController);
+const coinPlanController = container.get<IUserCoinPlanController>(TYPES.UserCoinPlanController);
+const tagController = container.get<IUserTagController>(TYPES.UserTagController);
 const questionController = container.get<IUserQuestionController>(TYPES.UserQuestionController);
 
 router.post('/register', authController.register.bind(authController));
@@ -62,7 +62,7 @@ router.put('/badges/set-current',userAuthMiddleware.handle.bind(userAuthMiddlewa
 
 router.get('/user/has-password',userAuthMiddleware.handle.bind(userAuthMiddleware),userController.hasPassword.bind(userController));
 router.patch('/user/change-password',userAuthMiddleware.handle.bind(userAuthMiddleware),userController.changePassword.bind(userController));
-router.patch('/user/update-profile',userAuthMiddleware.handle.bind(userAuthMiddleware),profile_pictureUpload.single('profile_image'),userController.updateUserProfile.bind(userController))
+router.patch('/user/update-profile',userAuthMiddleware.handle.bind(userAuthMiddleware),profile_pictureUpload.single('profile_image'),userController.updateUserProfile.bind(userController));
 
 router.get('/Gcoin',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.getCoinPlans.bind(coinPlanController));
 router.post('/Gcoin/checkout',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.createCoinPlanCheckoutSession.bind(coinPlanController));

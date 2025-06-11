@@ -17,7 +17,7 @@ export class UserTagService implements IUserTagService {
 
   async searchTags(query: string) :Promise<ITag[]>{
     if(!query){
-      throw new Error('invalid query')
+      throw new Error('invalid query');
     }
     const regex = new RegExp(`${query}`, 'i');
     return this.tagRepository.searchTag(regex);

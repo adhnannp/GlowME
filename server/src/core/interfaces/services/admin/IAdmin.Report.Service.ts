@@ -1,4 +1,4 @@
-import GroupedReport from "../../../types/Reports";
+import GroupedReport from '../../../types/Reports';
 
 export default interface IAdminReportService{
     getUserGroupedReports(): Promise<GroupedReport[]>;
@@ -6,4 +6,4 @@ export default interface IAdminReportService{
     rejectAll(reportedUserId: string): Promise<void>;
     resolveOne(reportId: string): Promise<void>;
     resolveAll(reportedUserId: string): Promise<void>;
-}
+};

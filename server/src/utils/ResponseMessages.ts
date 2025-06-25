@@ -132,4 +132,7 @@ export const MESSAGES = {
     QUESTION_CREATED: 'Question created successfully',
     INVALID_DOC_TYPE: 'Invalid document type',
     INVALID_IMG_TYPE: 'Invalid IMG Type',
+    FETCHED_QUESTIONS: 'Succcessfully fetched questions',
+    FETCHED_ONE_QUESTION: 'Succcessfully fetched one question',
+    INVALID_SLUG: 'Invalid Slug',
 };

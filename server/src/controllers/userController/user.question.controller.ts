@@ -11,7 +11,7 @@ import { baseQuestionForm } from '../../validators/baseQuestionForm';
 @injectable()
 export class UserQuestionController implements IUserQuestionController {
   constructor(
-    @inject(TYPES.UserQuestionService) private userquestionService: IUserQuestionService
+    @inject(TYPES.UserQuestionService) private userQuestionService: IUserQuestionService
   ) {}
 
   async checkTitleAvailablity(req:Request,res:Response):Promise<void>{
@@ -22,7 +22,7 @@ export class UserQuestionController implements IUserQuestionController {
             res.status(STATUS_CODES.BAD_REQUEST).json({message:MESSAGES.INVALID_TITLE});
             return;
         }
-        const isAvailable = await this.userquestionService.checkTitleAvailablity(title);
+        const isAvailable = await this.userQuestionService.checkTitleAvailablity(title);
         const message = isAvailable
             ? MESSAGES.TITLE_AVAILABLE
             : MESSAGES.TITLE_UNAVAILABLE;
@@ -59,7 +59,7 @@ export class UserQuestionController implements IUserQuestionController {
           res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_IMG_TYPE });
           return;
         }
-        imageUrl = await this.userquestionService.uploadToCloudinary(imageFile);
+        imageUrl = await this.userQuestionService.uploadToCloudinary(imageFile);
       }
       if (docFile) {
         const allowedDocs = [
@@ -72,9 +72,9 @@ export class UserQuestionController implements IUserQuestionController {
           res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_DOC_TYPE });
           return;
         }
-        documentUrl = await this.userquestionService.uploadToS3(docFile);
+        documentUrl = await this.userQuestionService.uploadToS3(docFile);
       }
-      await this.userquestionService.createQuestion({
+      await this.userQuestionService.createQuestion({
         ...parsed.data,
         createdBy:userId, 
         imageUrl,
@@ -84,6 +84,40 @@ export class UserQuestionController implements IUserQuestionController {
     } catch (error) {
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
       logger.error(error);
+      return;
+    }
+  }
+
+  async getQuestionsByType(req:Request,res:Response) : Promise<void>{
+    try {
+      const { 'q-type': qType, page = 1 } = req.query;
+      const parsedPage = parseInt(page as string);
+      const limit = 20
+      if(!qType || !page || parsedPage<1){
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_CREDENTIALS });
+        return;
+      }
+      const skip = (parsedPage - 1) * limit;
+      const [questions,total] = await this.userQuestionService.listQuestionsByType(qType as string,parsedPage,limit);
+      res.status(STATUS_CODES.OK).json({ questions , page:parsedPage , skip , total , limit, message: MESSAGES.FETCHED_QUESTIONS });
+    } catch (error) {
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
+      return;
+    }
+  }
+
+  async getOneBySlug(req:Request,res:Response):Promise<void>{
+    try {
+      const slug = req.params.slug
+      if(!slug || typeof slug != 'string'){
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_SLUG });
+        return;
+      }
+      const question = await this.userQuestionService.getQuestionBySlug(slug);
+      res.status(STATUS_CODES.OK).json({ question , message: MESSAGES.INVALID_SLUG });
+    } catch (error) {
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
+      return;
     }
   }
 

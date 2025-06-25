@@ -16,12 +16,14 @@ import PaymentSuccessPage from "@/pages/user/payment/PaymentSuccess";
 import PaymentCancelledPage from "@/pages/user/payment/PaymentCancelled";
 import AskQuestionPage from "@/pages/user/askQuestion/AskQuestion";
 import LandingPage from "@/pages/user/landingPage/LandingPage";
+import SingleQuestion from "@/pages/user/singleQuestion/singleQuestion";
 
 const UserRoutes: React.FC = () => {
 
   return (
     <Routes>
       <Route path="/" element={<LandingPage />} />
+      <Route path="/question/:slug" element={<SingleQuestion />} />
       
       <Route element={<ProtectedRoute />}>
         <Route path="/home" element={<QuestionsPage />} />

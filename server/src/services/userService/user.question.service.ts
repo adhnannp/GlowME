@@ -53,6 +53,7 @@ export class UserQuestionService implements IUserQuestionService{
     if (!isAvailable) {
       throw new Error('A question with this title already exists');
     }
+    const type = data.isBounty ? `bounty` : `descriptive`;
     const convertedTags = data.tags.map((tag) => new Types.ObjectId(tag));
     const slug = slugify(data.title, { lower: true, strict: true });
     await this.questionRepo.create({
@@ -61,10 +62,26 @@ export class UserQuestionService implements IUserQuestionService{
       description: data.problemDetails,
       header_image: data.imageUrl,
       document: data.documentUrl,
+      type,
       bounty_coin: data.bountyCoins,
       createdBy: data.createdBy,
       tags: convertedTags,
     });
+  }
+
+  async listQuestionsByType(type: string,page: number,limit: number): Promise<[IQuestion[],number]> {
+    const skip = (page - 1) * limit;
+    const total = await this.questionRepo.countByType(type);
+    const questions = await this.questionRepo.findQuestionsByType(type, skip, limit);
+    return [questions,total]
+  }
+
+  async getQuestionBySlug(slug:string):Promise<IQuestion|null>{
+    const question = this.questionRepo.getQuestionBySlug(slug);
+    if(!question){
+      throw new Error ('cannot find appropreate Question');
+    }
+    return question;
   }
 
 }

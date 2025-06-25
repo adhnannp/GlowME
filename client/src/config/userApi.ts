@@ -13,4 +13,5 @@ export const USER_API = {
     SEARCH_TAGS: '/questions/search-tags',
     CHECK_TITLE:'/questions/check-title',
     CHECK_SIMILAR: '/questions/similar-questions',
+    FETCH_QUESTIONS: '/questions/get-all'
 }

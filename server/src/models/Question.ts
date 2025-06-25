@@ -7,6 +7,7 @@ export interface IQuestion extends Document{
     header_image?: string;
     document?: string;
     description: string;
+    type: 'descriptive' | 'bounty';
     bounty_coin?:number;
     tags?: mongoose.Types.ObjectId[]; 
     isListed:boolean;
@@ -23,6 +24,7 @@ const questionSchema = new mongoose.Schema<IQuestion>({
     document: { type: String },
     isListed:{type:Boolean,default:true},
     description: { type: String },
+    type: {type: String,enum: ['descriptive', 'bounty'],required: true,default: 'descriptive'},
     bounty_coin: { type: Number, default: 0 },
     tags: [{ type: Schema.Types.ObjectId, ref: 'Tag' }],
     is_archive: { type: Boolean, default: false },

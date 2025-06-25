@@ -9,6 +9,8 @@ import { TYPES } from './di/types';
 import { IUnbanUsersJob } from './core/interfaces/middlewares/IUnbanUserJob';
 import { configureCloudinary } from './config/cloudinary';
 import logger from './utils/logger';
+import setUpSocket from './config/setUpSocket';
+import { Server } from 'http';
 
 
 dotenv.config();
@@ -25,8 +27,11 @@ configureCloudinary();
 const unbanJob = container.get<IUnbanUsersJob>(TYPES.UnbanUsersJob);
 unbanJob.start();
 
+const server = new Server(app)
+const io = setUpSocket(server)
+
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+server.listen(PORT, () => {
+  logger.info(`Server is running on http://localhost:${PORT}`);
 });

@@ -27,6 +27,7 @@ export const TYPES = {
     UserTagService: Symbol.for('UserTagService'),
     AdminTagService: Symbol.for('AdminTagService'),
     UserQuestionService: Symbol.for('UserQuestionService'),
+    UserNotificationService: Symbol.for('UserNotificatonService'),
 
     // Controllers
     AuthController: Symbol.for('AuthController'),
@@ -43,7 +44,8 @@ export const TYPES = {
     AdminReportController: Symbol.for('AdminReportController'),
     UserTagController: Symbol.for('UserTagController'),
     AdminTagController: Symbol.for('AdminTagController'),
-    UserQuestionController: Symbol.for('UserQuestionController'), 
+    UserQuestionController: Symbol.for('UserQuestionController'),
+    UserSocketController: Symbol.for('UserSocketController'),
 
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),

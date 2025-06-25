@@ -19,6 +19,10 @@ export class NotificationRepository implements INotificationRepository {
       .exec();
   }
 
+  async markAllAsRead(userId: string): Promise<void> {
+    await NotificationModel.updateMany({ user: userId, is_read: false }, { is_read: true }).exec();
+  }
+
   async markAsRead(notificationId: string): Promise<void> {
     await NotificationModel.updateOne({ _id: notificationId }, { is_read: true }).exec();
   }

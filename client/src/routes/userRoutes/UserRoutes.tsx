@@ -24,7 +24,7 @@ const UserRoutes: React.FC = () => {
     <Routes>
       <Route path="/" element={<LandingPage />} />
       <Route path="/question/:slug" element={<SingleQuestion />} />
-      
+
       <Route element={<ProtectedRoute />}>
         <Route path="/home" element={<QuestionsPage />} />
         <Route path="/profile" element={<ProfilePage />} />

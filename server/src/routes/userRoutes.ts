@@ -13,6 +13,7 @@ import { profile_pictureUpload, questionUploads } from '../config/multerConfig';
 import IUserCoinPlanController from '../core/interfaces/controllers/user/IUser.CoinPlan.controller';
 import { IUserTagController } from '../core/interfaces/controllers/user/IUser.Tag.Controller';
 import { IUserQuestionController } from '../core/interfaces/controllers/user/IUser.Question.Controller';
+import IUserNotificationController from '../core/interfaces/controllers/user/IUser.Notification.Controller';
 
 const router = express.Router();
 
@@ -27,6 +28,7 @@ const badgeController = container.get<IUserBadgeController>(TYPES.UserBadgeContr
 const coinPlanController = container.get<IUserCoinPlanController>(TYPES.UserCoinPlanController);
 const tagController = container.get<IUserTagController>(TYPES.UserTagController);
 const questionController = container.get<IUserQuestionController>(TYPES.UserQuestionController);
+const notificationController = container.get<IUserNotificationController>(TYPES.UserNotificationController);
 
 router.post('/register', authController.register.bind(authController));
 router.post('/resend-otp', authController.resendOTP.bind(authController));
@@ -72,7 +74,12 @@ router.get('/Gcoin/transaction-history',userAuthMiddleware.handle.bind(userAuthM
 router.get('/questions/search-tags',userAuthMiddleware.handle.bind(userAuthMiddleware),tagController.searchTag.bind(tagController));
 router.get('/questions/check-title',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.checkTitleAvailablity.bind(questionController));
 router.post('/questions/create',userAuthMiddleware.handle.bind(userAuthMiddleware),questionUploads.fields([{ name: 'image', maxCount: 1 },{ name: 'document', maxCount: 1 },]),questionController.createQuestion.bind(questionController));
-router.get('/questions/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.getQuestionsByType.bind(questionController))
-router.get('/questions/get-one/:slug',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.getOneBySlug.bind(questionController))
+router.get('/questions/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.getQuestionsByType.bind(questionController));
+router.get('/questions/get-one/:slug',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.getOneBySlug.bind(questionController));
+
+router.get('/notification/has-unread',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.hasUnreadNotification.bind(notificationController));
+router.get('/notification/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.getAllNotification.bind(notificationController));
+router.patch('/notification/mark-all-read',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.markAllRead.bind(notificationController));
+
 
 export default router;

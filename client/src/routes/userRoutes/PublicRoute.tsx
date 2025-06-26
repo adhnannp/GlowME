@@ -6,6 +6,8 @@ import { updateUser } from "@/feature/authSlice";
 import { logout } from "@/feature/authThunks";
 import api from "@/utils/axios";
 import toast from "react-hot-toast";
+import { clearNotifications } from "@/feature/socketSlice";
+import { disconnectSocket } from "@/utils/socket";
 
 const PublicRoute: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -29,6 +31,8 @@ const PublicRoute: React.FC = () => {
         const message = userErr.response?.data?.message;
         if (status === 400 && message === "User invalid or banned.") {
           toast.error("Invalid or Banned User.");
+          dispatch(clearNotifications());
+          disconnectSocket();
           dispatch(logout());
           navigate("/login");
           setLoading(false);
@@ -38,6 +42,8 @@ const PublicRoute: React.FC = () => {
           const adminResponse = await api.get("/admin/verify-admin");
           dispatch(updateUser({ user: adminResponse.data.user }));
         } catch (adminErr) {
+          dispatch(clearNotifications());
+          disconnectSocket();
           await dispatch(logout());
         }
       } finally {

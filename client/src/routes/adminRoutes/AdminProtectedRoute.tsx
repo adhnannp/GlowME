@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { updateUser } from "@/feature/authSlice";
 import { logout } from "@/feature/authThunks";
 import api from "@/utils/axios";
+import { clearNotifications } from "@/feature/socketSlice";
+import { disconnectSocket } from "@/utils/socket";
 
 const AdminProtectedRoute: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -18,6 +20,8 @@ const AdminProtectedRoute: React.FC = () => {
       const otpEmail = localStorage.getItem("otp_email")
 
       if (!accessToken && !otpEmail) {
+        dispatch(clearNotifications());
+        disconnectSocket();
         dispatch(logout());
         navigate("/admin/login");
         return;
@@ -38,6 +42,8 @@ const AdminProtectedRoute: React.FC = () => {
           navigate("/");
           return;
         } catch (userErr) {
+          dispatch(clearNotifications());
+          disconnectSocket();
           dispatch(logout());
           navigate("/admin/login");
           return;

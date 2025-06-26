@@ -1,6 +1,8 @@
 import axios from "axios";
 import {store} from "@/store/store";
 import { logout } from "@/feature/authThunks";
+import { disconnectSocket } from "./socket";
+import { clearNotifications } from "@/feature/socketSlice";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_BASE_API_URL,
@@ -37,6 +39,8 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     if(error.response.status === 400 && error.response.data.message === 'User invalid or banned'){
         store.dispatch(logout());
+        store.dispatch(clearNotifications());
+        disconnectSocket();
         window.location.href = "/login";
         return;
     }
@@ -71,6 +75,8 @@ api.interceptors.response.use(
         const isAdminRoute = originalRequest.url?.startsWith("/admin");
 
         store.dispatch(logout());
+        store.dispatch(clearNotifications());
+        disconnectSocket();
         localStorage.removeItem("accessToken");
 
         window.location.href = isAdminRoute ? "/admin/login" : "/login";

@@ -86,6 +86,12 @@ import { IAdminTagController } from '../core/interfaces/controllers/admin/IAdmin
 import { AdminTagController } from '../controllers/adminController/admin.tag.controller';
 import { IAdminTagService } from '../core/interfaces/services/admin/IAdmin.Tag.Service';
 import { AdminTagService } from '../services/adminService/admin.tag.service';
+import IUserNotificationService from '../core/interfaces/services/user/IUser.Notification.Service';
+import { UserNotificationService } from '../services/userService/user.notification.service';
+import IUserSocketController from '../core/interfaces/controllers/user/IUser.Socket.Controller';
+import { UserSocketController } from '../controllers/userController/user.socket.controller';
+import IUserNotificationController from '../core/interfaces/controllers/user/IUser.Notification.Controller';
+import { UserNotificationController } from '../controllers/userController/user.notification.controller';
 
 const container = new Container();
 
@@ -117,6 +123,7 @@ container.bind<IAdminReportService>(TYPES.AdminReportService).to(AdminReportServ
 container.bind<IUserTagService>(TYPES.UserTagService).to(UserTagService);
 container.bind<IAdminTagService>(TYPES.AdminTagService).to(AdminTagService);
 container.bind<IUserQuestionService>(TYPES.UserQuestionService).to(UserQuestionService);
+container.bind<IUserNotificationService>(TYPES.UserNotificationService).to(UserNotificationService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -134,6 +141,8 @@ container.bind<IAdminReportController>(TYPES.AdminReportController).to(AdminRepo
 container.bind<IUserTagController>(TYPES.UserTagController).to(UserTagController);
 container.bind<IUserQuestionController>(TYPES.UserQuestionController).to(UserQuestionController);
 container.bind<IAdminTagController>(TYPES.AdminTagController).to(AdminTagController);
+container.bind<IUserSocketController>(TYPES.UserSocketController).to(UserSocketController).inSingletonScope();
+container.bind<IUserNotificationController>(TYPES.UserNotificationController).to(UserNotificationController);
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

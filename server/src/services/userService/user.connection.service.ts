@@ -1,6 +1,5 @@
 import { injectable, inject } from 'inversify';
 import { IConnectionRepository } from '../../core/interfaces/repositories/IConnectionRepository';
-import { INotificationRepository } from '../../core/interfaces/repositories/INotificationRepository';
 import { IReportRepository } from '../../core/interfaces/repositories/IReportRepository';
 import { TYPES } from '../../di/types';
 import { IUserConnectionService } from '../../core/interfaces/services/user/IUserConnectionService';
@@ -9,14 +8,15 @@ import { IUserRepository } from '../../core/interfaces/repositories/IUserReposit
 import { IUser } from '../../models/User';
 import { IConnection } from '../../models/Connection';
 import { IReport } from '../../models/Report';
+import IUserNotificationService from '../../core/interfaces/services/user/IUser.Notification.Service';
 
 @injectable()
 export class UserConnectionService implements IUserConnectionService {
   constructor(
     @inject(TYPES.ConnectionRepository)
     private connectionRepo: IConnectionRepository,
-    // @inject(TYPES.NotificationRepository)
-    // private notificationRepo: INotificationRepository,
+    @inject(TYPES.UserNotificationService)
+    private notificationService: IUserNotificationService,
     @inject(TYPES.ReportRepository) private reportRepo: IReportRepository,
     @inject(TYPES.UserRepository) private userRepo: IUserRepository
   ) {}
@@ -34,12 +34,8 @@ export class UserConnectionService implements IUserConnectionService {
       followingId
     );
 
-    // await this.notificationRepo.createNotification({
-    //   user: followingId,
-    //   type: "follow",
-    //   message: "Someone started following you",
-    //   related_user: followerId,
-    // });
+    const follower = await this.userRepo.findUserById(followerId)
+    await this.notificationService.createAndEmitNotification(followingId, 'follow', `${follower?.username} started following you`, followerId);
 
     return connection;
   }

@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { updateUser } from "@/feature/authSlice";
 import { logout } from "@/feature/authThunks";
 import api from "@/utils/axios";
+import { clearNotifications } from "@/feature/socketSlice";
+import { disconnectSocket } from "@/utils/socket";
 
 const AdminPublicRoute: React.FC = () => {
   const { isAuthenticated, isAdmin, user } = useSelector((state: RootState) => state.auth);
@@ -26,6 +28,8 @@ const AdminPublicRoute: React.FC = () => {
           const userResponse = await api.get("/verify-user");
           dispatch(updateUser({ user: userResponse.data.user }));
         } catch (userErr) {
+          dispatch(clearNotifications());
+          disconnectSocket();
           await dispatch(logout());
         }
       } finally {

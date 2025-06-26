@@ -1,8 +1,10 @@
 import mongoose, { Document } from 'mongoose';
 
+export type NotificationType = "follow" | "report" | "system";
+
 export interface INotification extends Document {
   user: string | mongoose.Types.ObjectId;
-  type: 'follow' | 'report' | 'system';
+  type: NotificationType;
   message: string;
   related_user?: string | mongoose.Types.ObjectId;
   is_read: boolean;

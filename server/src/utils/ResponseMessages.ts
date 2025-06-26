@@ -135,4 +135,9 @@ export const MESSAGES = {
     FETCHED_QUESTIONS: 'Succcessfully fetched questions',
     FETCHED_ONE_QUESTION: 'Succcessfully fetched one question',
     INVALID_SLUG: 'Invalid Slug',
+
+    HAS_UNREAD_NOTIFICATION: 'unread Notification found',
+    MARKED_ALL_READ: 'Marked all notification read',
+    ALL_NOTIFICATION_FETCHED: 'Fetched all Notifications',
+    NO_NOTIFICATIONS:'No notification available',
 };

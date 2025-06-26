@@ -6,6 +6,8 @@ import { updateUser } from "@/feature/authSlice";
 import { logout } from "@/feature/authThunks";
 import api from "@/utils/axios";
 import toast from "react-hot-toast";
+import { clearNotifications } from "@/feature/socketSlice";
+import { disconnectSocket } from "@/utils/socket";
 
 const ProtectedRoute: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -19,6 +21,8 @@ const ProtectedRoute: React.FC = () => {
       const otpEmail = localStorage.getItem("otp_email")
 
       if (!accessToken && !otpEmail) {
+        dispatch(clearNotifications());
+        disconnectSocket();
         dispatch(logout());
         navigate("/login");
         setLoading(false);
@@ -40,6 +44,8 @@ const ProtectedRoute: React.FC = () => {
         // If user is banned or invalid, just logout and show toast
         if (status === 400 && message === "User invalid or banned.") {
           toast.error("Invalid or Banned User.");
+          dispatch(clearNotifications());
+          disconnectSocket();
           dispatch(logout());
           navigate("/login");
           setLoading(false);
@@ -51,6 +57,8 @@ const ProtectedRoute: React.FC = () => {
           navigate("/admin/users");
           return;
         } catch (adminErr) {
+          dispatch(clearNotifications());
+          disconnectSocket();
           dispatch(logout());
           navigate("/login");
           return;

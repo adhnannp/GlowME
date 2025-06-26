@@ -1,7 +1,7 @@
-import { Server as SocketIOServer } from 'socket.io';
-import { INotification } from '../../../../models/Notification';
+import { Request, Response } from "express";
 
-export default interface IUserSocketController {
-  initializeSocket(io: SocketIOServer): void;
-  emitNotification(userId: string, notification: INotification): void;
+export default interface IUserNotificationController{
+    hasUnreadNotification(req: Request, res: Response): Promise<void>;
+    markAllRead(req: Request, res: Response): Promise<void>;
+    getAllNotification(req: Request, res: Response): Promise<void>
 }

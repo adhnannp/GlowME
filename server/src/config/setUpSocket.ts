@@ -1,4 +1,4 @@
-import IUserSocketController from '../core/interfaces/controllers/user/IUser.Notification.Controller';
+import IUserSocketController from '../core/interfaces/controllers/user/IUser.Socket.Controller';
 import container from '../di/container';
 import { TYPES } from '../di/types';
 import { Server } from 'http';

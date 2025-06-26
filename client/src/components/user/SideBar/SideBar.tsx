@@ -1,23 +1,15 @@
 import React, { useEffect,useState } from "react";
-import {
-  Home,
-  HelpCircle,
-  Bell,
-  Users,
-  MessageSquare,
-  Bookmark,
-  PlusCircle,
-  User,
-  Info,
-  ShoppingBag,
-  Coins,
-  Gift,
-  Lock,
+import {Home,HelpCircle,Bell,Users,MessageSquare,Bookmark,PlusCircle,User,Info,ShoppingBag,Coins,Gift,Lock,
 } from "lucide-react";
 import SidebarItem from "./SideBarItem";
 import { Link } from "react-router-dom";
 import NotificationsPanel from "./NotificationPanel";
 import ChangePasswordModal from "./ChangePasswordModal";
+import { HasUnreadNotification, markAllNotificationsAsRead } from "@/services/user/user.notification.service";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { clearNotifications } from "@/feature/socketSlice";
+import { useDispatch } from "react-redux";
 
 interface SidebarProps {
   sidebarExpanded: boolean;
@@ -29,7 +21,38 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSideb
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [hasUnreadFromApi, setHasUnreadFromApi] = useState(false);
+  const socketNotifications = useSelector((state: RootState) => state.socket.notifications);
+  const dispatch = useDispatch();
   
+  useEffect(() => {
+    if (showNotifications) {
+        markAllNotificationsAsRead()
+        .then(() => {
+          dispatch(clearNotifications()); 
+          setHasUnreadFromApi(false);
+        })
+        .catch((err) => {
+          console.error("Failed to mark notifications as read", err);
+        });
+    }
+  }, [showNotifications]);
+
+  useEffect(() => {
+    const fetchUnreadStatus = async () => {
+      try {
+        const res = await HasUnreadNotification();
+        setHasUnreadFromApi(res?.hasUnreadNotification || false);
+      } catch (error) {
+        console.error("Failed to fetch unread notification status", error);
+      }
+    };
+
+    fetchUnreadStatus();
+  }, []);
+
+  const hasUnread = hasUnreadFromApi || socketNotifications.length > 0;
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       const target = event.target as Element;
@@ -104,7 +127,14 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSideb
           </Link>
           <Link to="#">
             <SidebarItem
-              icon={<Bell className="w-5 h-5" />}
+              icon={
+                <div className="relative">
+                  <Bell className="w-5 h-5" />
+                  {hasUnread && (
+                    <span className="absolute top-0 right-0 inline-block w-2 h-2 bg-red-500 rounded-full" />
+                  )}
+                </div>
+              }
               label="Notifications"
               active={showNotifications}
               onClick={toggleNotifications}

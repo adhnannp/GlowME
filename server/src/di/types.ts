@@ -46,7 +46,8 @@ export const TYPES = {
     AdminTagController: Symbol.for('AdminTagController'),
     UserQuestionController: Symbol.for('UserQuestionController'),
     UserSocketController: Symbol.for('UserSocketController'),
-
+    UserNotificationController: Symbol.for('userNotificationController'),
+    
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),
     AdminAuthMiddleware: Symbol.for('AdminAuthMiddleware'),

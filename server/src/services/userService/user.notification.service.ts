@@ -3,7 +3,7 @@ import { INotificationRepository } from '../../core/interfaces/repositories/INot
 import { INotification, NotificationType } from '../../models/Notification';
 import { TYPES } from '../../di/types';
 import IUserNotificationService from '../../core/interfaces/services/user/IUser.Notification.Service';
-import IUserSocketController from '../../core/interfaces/controllers/user/IUser.Notification.Controller';
+import IUserSocketController from '../../core/interfaces/controllers/user/IUser.Socket.Controller';
 
 @injectable()
 export class UserNotificationService implements IUserNotificationService{
@@ -32,4 +32,19 @@ export class UserNotificationService implements IUserNotificationService{
   async markAllAsRead(userId: string): Promise<void> {
     await this.notificationRepo.markAllAsRead(userId);
   }
+
+  async hasUnread(userId:string) :Promise<boolean>{
+    const unread = await this.notificationRepo.hasUnreadNotification(userId);
+    if(unread){
+      return true
+    }
+    return false;
+  }
+
+  async getUserNotifications(userId: string, page: number): Promise<INotification[] | null> {
+    const limit = 30;
+    const skip = (page - 1) * limit;
+    return await this.notificationRepo.getUserNotifications(userId, skip, limit);
+  }
+
 }

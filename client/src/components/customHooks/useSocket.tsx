@@ -15,13 +15,10 @@ export const useSocket = (userId: string | undefined) => {
 
     socket.on('new_notification', (notification) => {
       dispatch(addNotification(notification));
-      toast.custom((t) => (
-        <NotificationToast
-          t={t}
-          notification={notification}
-        />
-      ));
-    });
+      toast.custom(
+        (t) => <NotificationToast t={t} notification={notification} />,
+        { position: "bottom-right" });
+      });
 
     socket.on('connect', () => dispatch(setConnected(true)));
     socket.on('disconnect', () => dispatch(setConnected(false)));

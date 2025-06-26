@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { Server as SocketIOServer, Socket } from 'socket.io';
 import { INotification } from '../../models/Notification';
-import IUserSocketController from '../../core/interfaces/controllers/user/IUser.Notification.Controller';
+import IUserSocketController from '../../core/interfaces/controllers/user/IUser.Socket.Controller';
 import logger from '../../utils/logger';
 
 @injectable()

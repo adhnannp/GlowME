@@ -13,5 +13,8 @@ export const USER_API = {
     SEARCH_TAGS: '/questions/search-tags',
     CHECK_TITLE:'/questions/check-title',
     CHECK_SIMILAR: '/questions/similar-questions',
-    FETCH_QUESTIONS: '/questions/get-all'
+    FETCH_QUESTIONS: '/questions/get-all',
+    HAS_UNREAD_NOTIFICATION: '/notification/has-unread',
+    MARK_ALL_AS_READ: '/notification/mark-all-read',
+    FETCH_NOTIFICATION: '/notification/get-all'
 }

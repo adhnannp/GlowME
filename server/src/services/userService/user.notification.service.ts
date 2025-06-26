@@ -22,6 +22,7 @@ export class UserNotificationService implements IUserNotificationService{
     });
 
     if (notification) {
+      await notification.populate({  path: 'related_user',select: '-password'});
       this.socketController.emitNotification(userId as string, notification);
     }
 

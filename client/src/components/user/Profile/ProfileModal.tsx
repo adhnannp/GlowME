@@ -5,6 +5,8 @@ import { logout } from "@/feature/authThunks";
 import { AppDispatch } from "@/store/store";
 import { Link } from "react-router-dom";
 import { UserWithBadge } from "@/interfaces/auth.interface";
+import { disconnectSocket } from "@/utils/socket";
+import { clearNotifications } from "@/feature/socketSlice";
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -36,6 +38,8 @@ export function ProfileModal({isOpen,onClose,user,profileImage,}: ProfileModalPr
   }, [isOpen, onClose]);
 
   function logOut(){
+    dispatch(clearNotifications());
+    disconnectSocket();
     dispatch(logout());
   }
 

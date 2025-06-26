@@ -11,6 +11,8 @@ import { useSelector } from "react-redux"
 import { AppDispatch, RootState } from "@/store/store"
 import { useDispatch } from "react-redux"
 import { logout } from "@/feature/authThunks";
+import { clearNotifications } from "@/feature/socketSlice"
+import { disconnectSocket } from "@/utils/socket"
 
 export default function UserHeader() {
 
@@ -18,6 +20,8 @@ export default function UserHeader() {
   const dispatch = useDispatch<AppDispatch>();
 
   function logOut(){
+    dispatch(clearNotifications());
+    disconnectSocket();
     dispatch(logout());
   }
 

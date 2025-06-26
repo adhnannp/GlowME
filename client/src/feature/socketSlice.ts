@@ -1,8 +1,9 @@
+import { ConnectionNotification } from '@/interfaces/notification';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface SocketState {
   connected: boolean;
-  notifications: any[];
+  notifications: ConnectionNotification[];
 }
 
 const initialState: SocketState = {

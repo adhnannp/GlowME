@@ -18,9 +18,6 @@ import SidebarItem from "./SideBarItem";
 import { Link } from "react-router-dom";
 import NotificationsPanel from "./NotificationPanel";
 import ChangePasswordModal from "./ChangePasswordModal";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
-import { useSocket } from "@/components/customHooks/useSocket";
 
 interface SidebarProps {
   sidebarExpanded: boolean;
@@ -32,8 +29,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSideb
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
-  const user = useSelector((state: RootState) => state.auth.user);
-  useSocket(user?._id);
   
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

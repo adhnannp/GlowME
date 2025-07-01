@@ -76,6 +76,7 @@ router.get('/questions/check-title',userAuthMiddleware.handle.bind(userAuthMiddl
 router.post('/questions/create',userAuthMiddleware.handle.bind(userAuthMiddleware),questionUploads.fields([{ name: 'image', maxCount: 1 },{ name: 'document', maxCount: 1 },]),questionController.createQuestion.bind(questionController));
 router.get('/questions/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.getQuestionsByType.bind(questionController));
 router.get('/questions/get-one/:slug',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.getOneBySlug.bind(questionController));
+router.post('/questions/find-similar',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.findSimilarQuetions.bind(questionController));
 
 router.get('/notification/has-unread',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.hasUnreadNotification.bind(notificationController));
 router.get('/notification/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.getAllNotification.bind(notificationController));

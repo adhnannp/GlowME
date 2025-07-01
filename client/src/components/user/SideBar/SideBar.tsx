@@ -1,5 +1,5 @@
 import React, { useEffect,useState } from "react";
-import {Home,HelpCircle,Bell,Users,MessageSquare,Bookmark,PlusCircle,User,Info,ShoppingBag,Coins,Gift,Lock,
+import {Home,Bell,Users,MessageSquare,Bookmark,PlusCircle,User,Info,ShoppingBag,Coins,Gift,Lock,
 } from "lucide-react";
 import SidebarItem from "./SideBarItem";
 import { Link } from "react-router-dom";
@@ -114,14 +114,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSideb
               icon={<Home className="h-5 w-5" />}
               label="Home"
               active={activePage === "Home"}
-              expanded={sidebarExpanded}
-            />
-          </Link>
-          <Link to="/questions">
-            <SidebarItem
-              icon={<HelpCircle className="h-5 w-5" />}
-              label="Questions"
-              active={activePage === "Questions"}
               expanded={sidebarExpanded}
             />
           </Link>

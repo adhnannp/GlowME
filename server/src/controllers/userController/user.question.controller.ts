@@ -114,7 +114,22 @@ export class UserQuestionController implements IUserQuestionController {
         return;
       }
       const question = await this.userQuestionService.getQuestionBySlug(slug);
-      res.status(STATUS_CODES.OK).json({ question , message: MESSAGES.INVALID_SLUG });
+      res.status(STATUS_CODES.OK).json({ question , message: MESSAGES.FETCHED_ONE_QUESTION });
+    } catch (error) {
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
+      return;
+    }
+  }
+
+  async findSimilarQuetions(req:Request,res:Response):Promise<void>{
+    try {
+      const text = req.body.text
+      if(!text || typeof text != 'string'){
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_INPUT });
+        return;
+      }
+      const questions = await this.userQuestionService.getSimilarQuestions(text);
+      res.status(STATUS_CODES.OK).json({ questions , message: MESSAGES.FETCHED_QUESTIONS });
     } catch (error) {
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
       return;

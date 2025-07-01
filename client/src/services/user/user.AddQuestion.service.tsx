@@ -3,6 +3,7 @@ import api from '@/utils/axios';
 import { AxiosError } from 'axios';
 import { USER_API } from '@/config/userApi';
 import { Tag } from '@/interfaces/user.tag.interface';
+import { SimilarQuestion } from '@/interfaces/user.questions.interface';
 
 interface TitleAvailabilityResponse {
   isAvailable: boolean;
@@ -10,7 +11,7 @@ interface TitleAvailabilityResponse {
 }
 
 interface SimilarQuestionsResponse {
-  similarQuestions: { id: string; title: string; url: string }[];
+  similarQuestions: SimilarQuestion[];
 }
 
 export const fetchTags = async (query: string): Promise<Tag[]> => {
@@ -42,11 +43,11 @@ export const checkTitleAvailability = async (title: string): Promise<TitleAvaila
   }
 };
 
-export const fetchSimilarQuestions = async (title: string): Promise<SimilarQuestionsResponse> => {
+export const fetchSimilarQuestions = async (text: string): Promise<SimilarQuestionsResponse> => {
   try {
-    const response = await api.post(USER_API.CHECK_SIMILAR, { title: title.trim() });
+    const response = await api.post(USER_API.CHECK_SIMILAR, { text: text.trim() });
     return {
-      similarQuestions: response.data.similarQuestions || [],
+      similarQuestions: response.data.questions || [],
     };
   } catch (error) {
     const err = handleApiError(error as AxiosError | Error, 'Failed to fetch similar questions');

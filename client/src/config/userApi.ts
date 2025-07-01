@@ -12,7 +12,7 @@ export const USER_API = {
     GCOIN_TRANSACTION: '/Gcoin/transaction-history',
     SEARCH_TAGS: '/questions/search-tags',
     CHECK_TITLE:'/questions/check-title',
-    CHECK_SIMILAR: '/questions/similar-questions',
+    CHECK_SIMILAR: '/questions/find-similar',
     FETCH_QUESTIONS: '/questions/get-all',
     HAS_UNREAD_NOTIFICATION: '/notification/has-unread',
     MARK_ALL_AS_READ: '/notification/mark-all-read',

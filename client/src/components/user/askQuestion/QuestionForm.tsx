@@ -33,6 +33,10 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
     handleSubmit,
     addTag,
     removeTag,
+    handleSimilarQuestionsCheck,
+    hasCheckedSimilarQuestions,
+    noSimilarQuestionsConfirmed,
+    setNoSimilarQuestionsConfirmed,
   } = useQuestionForm(onSubmit);
 
   const [isFileFieldsEnabled, setIsFileFieldsEnabled] = useState(false);
@@ -51,17 +55,24 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
     setIsMarkdownFieldEnabled(isTitleValid);
     setIsTagsFieldEnabled(isTitleValid && isProblemDetailsValid);
     setIsBountyFieldEnabled(isTitleValid && isProblemDetailsValid && isTagsValid);
-    setIsSubmitEnabled(isTitleValid && isProblemDetailsValid && isTagsValid && isBountyValid);
-  }, [isTitleValid, isProblemDetailsValid, isTagsValid, isBountyValid]);
+    setIsSubmitEnabled(isTitleValid && isProblemDetailsValid && isTagsValid && isBountyValid && noSimilarQuestionsConfirmed);
+  }, [isTitleValid, isProblemDetailsValid, isTagsValid, isBountyValid, noSimilarQuestionsConfirmed]);
 
   const progressSteps = [
     { valid: isTitleValid, label: 'Title' },
     { valid: isProblemDetailsValid, label: 'Details' },
     { valid: isTagsValid, label: 'Tags' },
     { valid: isBountyValid, label: 'Bounty' },
+    { valid: noSimilarQuestionsConfirmed, label: 'Similar Check' },
   ];
   const completedSteps = progressSteps.filter((step) => step.valid).length;
   const progressPercentage = (completedSteps / progressSteps.length) * 100;
+
+  const handleNoSimilarQuestions = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNoSimilarQuestionsConfirmed(e.target.checked);
+  };
+
+  const queryText = `${formData.title || 'No title provided'} ${formData.problemDetails || 'No description provided'}`;
 
   return (
     <div className="max-w-4xl mx-auto pb-6 space-y-6 px-4 sm:px-0">
@@ -122,27 +133,21 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
                 description="Be specific and imagine you're asking a question to another person."
                 className="transition-opacity duration-200"
               />
-              {titleStatus.status === 'loading' && (
-                <p className="text-sm text-gray-500">Checking availability...</p>
-              )}
-              {titleStatus.status === 'available' && (
-                <p className="text-sm text-green-500">✓ Title is available</p>
-              )}
-              {titleStatus.status === 'unavailable' && (
-                <p className="text-sm text-red-500">○ Title is not available</p>
-              )}
-              {titleStatus.status === 'error' && (
-                <p className="text-sm text-red-500">{titleStatus.message}</p>
-              )}
-              {formData.title.length >= 3 && (
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(true)}
-                  className="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors"
-                  aria-label="Check for similar questions"
-                >
-                  Check similar questions
-                </button>
+              {!formErrors.title && (
+                <>
+                  {titleStatus.status === 'loading' && (
+                    <p className="text-sm text-gray-500">Checking availability...</p>
+                  )}
+                  {titleStatus.status === 'available' && (
+                    <p className="text-sm text-green-500">✓ Title is available</p>
+                  )}
+                  {titleStatus.status === 'unavailable' && (
+                    <p className="text-sm text-red-500">○ Title is not available</p>
+                  )}
+                  {titleStatus.status === 'error' && (
+                    <p className="text-sm text-red-500">{titleStatus.message}</p>
+                  )}
+                </>
               )}
             </div>
 
@@ -206,6 +211,57 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
               className={cn("transition-opacity duration-200", isBountyFieldEnabled ? '' : 'opacity-50')}
             />
 
+            <div className="space-y-6">
+              {formData.title.length >= 3 && (
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Review Your Question Before Posting:&nbsp;
+                  </label>
+                  <button
+                    type="button"
+                    onClick={handleSimilarQuestionsCheck}
+                    disabled={isSubmitting || !isTitleValid}
+                    className={cn(
+                      "text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors",
+                      isTitleValid ? '' : 'opacity-50 cursor-not-allowed'
+                    )}
+                    aria-label="Check for similar questions"
+                  >
+                    Check similar questions
+                  </button>
+                  <p className="text-sm text-gray-500">
+                    Ensure your question is unique by checking for similar questions.
+                  </p>
+                </div>
+              )}
+              {hasCheckedSimilarQuestions && (
+                <div className={cn(
+                  "space-y-2 transition-opacity duration-200",
+                  isBountyFieldEnabled ? '' : 'opacity-50'
+                )}>
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      checked={noSimilarQuestionsConfirmed}
+                      onChange={handleNoSimilarQuestions}
+                      disabled={isSubmitting || !isBountyFieldEnabled}
+                      className={cn(
+                        "h-4 w-4 rounded border-gray-300 text-black focus:ring-black disabled:opacity-50",
+                        isBountyFieldEnabled ? '' : 'cursor-not-allowed'
+                      )}
+                      aria-label="Confirm no similar questions found"
+                    />
+                    <span className="text-sm font-medium text-gray-700">
+                      Do you find any similar questions?
+                    </span>
+                  </label>
+                  <p className="text-sm text-gray-500">
+                    Check this box to confirm that no similar questions were found to enable posting.
+                  </p>
+                </div>
+              )}
+            </div>
+
             <div className="flex justify-end items-center gap-4">
               {formErrors.general && (
                 <p className="text-sm text-red-500">{formErrors.general}</p>
@@ -225,7 +281,7 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
                     Posting...
                   </>
                 ) : (
-                  'Post'
+                  'Ask Question'
                 )}
               </Button>
             </div>
@@ -235,6 +291,7 @@ export default function QuestionForm({ onSubmit }: QuestionFormProps) {
 
       <SimilarQuestionsModal
         isOpen={isModalOpen}
+        text={queryText}
         onClose={() => setIsModalOpen(false)}
         similarQuestions={similarQuestions}
       />

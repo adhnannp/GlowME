@@ -3,6 +3,9 @@ import { baseQuestionFormSchema, questionFormSchema, QuestionFormData } from '..
 import { useDebounce } from '@/components/customHooks/useDebounce';
 import { checkTitleAvailability, fetchSimilarQuestions } from '@/services/user/user.AddQuestion.service';
 import toast from 'react-hot-toast';
+import { SimilarQuestion } from '@/interfaces/user.questions.interface';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<void>) {
   const [formData, setFormData] = useState<QuestionFormData>({
@@ -18,15 +21,17 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
   const [titleStatus, setTitleStatus] = useState<{ status: 'idle' | 'loading' | 'available' | 'unavailable' | 'error'; message?: string }>({
     status: 'idle',
   });
-  const [similarQuestions, setSimilarQuestions] = useState<{ id: string; title: string; url: string }[]>([]);
+  const [similarQuestions, setSimilarQuestions] = useState<SimilarQuestion[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const user = useSelector((state: RootState) => state.auth.user);
+  const userCoins = user?.coin_balance ?? 0;
 
   const debouncedTitle = useDebounce(formData.title, 500);
 
   useEffect(() => {
-    if (debouncedTitle.length < 3) {
+    if (debouncedTitle.length < 10) {
       setTitleStatus({ status: 'idle' });
-      setSimilarQuestions([]);
       return;
     }
 
@@ -42,20 +47,8 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
       }
     };
 
-    const fetchSimilar = async () => {
-      try {
-        const response = await fetchSimilarQuestions(debouncedTitle);
-        setSimilarQuestions(response.similarQuestions);
-      } catch (error) {
-        setSimilarQuestions([]);
-        console.error('Fetching similar questions failed:', error);
-      }
-    };
-
     setTitleStatus({ status: 'loading' });
     checkTitle();
-    fetchSimilar();
-
   }, [debouncedTitle]);
 
   const validateField = (field: keyof QuestionFormData, value: any) => {
@@ -67,11 +60,23 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
 
     if (field === 'isBounty' || field === 'bountyCoins') {
       const fullResult = questionFormSchema.safeParse({ ...formData, [field]: value });
+      let bountyError: string | undefined;
+
+      if (field === 'isBounty' && value && userCoins < 10) {
+        bountyError = 'You need at least 10 coins to set a bounty.';
+        toast.error(bountyError);
+      } else if (field === 'bountyCoins' && value > userCoins) {
+        bountyError = `You only have ${userCoins} coins available.`;
+        toast.error(bountyError);
+      } else {
+        bountyError = fullResult.success
+          ? undefined
+          : fullResult.error.errors.find((err) => err.path[0] === 'bountyCoins')?.message;
+      }
+
       setFormErrors((prev) => ({
         ...prev,
-        bountyCoins: fullResult.success
-          ? undefined
-          : fullResult.error.errors.find((err) => err.path[0] === 'bountyCoins')?.message,
+        bountyCoins: bountyError,
       }));
     }
   };
@@ -132,6 +137,21 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
     handleChange('tags', newTags);
   };
 
+  const handleSimilarQuestionsCheck = async () => {
+    setHasCheckedSimilarQuestions(true);
+    setIsModalOpen(true);
+
+    try {
+      const queryText = `${formData.title } ${formData.problemDetails}`;
+      const response = await fetchSimilarQuestions(queryText);
+      setSimilarQuestions(response.similarQuestions);
+    } catch (error) {
+      setSimilarQuestions([]);
+      console.error('Fetching similar questions failed:', error);
+      toast.error('Failed to fetch similar questions. Please try again.');
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (titleStatus.status === 'unavailable') {
@@ -155,7 +175,7 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
 
     try {
       await onSubmit?.(result.data);
-      toast.success('question posted successfully');
+      toast.success('Question posted successfully');
       setFormData({
         title: '',
         problemDetails: '',
@@ -166,8 +186,10 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
       setTagInput('');
       setTitleStatus({ status: 'idle' });
       setSimilarQuestions([]);
+      setHasCheckedSimilarQuestions(false);
+      setNoSimilarQuestionsConfirmed(false);
     } catch (error) {
-      const err = error as Error
+      const err = error as Error;
       toast.error(err.message);
       console.error('Error submitting question:', error);
       setFormErrors({ general: 'Failed to post question. Please try again.' });
@@ -175,6 +197,9 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
       setIsSubmitting(false);
     }
   };
+
+  const [hasCheckedSimilarQuestions, setHasCheckedSimilarQuestions] = useState(false);
+  const [noSimilarQuestionsConfirmed, setNoSimilarQuestionsConfirmed] = useState(false);
 
   return {
     formData,
@@ -193,5 +218,9 @@ export function useQuestionForm(onSubmit?: (data: QuestionFormData) => Promise<v
     addTag,
     removeTag,
     validateField,
+    handleSimilarQuestionsCheck,
+    hasCheckedSimilarQuestions,
+    noSimilarQuestionsConfirmed,
+    setNoSimilarQuestionsConfirmed,
   };
 }

@@ -9,6 +9,7 @@ import cloudinary from '../../config/cloudinary';
 import { Readable } from 'stream';
 import { Types } from 'mongoose';
 import slugify from 'slugify';
+import { cosineSimilarity, generateEmbedding } from '../../utils/generateEmbedding';
 
 @injectable()
 export class UserQuestionService implements IUserQuestionService{
@@ -56,6 +57,7 @@ export class UserQuestionService implements IUserQuestionService{
     const type = data.isBounty ? `bounty` : `descriptive`;
     const convertedTags = data.tags.map((tag) => new Types.ObjectId(tag));
     const slug = slugify(data.title, { lower: true, strict: true });
+    const embedding = await generateEmbedding(`${data.title} ${data.problemDetails}`);
     await this.questionRepo.create({
       title: data.title,
       slug,
@@ -66,6 +68,7 @@ export class UserQuestionService implements IUserQuestionService{
       bounty_coin: data.bountyCoins,
       createdBy: data.createdBy,
       tags: convertedTags,
+      embedding,
     });
   }
 
@@ -82,6 +85,23 @@ export class UserQuestionService implements IUserQuestionService{
       throw new Error ('cannot find appropreate Question');
     }
     return question;
+  }
+
+  async getSimilarQuestions(queryText: string): Promise<IQuestion[]> {
+    const threshold = 0.6
+    const currentEmbedding = await generateEmbedding(queryText);
+    const allQuestions = await this.questionRepo.findAll({ embedding: { $exists: true }});
+    const similar: { question: IQuestion; score: number }[] = [];
+    for (const question of allQuestions) {
+      const similarity = cosineSimilarity(currentEmbedding, question.embedding);
+      if (similarity >= threshold) {
+        similar.push({ question, score: similarity });
+      }
+    }
+    return similar
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10)
+    .map((s) => s.question);
   }
 
 }

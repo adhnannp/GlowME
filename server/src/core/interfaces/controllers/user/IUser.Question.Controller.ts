@@ -5,4 +5,5 @@ export interface IUserQuestionController {
     createQuestion(req:Request,res:Response):Promise<void>;
     getQuestionsByType(req:Request,res:Response) : Promise<void>;
     getOneBySlug(req:Request,res:Response) : Promise<void>;
+    findSimilarQuetions(req:Request,res:Response):Promise<void>;
 }

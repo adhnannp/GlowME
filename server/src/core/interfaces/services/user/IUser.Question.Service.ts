@@ -6,5 +6,6 @@ export interface IUserQuestionService {
     uploadToCloudinary(file: Express.Multer.File): Promise<string>;
     uploadToS3(file: Express.Multer.File): Promise<string>;
     listQuestionsByType(type: string,page: number,limit: number): Promise<[IQuestion[],number]>;
-    getQuestionBySlug(slug:string):Promise<IQuestion|null>
+    getQuestionBySlug(slug:string):Promise<IQuestion|null>;
+    getSimilarQuestions(queryText: string): Promise<IQuestion[]>;
 }

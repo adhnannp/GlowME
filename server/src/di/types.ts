@@ -9,7 +9,8 @@ export const TYPES = {
     CoinTransactionRepository: Symbol.for('CoinTransactionRepository'),
     QuestionRepository: Symbol.for('QuestionRepository'),
     TagRepository: Symbol.for('TagRepository'),
-  
+    ReactionRepository: Symbol.for('ReactionRepository'),
+
     // Services
     AuthService: Symbol.for('AuthService'),
     OTPService: Symbol.for('OTPService'),

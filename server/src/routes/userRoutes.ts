@@ -77,10 +77,10 @@ router.post('/questions/create',userAuthMiddleware.handle.bind(userAuthMiddlewar
 router.get('/questions/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.getQuestionsByType.bind(questionController));
 router.get('/questions/get-one/:slug',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.getOneBySlug.bind(questionController));
 router.post('/questions/find-similar',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.findSimilarQuetions.bind(questionController));
+router.get('/questions/get-related/:id',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.relatedQuestions.bind(questionController));
 
 router.get('/notification/has-unread',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.hasUnreadNotification.bind(notificationController));
 router.get('/notification/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.getAllNotification.bind(notificationController));
 router.patch('/notification/mark-all-read',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.markAllRead.bind(notificationController));
-
 
 export default router;

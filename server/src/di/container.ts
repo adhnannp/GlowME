@@ -92,6 +92,8 @@ import IUserSocketController from '../core/interfaces/controllers/user/IUser.Soc
 import { UserSocketController } from '../controllers/userController/user.socket.controller';
 import IUserNotificationController from '../core/interfaces/controllers/user/IUser.Notification.Controller';
 import { UserNotificationController } from '../controllers/userController/user.notification.controller';
+import IReactionRepository from '../core/interfaces/repositories/IReactionRepository';
+import { ReactionRepository } from '../repositories/ReactionRepository';
 
 const container = new Container();
 
@@ -105,6 +107,7 @@ container.bind<ICoinPlanRepository>(TYPES.CoinPlanRepository).to(CoinPlanReposit
 container.bind<ICoinTransactionRepository>(TYPES.CoinTransactionRepository).to(CoinTransactionRepository);
 container.bind<IQuestionRepository>(TYPES.QuestionRepository).to(QuestionRepository);
 container.bind<ITagRepository>(TYPES.TagRepository).to(TagRepository);
+container.bind<IReactionRepository>(TYPES.ReactionRepository).to(ReactionRepository);
 
 // Services
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService);

@@ -16,7 +16,14 @@ export class QuestionRepository extends BaseRepository<IQuestion> implements IQu
 
     async getQuestionBySlug(slug:string):Promise<IQuestion | null >{
         return await QuestionModel.findOne({slug})
-        .populate('createdBy')
+        .select('-embedding')
+        .populate({
+          path: 'createdBy',
+          select: '-password',
+          populate: {
+            path: 'currentBadge',
+          }
+        })
         .populate('tags');
     }
 
@@ -114,6 +121,5 @@ export class QuestionRepository extends BaseRepository<IQuestion> implements IQu
             }
         ]);
     }
-
 
 }

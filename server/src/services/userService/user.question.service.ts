@@ -10,12 +10,15 @@ import { Readable } from 'stream';
 import { Types } from 'mongoose';
 import slugify from 'slugify';
 import { cosineSimilarity, generateEmbedding } from '../../utils/generateEmbedding';
+import IReactionRepository from '../../core/interfaces/repositories/IReactionRepository';
+import { QuestionWithVotes } from '../../core/types/question';
 
 @injectable()
 export class UserQuestionService implements IUserQuestionService{
   private s3Client = s3;
   constructor(
     @inject(TYPES.QuestionRepository) private questionRepo: IQuestionRepository,
+    @inject(TYPES.ReactionRepository) private reactionRepo: IReactionRepository,  
   ) {}
 
   async checkTitleAvailablity(title:string) : Promise<boolean>{
@@ -79,12 +82,14 @@ export class UserQuestionService implements IUserQuestionService{
     return [questions,total]
   }
 
-  async getQuestionBySlug(slug:string):Promise<IQuestion|null>{
-    const question = this.questionRepo.getQuestionBySlug(slug);
-    if(!question){
+  async getQuestionBySlug(slug:string,userId:string):Promise<QuestionWithVotes>{
+    const question = await this.questionRepo.getQuestionBySlug(slug);
+    if(!question || !question._id){
       throw new Error ('cannot find appropreate Question');
     }
-    return question;
+    const totalVotes = await this.reactionRepo.getVoteScore(question._id.toString(),'question')
+    const userReaction = await this.reactionRepo.UserReaction(userId,question._id.toString(),'question')
+    return {question,totalVotes,userReaction};
   }
 
   async getSimilarQuestions(queryText: string): Promise<IQuestion[]> {
@@ -94,6 +99,26 @@ export class UserQuestionService implements IUserQuestionService{
     const similar: { question: IQuestion; score: number }[] = [];
     for (const question of allQuestions) {
       const similarity = cosineSimilarity(currentEmbedding, question.embedding);
+      if (similarity >= threshold) {
+        similar.push({ question, score: similarity });
+      }
+    }
+    return similar
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10)
+    .map((s) => s.question);
+  }
+
+  async getRelatedQuestion(questionId:string):Promise<IQuestion[]> {
+    const threshold = 0.6
+    const currentQuestion = await this.questionRepo.findById(questionId)
+    if(!currentQuestion){
+      throw new Error('No question provided')
+    }
+    const allQuestions = await this.questionRepo.findAll({ embedding: { $exists: true },slug:{$ne:currentQuestion.slug}});
+    const similar: { question: IQuestion; score: number }[] = [];
+    for (const question of allQuestions) {
+      const similarity = cosineSimilarity(currentQuestion.embedding, question.embedding);
       if (similarity >= threshold) {
         similar.push({ question, score: similarity });
       }

@@ -1,4 +1,5 @@
 import { IQuestion } from "../../../../models/Question";
+import { QuestionWithVotes } from "../../../types/question";
 
 export interface IUserQuestionService {
     checkTitleAvailablity(title:string) : Promise<boolean>;
@@ -6,6 +7,7 @@ export interface IUserQuestionService {
     uploadToCloudinary(file: Express.Multer.File): Promise<string>;
     uploadToS3(file: Express.Multer.File): Promise<string>;
     listQuestionsByType(type: string,page: number,limit: number): Promise<[IQuestion[],number]>;
-    getQuestionBySlug(slug:string):Promise<IQuestion|null>;
+    getQuestionBySlug(slug:string,userId:string):Promise<QuestionWithVotes>
     getSimilarQuestions(queryText: string): Promise<IQuestion[]>;
+    getRelatedQuestion(slug:string):Promise<IQuestion[]>;
 }

@@ -7,6 +7,7 @@ import { STATUS_CODES } from '../../utils/HTTPStatusCode';
 import { MESSAGES } from '../../utils/ResponseMessages';
 import logger from '../../utils/logger';
 import { baseQuestionForm } from '../../validators/baseQuestionForm';
+import mongoose from 'mongoose';
 
 @injectable()
 export class UserQuestionController implements IUserQuestionController {
@@ -109,12 +110,17 @@ export class UserQuestionController implements IUserQuestionController {
   async getOneBySlug(req:Request,res:Response):Promise<void>{
     try {
       const slug = req.params.slug
+      const userId = req.userId;
+      if(!userId){
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.USER_INVALID_OR_BANNED });
+        return;
+      }
       if(!slug || typeof slug != 'string'){
         res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_SLUG });
         return;
       }
-      const question = await this.userQuestionService.getQuestionBySlug(slug);
-      res.status(STATUS_CODES.OK).json({ question , message: MESSAGES.FETCHED_ONE_QUESTION });
+      const {question,totalVotes,userReaction} = await this.userQuestionService.getQuestionBySlug(slug,userId);
+      res.status(STATUS_CODES.OK).json({ question, totalVotes, userReaction, message: MESSAGES.FETCHED_ONE_QUESTION });
     } catch (error) {
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
       return;
@@ -134,6 +140,16 @@ export class UserQuestionController implements IUserQuestionController {
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
       return;
     }
+  }
+
+  async relatedQuestions(req:Request,res:Response):Promise<void>{
+    const questionId = req.params.id;
+    if(!questionId || typeof questionId != 'string'|| !mongoose.Types.ObjectId.isValid(questionId)){
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_CREDENTIALS });
+        return;
+    }
+    const relatedQuestions = await this.userQuestionService.getRelatedQuestion(questionId)
+    res.status(STATUS_CODES.OK).json({ relatedQuestions , message: MESSAGES.FETCHED_QUESTIONS });
   }
 
 }

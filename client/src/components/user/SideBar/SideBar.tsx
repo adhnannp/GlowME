@@ -5,7 +5,7 @@ import SidebarItem from "./SideBarItem";
 import { Link } from "react-router-dom";
 import NotificationsPanel from "./NotificationPanel";
 import ChangePasswordModal from "./ChangePasswordModal";
-import { HasUnreadNotification, markAllNotificationsAsRead } from "@/services/user/user.notification.service";
+import { HasUnreadNotification } from "@/services/user/user.notification.service";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { clearNotifications } from "@/feature/socketSlice";
@@ -27,14 +27,12 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSideb
   
   useEffect(() => {
     if (showNotifications) {
-        markAllNotificationsAsRead()
-        .then(() => {
-          dispatch(clearNotifications()); 
+      try {
+        dispatch(clearNotifications()); 
           setHasUnreadFromApi(false);
-        })
-        .catch((err) => {
-          console.error("Failed to mark notifications as read", err);
-        });
+      } catch (error) {
+        console.error("Failed to mark notifications as read", error);
+      } 
     }
   }, [showNotifications]);
 
@@ -51,7 +49,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSideb
     fetchUnreadStatus();
   }, []);
 
-  const hasUnread = hasUnreadFromApi || socketNotifications.length > 0;
+  const hasUnread = (hasUnreadFromApi || socketNotifications.length > 0) && !showNotifications;
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

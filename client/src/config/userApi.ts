@@ -15,6 +15,7 @@ export const USER_API = {
     CHECK_SIMILAR: '/questions/find-similar',
     FETCH_QUESTIONS: '/questions/get-all',
     FETCH_ONE_BY_SLUG:'/questions/get-one',
+    RELATED_QUESTIONS:'/questions/get-related',
     HAS_UNREAD_NOTIFICATION: '/notification/has-unread',
     MARK_ALL_AS_READ: '/notification/mark-all-read',
     FETCH_NOTIFICATION: '/notification/get-all'

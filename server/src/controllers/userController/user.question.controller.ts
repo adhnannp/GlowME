@@ -143,13 +143,18 @@ export class UserQuestionController implements IUserQuestionController {
   }
 
   async relatedQuestions(req:Request,res:Response):Promise<void>{
-    const questionId = req.params.id;
-    if(!questionId || typeof questionId != 'string'|| !mongoose.Types.ObjectId.isValid(questionId)){
-        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_CREDENTIALS });
-        return;
+    try {
+      const questionId = req.params.id;
+      if(!questionId || typeof questionId != 'string'|| !mongoose.Types.ObjectId.isValid(questionId)){
+          res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_CREDENTIALS });
+          return;
+      }
+      const relatedQuestions = await this.userQuestionService.getRelatedQuestion(questionId)
+      res.status(STATUS_CODES.OK).json({ relatedQuestions , message: MESSAGES.FETCHED_QUESTIONS });
+    } catch (error) {
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
+      return;
     }
-    const relatedQuestions = await this.userQuestionService.getRelatedQuestion(questionId)
-    res.status(STATUS_CODES.OK).json({ relatedQuestions , message: MESSAGES.FETCHED_QUESTIONS });
   }
 
 }

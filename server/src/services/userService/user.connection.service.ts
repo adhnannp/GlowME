@@ -35,7 +35,7 @@ export class UserConnectionService implements IUserConnectionService {
     );
 
     const follower = await this.userRepo.findUserById(followerId)
-    await this.notificationService.createAndEmitNotification(followingId, 'follow', `${follower?.username} started following you`, followerId);
+    await this.notificationService.createAndEmitNotification(followingId, 'follow', `started following you`, followerId);
 
     return connection;
   }

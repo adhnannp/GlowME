@@ -23,6 +23,6 @@ export interface Question{
   tags?: Tag[];
   isListed: boolean;
   is_archive?: boolean;
-  created_at?: string;
-  edited_at?: string; 
+  created_at: string;
+  edited_at: string; 
 }

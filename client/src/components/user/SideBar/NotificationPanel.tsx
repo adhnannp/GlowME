@@ -1,7 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Check } from 'lucide-react';
-import { fetchNotifications } from '@/services/user/user.notification.service';
+import { fetchNotifications, markAllNotificationsAsRead } from '@/services/user/user.notification.service';
 import { ConnectionNotification } from '@/interfaces/notification';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { clearNotifications } from '@/feature/socketSlice';
+import { useDispatch } from 'react-redux';
 
 interface NotificationsPanelProps {
   onClose: () => void;
@@ -9,11 +12,27 @@ interface NotificationsPanelProps {
 
 const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ onClose }) => {
   const [notifications, setNotifications] = useState<ConnectionNotification[]>([]);
+  const socketNotifications = useSelector((state: RootState) => state.socket.notifications);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!socketNotifications || socketNotifications.length === 0) return;
+
+    setNotifications((prev) => {
+      const existingIds = new Set(prev.map((n) => n._id));
+      const newUnique = socketNotifications.filter((n) => !existingIds.has(n._id));
+
+      if (newUnique.length === 0) return prev;
+
+      dispatch(clearNotifications());
+      return [...newUnique, ...prev];
+    });
+  }, [socketNotifications,dispatch]);
 
   const loadNotifications = async (pageNum: number) => {
     if (loading || error) return;
@@ -26,6 +45,11 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ onClose }) => {
         setHasMore(false);
       }
       setNotifications((prev) => (pageNum === 1 ? newNotifications : [...prev, ...newNotifications]));
+      if (pageNum === 1) {
+        markAllNotificationsAsRead().catch((err) => {
+          console.error('Failed to mark notifications as read:', err);
+        });
+      }
     } catch (error) {
       setError('Failed to load notifications.');
       console.error('Error loading notifications:', error);
@@ -102,7 +126,7 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ onClose }) => {
         {notifications.map((notification) => (
           <div
             key={notification._id}
-            className={`p-3 flex items-center ${notification.is_read ? 'bg-gray-50' : 'bg-white'}`}
+            className={`p-3 flex items-center ${notification.is_read ? 'bg-gray-100' : 'bg-white'}`}
           >
             <div className="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-blue-500 mr-3">
               {notification?.related_user?.profile_image ? (
@@ -113,15 +137,18 @@ const NotificationsPanel: React.FC<NotificationsPanelProps> = ({ onClose }) => {
                 />
               ) : null}
             </div>
+            
             <div className="flex-1">
-              <div className="flex items-center">
+              <div className="flex items-center gap-1">
                 <span className="text-sm font-medium">{notification?.related_user?.username}</span>
-                <div className="ml-1 w-4 h-4 rounded-full bg-blue-100 flex items-center justify-center">
-                  <Check className="w-2 h-2 text-blue-500" />
-                </div>
+                {!notification.is_read && (
+                  <span className="text-[10px] text-white bg-gray-400 px-1 py-px rounded-full ml-1">
+                    New
+                  </span>
+                )}
               </div>
+              <div className="text-xs text-gray-500">{notification.message}</div>
             </div>
-            <div className="text-xs text-gray-500">{notification.message}</div>
           </div>
         ))}
         {hasMore && !error && (

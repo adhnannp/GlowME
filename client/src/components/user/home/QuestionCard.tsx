@@ -61,13 +61,15 @@ const QuestionCard: React.FC<Props> = ({
             <UserCard user={createdBy} />
           </div>
         </div>
-        <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100">
-          <img
-            src={header_image || "/placeholder.svg"}
-            alt="Question thumbnail"
-            className="object-cover w-full h-full"
-          />
-        </div>
+        {header_image?
+          <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100">
+              <img
+                src={header_image || "/placeholder.svg"}
+                alt="Question thumbnail"
+                className="object-cover w-full h-full"
+              />
+          </div>
+        :<div></div> }
       </div>
     </div>
   );

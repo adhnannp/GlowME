@@ -14,4 +14,5 @@ export interface IBadgeRepository {
   addBadgeToUser(userId: string, badgeId: string): Promise<SafeUser | null>;
   updateCurrentBadge(userId: string, badgeId: string): Promise<SafeUser | null>;
   getUserBadges(userId: string): Promise<SafeBadge | null>;
+  getBasicBadge(): Promise<IBadge | null>;
 }

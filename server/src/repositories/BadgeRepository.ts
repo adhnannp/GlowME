@@ -52,7 +52,7 @@ export class BadgeRepository implements IBadgeRepository{
 
   async getAvailableBadges(userId: string): Promise<IBadge[]> {
     const user = await UserModel.findById(userId);
-    if (!user || !user.badges) {
+    if (!user || user.badges?.length==0 || !user.badges ) {
       return await BadgeModel.find({
         isListed: true
       }).sort({ requiredXp: 1 });
@@ -142,6 +142,11 @@ export class BadgeRepository implements IBadgeRepository{
       }
     ]);
     return result[0] ?? null;
+  }
+
+  async getBasicBadge(): Promise<IBadge | null> {
+    const badges = await BadgeModel.find().sort({ requiredXp: 1 }).limit(1).lean();
+    return badges[0] || null;
   }
 
 }

@@ -5,11 +5,13 @@ import { TYPES } from '../../di/types';
 import { Profile } from 'passport-google-oauth20';
 import { IUser } from '../../models/User';
 import { signJWT, signRefreshToken } from '../../utils/token';
+import { IBadgeRepository } from '../../core/interfaces/repositories/IBadgeRepository';
 
 @injectable()
 export class GoogleAuthService implements IGoogleAuthService {
   constructor(
-    @inject(TYPES.UserRepository) private userRepo: IUserRepository
+    @inject(TYPES.UserRepository) private userRepo: IUserRepository,
+    @inject(TYPES.BadgeRepository) private badgeRepo: IBadgeRepository
   ) {}
 
   async validateOrCreateUser(profile: Profile): Promise<{ user: IUser; accessToken: string; refreshToken: string } | null> {
@@ -37,9 +39,13 @@ export class GoogleAuthService implements IGoogleAuthService {
       username: displayName,
       email,
       isGoogleUser: true,
-    //   profile_image: profileImage,
     };
     const newUser = await this.userRepo.createGoogleUser(newUserData);
+    const basicBadge = await this.badgeRepo.getBasicBadge();
+    if (!newUser?._id || !basicBadge?._id) {
+      throw new Error("Saved user or basic badge is missing an ID.");
+    }
+    await this.badgeRepo.addBadgeToUser(newUser._id.toString(),basicBadge._id.toString())
     const accessToken = signJWT({ userId: newUser._id, isAdmin: newUser.isAdmin });
     const refreshToken = signRefreshToken({ userId: newUser._id, isAdmin: newUser.isAdmin });
     return { user: newUser, accessToken, refreshToken };

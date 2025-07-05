@@ -37,7 +37,7 @@ const userSchema = new mongoose.Schema<IUser>({
     acquiredAt: { type: Date, default: Date.now }
   }],
   currentBadge: { type: mongoose.Schema.Types.ObjectId, ref: 'Badge' },
-  xp: { type: Number, default: 0 },
+  xp: { type: Number, default: 1 },
   coin_balance: { type: Number, default: 0 },
   questions_explored: { type: Number, default: 0 },
   ban_expires_at: { type: Date, default: null },

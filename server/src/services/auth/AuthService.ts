@@ -8,13 +8,15 @@ import { redisClient } from '../../config/redis';
 import { TYPES } from '../../di/types';
 import { comparePassword } from '../../validators/comparePasswrod';
 import { registerSchema } from '../../validators/userDataValidation';
+import { IBadgeRepository } from '../../core/interfaces/repositories/IBadgeRepository';
 
 
 @injectable()
 export class AuthService implements IAuthService {
   constructor(
     @inject(TYPES.UserRepository) private userRepository: IUserRepository,
-    @inject(TYPES.OTPService) private otpService: IOTPService
+    @inject(TYPES.OTPService) private otpService: IOTPService,
+    @inject(TYPES.BadgeRepository) private badgeRepo: IBadgeRepository,
   ) {}
 
   async register(user: IUser): Promise<string> {
@@ -82,6 +84,11 @@ export class AuthService implements IAuthService {
     }
     const {user} = JSON.parse(storedData);
     const savedUser = await this.userRepository.createUser(user);
+    const basicBadge = await this.badgeRepo.getBasicBadge();
+    if (!savedUser?._id || !basicBadge?._id) {
+      throw new Error("Saved user or basic badge is missing an ID.");
+    }
+    await this.badgeRepo.addBadgeToUser(savedUser._id.toString(),basicBadge._id.toString())
     const accessToken = signJWT({ userId: savedUser._id, isAdmin:user.isAdmin });
     const refreshToken = signRefreshToken({ userId: savedUser._id , isAdmin:user.isAdmin});
     await redisClient.del(email);

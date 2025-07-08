@@ -22,8 +22,8 @@ export class TagRepository extends BaseRepository<ITag> implements ITagRepositor
     return [tags, totalTags];
   }
 
-  async getListedTags() :Promise<ITag[]> {
-    return await TagModel.find({isListed:true});
+  async getListedTags(limit:number = 10) :Promise<ITag[]> {
+    return await TagModel.find({isListed:true}).limit(limit);
   }
   
   async getTagByName(name:string): Promise<ITag | null> {

@@ -35,7 +35,11 @@ export default function SingleQuestionPage() {
     fetchQuestion();
   }, [slug]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return (
+      <div className="flex items-center justify-center h-screen bg-white">
+        <img src="/loading.gif" alt="Loading..." className="w-10 h-10" />
+      </div>
+    );
   if (error) return <div>Error: {error}</div>;
   if (!questionData) return <div>No question found</div>;
 

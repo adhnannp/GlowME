@@ -71,7 +71,6 @@ router.post('/Gcoin/checkout',userAuthMiddleware.handle.bind(userAuthMiddleware)
 router.get('/Gcoin/success/:sessionId',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.getCheckoutSessionDetails.bind(coinPlanController));
 router.get('/Gcoin/transaction-history',userAuthMiddleware.handle.bind(userAuthMiddleware),coinPlanController.getUserTransactionHistory.bind(coinPlanController));
 
-router.get('/questions/search-tags',userAuthMiddleware.handle.bind(userAuthMiddleware),tagController.searchTag.bind(tagController));
 router.get('/questions/check-title',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.checkTitleAvailablity.bind(questionController));
 router.post('/questions/create',userAuthMiddleware.handle.bind(userAuthMiddleware),questionUploads.fields([{ name: 'image', maxCount: 1 },{ name: 'document', maxCount: 1 },]),questionController.createQuestion.bind(questionController));
 router.get('/questions/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.getQuestionsByType.bind(questionController));
@@ -82,5 +81,8 @@ router.get('/questions/get-related/:id',userAuthMiddleware.handle.bind(userAuthM
 router.get('/notification/has-unread',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.hasUnreadNotification.bind(notificationController));
 router.get('/notification/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.getAllNotification.bind(notificationController));
 router.patch('/notification/mark-all-read',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.markAllRead.bind(notificationController));
+
+router.get('/tag/get-top',userAuthMiddleware.handle.bind(userAuthMiddleware),tagController.getTopTags.bind(tagController));
+router.get('/tag/search-tags',userAuthMiddleware.handle.bind(userAuthMiddleware),tagController.searchTag.bind(tagController));
 
 export default router;

@@ -4,9 +4,9 @@ import { AxiosError } from 'axios';
 import { USER_API } from '@/config/userApi';
 import { Question, SimilarQuestion } from '@/interfaces/user.questions.interface';
 
-export const fetchQuestionByType = async (page:number,type:string): Promise<any> => {
+export const fetchQuestionByType = async (page:number,type:string,tagId?:string): Promise<any> => {
   try {
-    const response = await api.get(`${USER_API.FETCH_QUESTIONS}?q-type=${type}&page=${page}`)
+    const response = await api.get(`${USER_API.FETCH_QUESTIONS}?q-type=${type}&tagId=${tagId}&page=${page}`)
     if (!Array.isArray(response.data.questions)) {
       return [];
     }

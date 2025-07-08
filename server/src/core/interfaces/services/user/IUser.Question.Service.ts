@@ -6,7 +6,7 @@ export interface IUserQuestionService {
     createQuestion(data: {title: string;problemDetails: string;tags: string[];isBounty: boolean;bountyCoins:number;createdBy:string;imageUrl?: string;documentUrl?: string;}): Promise<void>;
     uploadToCloudinary(file: Express.Multer.File): Promise<string>;
     uploadToS3(file: Express.Multer.File): Promise<string>;
-    listQuestionsByType(type: string,page: number,limit: number): Promise<[IQuestion[],number]>;
+    listQuestionsByType(type: string,page: number,limit: number,tagId?:string): Promise<[IQuestion[],number]>;
     getQuestionBySlug(slug:string,userId:string):Promise<QuestionWithVotes>
     getSimilarQuestions(queryText: string): Promise<IQuestion[]>;
     getRelatedQuestion(slug:string):Promise<IQuestion[]>;

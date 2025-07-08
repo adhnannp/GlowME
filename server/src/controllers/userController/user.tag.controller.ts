@@ -29,4 +29,16 @@ export class UserTagController implements IUserTagController {
       return;
     }
   }
+
+  async getTopTags(req:Request,res:Response):Promise<void>{
+    try{
+      const topTags = await this.userTagService.getTopTags();
+      res.status(STATUS_CODES.OK).json({topTags});
+      return;
+    }catch(error){
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
+      return;
+    }
+  }
+
 }

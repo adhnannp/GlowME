@@ -91,7 +91,7 @@ export class UserQuestionController implements IUserQuestionController {
 
   async getQuestionsByType(req:Request,res:Response) : Promise<void>{
     try {
-      const { 'q-type': qType, page = 1 } = req.query;
+      const { 'q-type': qType, page = 1, tagId } = req.query;
       const parsedPage = parseInt(page as string);
       const limit = 20
       if(!qType || !page || parsedPage<1){
@@ -99,7 +99,7 @@ export class UserQuestionController implements IUserQuestionController {
         return;
       }
       const skip = (parsedPage - 1) * limit;
-      const [questions,total] = await this.userQuestionService.listQuestionsByType(qType as string,parsedPage,limit);
+      const [questions,total] = await this.userQuestionService.listQuestionsByType(qType as string,parsedPage,limit,tagId as string);
       res.status(STATUS_CODES.OK).json({ questions , page:parsedPage , skip , total , limit, message: MESSAGES.FETCHED_QUESTIONS });
     } catch (error) {
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });

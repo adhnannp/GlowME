@@ -10,7 +10,6 @@ export const USER_API = {
     GCOIN_CHECKOUT:'/Gcoin/checkout',
     GCOIN_PAYMENT_SUCCESS: '/Gcoin/success',
     GCOIN_TRANSACTION: '/Gcoin/transaction-history',
-    SEARCH_TAGS: '/questions/search-tags',
     CHECK_TITLE:'/questions/check-title',
     CHECK_SIMILAR: '/questions/find-similar',
     FETCH_QUESTIONS: '/questions/get-all',
@@ -18,5 +17,7 @@ export const USER_API = {
     RELATED_QUESTIONS:'/questions/get-related',
     HAS_UNREAD_NOTIFICATION: '/notification/has-unread',
     MARK_ALL_AS_READ: '/notification/mark-all-read',
-    FETCH_NOTIFICATION: '/notification/get-all'
+    FETCH_NOTIFICATION: '/notification/get-all',
+    SEARCH_TAGS: '/tag/search-tags',
+    GET_TOP_TAGS:'/tag/get-top'
 }

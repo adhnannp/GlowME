@@ -3,6 +3,8 @@ import { IQuestionRepository } from '../core/interfaces/repositories/IQuestionRe
 import { QuestionModel } from '../models/Question';
 import { IQuestion } from '../models/Question';
 import { BaseRepository } from './BaseRepository';
+import mongoose, { RootFilterQuery, Types } from 'mongoose';
+import { Filter } from "mongodb";
 
 @injectable()
 export class QuestionRepository extends BaseRepository<IQuestion> implements IQuestionRepository{
@@ -27,13 +29,28 @@ export class QuestionRepository extends BaseRepository<IQuestion> implements IQu
         .populate('tags');
     }
 
-    async countByType(type: string): Promise<number> {
-      return QuestionModel.countDocuments({ type,isListed:true });
+    async countByType(type: string,tagId:string): Promise<number> {
+        const matchStage: RootFilterQuery<IQuestion> = {
+          type,
+          isListed: true,
+        };
+        if (tagId && mongoose.Types.ObjectId.isValid(tagId)) {
+          matchStage.tags = { $in: [new mongoose.Types.ObjectId(tagId)] };
+        }
+        return QuestionModel.countDocuments(matchStage);
     }
 
-    async findQuestionsByType(type: string, skip: number, limit: number): Promise<any[]> {
+    async findQuestionsByType(type: string, skip: number, limit: number,tagId?:string): Promise<any[]> {
+        const matchStage: RootFilterQuery<IQuestion> = {
+          type,
+          isListed: true,
+        };
+    
+        if (tagId && mongoose.Types.ObjectId.isValid(tagId)) {
+          matchStage.tags = { $in: [new mongoose.Types.ObjectId(tagId)] };
+        }
         return QuestionModel.aggregate([
-            { $match: { type , isListed:true } },
+            { $match: matchStage },
             { $sort: { created_at: -1 } },
             { $skip: skip },
             { $limit: limit },
@@ -120,6 +137,17 @@ export class QuestionRepository extends BaseRepository<IQuestion> implements IQu
             }
             }
         ]);
+    }
+
+    async getTopTags(limit:number = 10): Promise<Types.ObjectId[]> {
+      const tags = await QuestionModel.aggregate([
+        { $unwind: "$tags" },
+        { $group: { _id: "$tags", count: { $sum: 1 } } },
+        { $sort: { count: -1 } },
+        { $limit: limit },
+        { $project: { _id: 1 } }
+      ]);
+      return tags.map(tag => tag._id);
     }
 
 }

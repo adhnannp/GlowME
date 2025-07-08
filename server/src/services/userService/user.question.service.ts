@@ -12,6 +12,7 @@ import slugify from 'slugify';
 import { cosineSimilarity, generateEmbedding } from '../../utils/generateEmbedding';
 import IReactionRepository from '../../core/interfaces/repositories/IReactionRepository';
 import { QuestionWithVotes } from '../../core/types/question';
+import logger from '../../utils/logger';
 
 @injectable()
 export class UserQuestionService implements IUserQuestionService{
@@ -75,10 +76,10 @@ export class UserQuestionService implements IUserQuestionService{
     });
   }
 
-  async listQuestionsByType(type: string,page: number,limit: number): Promise<[IQuestion[],number]> {
+  async listQuestionsByType(type: string,page: number,limit: number, tagId?:string): Promise<[IQuestion[],number]> {
     const skip = (page - 1) * limit;
-    const total = await this.questionRepo.countByType(type);
-    const questions = await this.questionRepo.findQuestionsByType(type, skip, limit);
+    const total = await this.questionRepo.countByType(type,tagId);
+    const questions = await this.questionRepo.findQuestionsByType(type, skip, limit,tagId);
     return [questions,total]
   }
 

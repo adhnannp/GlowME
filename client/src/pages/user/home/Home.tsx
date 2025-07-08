@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import QuestionCard from "@/components/user/home/QuestionCard";
 import Sidebar from "@/components/user/SideBar/SideBar";
 import Header from "@/components/user/Header/Header";
@@ -10,6 +8,7 @@ import TabButton from "@/components/user/home/TabButton";
 import { fetchQuestionByType } from "@/services/user/user.listQuestion.service";
 import { UserWithBadge } from "@/interfaces/auth.interface";
 import { Tag } from "@/interfaces/user.tag.interface";
+import { TagSection } from "@/components/user/home/TagSection";
 
 interface QuestionAPIResponse {
   questions: {
@@ -30,7 +29,7 @@ interface QuestionAPIResponse {
   page: number;
 }
 
-const tags = ["css", "express", "html", "javascript", "jquery", "mongodb", "node.js", "reactjs", "sass"];
+
 
 export default function QuestionsPage() {
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
@@ -40,11 +39,12 @@ export default function QuestionsPage() {
   const [hasMore, setHasMore] = useState(true);
   const [total,setTotal] = useState(0);
   const navigate = useNavigate();
+  const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
 
   useEffect(() => {
     const fetchInitialQuestions = async () => {
       try {
-        const data = await fetchQuestionByType(1, qType);
+        const data = await fetchQuestionByType(1, qType,selectedTag?._id);
         setQuestions(data.questions);
         setPage(data.page + 1);
         setHasMore((data.page * data.limit) < data.total);
@@ -54,16 +54,18 @@ export default function QuestionsPage() {
       }
     };
     fetchInitialQuestions();
-  }, [qType]);
+  }, [qType,selectedTag]);
 
   const handleLoadMore = async () => {
     try {
-      const data = await fetchQuestionByType(page, qType);
+      const data = await fetchQuestionByType(page, qType, selectedTag?._id);
       if (data.questions.length > 0) {
-        setQuestions((prevQuestions) => (prevQuestions ? [...prevQuestions, ...data.questions] : data.questions));
+        setQuestions((prevQuestions) =>
+          prevQuestions ? [...prevQuestions, ...data.questions] : data.questions
+        );
         setPage(data.page + 1);
         setHasMore((data.page * data.limit) < data.total);
-        setTotal(data.total) 
+        setTotal(data.total);
       } else {
         setHasMore(false);
       }
@@ -146,7 +148,6 @@ export default function QuestionsPage() {
             </div>
 
             <div className="flex gap-6">
-              {/* Questions Feed */}
               <div className="flex-1 space-y-4">
                 {mappedQuestions.length > 0 ? (
                   mappedQuestions.map((question) => (
@@ -163,32 +164,7 @@ export default function QuestionsPage() {
                   </div>
                 )}
               </div>
-
-              <div className="w-80 shrink-0">
-                <div className="border rounded-lg p-4">
-                  <h2 className="font-medium mb-3">tags</h2>
-                  <div className="flex flex-wrap gap-2">
-                    {tags.map((tag) => (
-                      <Badge
-                        key={tag}
-                        variant="secondary"
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-800"
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                  <div className="mt-4 flex gap-2">
-                    <Input placeholder="Filter order numb" className="flex-1" />
-                    <Button
-                      variant="default"
-                      className="bg-black text-white hover:bg-black/90"
-                    >
-                      Search
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              <TagSection selectedTag={selectedTag} onTagSelect={setSelectedTag} />
             </div>
           </div>
         </div>

@@ -94,6 +94,12 @@ import IUserNotificationController from '../core/interfaces/controllers/user/IUs
 import { UserNotificationController } from '../controllers/userController/user.notification.controller';
 import IReactionRepository from '../core/interfaces/repositories/IReactionRepository';
 import { ReactionRepository } from '../repositories/ReactionRepository';
+import { IAnswerRepository } from '../core/interfaces/repositories/IAnswerRepository';
+import { AnswerRepository } from '../repositories/AnswerRepository';
+import { IUserAnswerService } from '../core/interfaces/services/user/IUser.Answer.Service';
+import { UserAnswerService } from '../services/userService/user.answer.service';
+import { IUserAnswerController } from '../core/interfaces/controllers/user/IUser.Answer.Controller';
+import { UserAnswerController } from '../controllers/userController/user.answer.controller';
 
 const container = new Container();
 
@@ -108,6 +114,7 @@ container.bind<ICoinTransactionRepository>(TYPES.CoinTransactionRepository).to(C
 container.bind<IQuestionRepository>(TYPES.QuestionRepository).to(QuestionRepository);
 container.bind<ITagRepository>(TYPES.TagRepository).to(TagRepository);
 container.bind<IReactionRepository>(TYPES.ReactionRepository).to(ReactionRepository);
+container.bind<IAnswerRepository>(TYPES.AnswerRepository).to(AnswerRepository);
 
 // Services
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService);
@@ -127,6 +134,7 @@ container.bind<IUserTagService>(TYPES.UserTagService).to(UserTagService);
 container.bind<IAdminTagService>(TYPES.AdminTagService).to(AdminTagService);
 container.bind<IUserQuestionService>(TYPES.UserQuestionService).to(UserQuestionService);
 container.bind<IUserNotificationService>(TYPES.UserNotificationService).to(UserNotificationService);
+container.bind<IUserAnswerService>(TYPES.UserAnswerService).to(UserAnswerService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -146,6 +154,8 @@ container.bind<IUserQuestionController>(TYPES.UserQuestionController).to(UserQue
 container.bind<IAdminTagController>(TYPES.AdminTagController).to(AdminTagController);
 container.bind<IUserSocketController>(TYPES.UserSocketController).to(UserSocketController).inSingletonScope();
 container.bind<IUserNotificationController>(TYPES.UserNotificationController).to(UserNotificationController);
+container.bind<IUserAnswerController>(TYPES.UserAnswerController).to(UserAnswerController);
+
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

@@ -17,4 +17,6 @@ const reactionSchema = new Schema<IReaction>({
   timestamps: { createdAt: 'created_at', updatedAt: false }
 });
 
+reactionSchema.index({ entity_id: 1, user_id: 1, entity_type: 1 }, { unique: true });
+
 export const ReactionModel = mongoose.model<IReaction>('Reaction', reactionSchema);

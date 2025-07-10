@@ -119,8 +119,8 @@ export class UserQuestionController implements IUserQuestionController {
         res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_SLUG });
         return;
       }
-      const {question,totalVotes,userReaction} = await this.userQuestionService.getQuestionBySlug(slug,userId);
-      res.status(STATUS_CODES.OK).json({ question, totalVotes, userReaction, message: MESSAGES.FETCHED_ONE_QUESTION });
+      const {question,totalVotes,userReaction,correctAnswer} = await this.userQuestionService.getQuestionBySlug(slug,userId);
+      res.status(STATUS_CODES.OK).json({ question, totalVotes, userReaction,correctAnswer, message: MESSAGES.FETCHED_ONE_QUESTION });
     } catch (error) {
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
       return;
@@ -154,6 +154,41 @@ export class UserQuestionController implements IUserQuestionController {
     } catch (error) {
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
       return;
+    }
+  }
+
+  async reactToQuestion(req: Request, res: Response): Promise<void> {
+    try {
+      const { questionId } = req.params;
+      const { type } = req.body;
+      const userId = req.userId;
+      if (!['upvote', 'devote'].includes(type)) {
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.INVALID_REACTION });
+        return;
+      }
+      if (!userId) {
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.USER_NOT_AUTHENTICATED });
+        return;
+      }
+      await this.userQuestionService.reactToQuestion(questionId, userId, type);
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.REACTION_SAVED });
+    } catch (error) {
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
+    }
+  }
+
+  async removeQuestionReaction(req: Request, res: Response): Promise<void> {
+    try {
+      const { questionId } = req.params;
+      const userId = req.userId;
+      if (!userId) {
+        res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.USER_NOT_AUTHENTICATED });
+        return;
+      }
+      await this.userQuestionService.removeQuestionReaction(questionId, userId);
+      res.status(STATUS_CODES.OK).json({ message: MESSAGES.REACTION_REMOVED });
+    } catch (error) {
+      res.status(STATUS_CODES.BAD_REQUEST).json({ message: (error as Error).message });
     }
   }
 

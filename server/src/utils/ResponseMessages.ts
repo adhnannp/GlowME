@@ -1,4 +1,3 @@
-//massages
 export const MESSAGES = {
 
     ROUTE_NOT_FOUND: 'Route not found',
@@ -135,9 +134,19 @@ export const MESSAGES = {
     FETCHED_QUESTIONS: 'Succcessfully fetched questions',
     FETCHED_ONE_QUESTION: 'Succcessfully fetched one question',
     INVALID_SLUG: 'Invalid Slug',
+    INVALID_QUESTION_ID: 'Invalid question ID',
 
     HAS_UNREAD_NOTIFICATION: 'unread Notification found',
     MARKED_ALL_READ: 'Marked all notification read',
     ALL_NOTIFICATION_FETCHED: 'Fetched all Notifications',
-    NO_NOTIFICATIONS:'No notification available',
+    NO_NOTIFICATIONS: 'No notification available',
+
+    FETCHED_ANSWERS: 'Answers fetched successfully',
+    ANSWER_CREATED: 'Answer created successfully',
+
+    INVALID_REACTION: 'Invalid reaction Provided',
+    REACTION_SAVED: 'User reaction saved',
+    REACTION_REMOVED: 'User reaction removed',
+    INVALID_QUALITY: 'Invalid answer qaulity',
+    QUALITY_UPDATED: 'Answer quality updated'
 };

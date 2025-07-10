@@ -8,5 +8,5 @@ export const baseQuestionForm = z.object({
     return val;
   }, z.array(z.string()).min(1).max(5)),
   isBounty: z.preprocess((val) => val === 'true', z.boolean()),
-  bountyCoins: z.preprocess((val) => Number(val), z.number().min(0)),
+  bountyCoins: z.preprocess((val) => Number(val), z.number().min(11)),
 });

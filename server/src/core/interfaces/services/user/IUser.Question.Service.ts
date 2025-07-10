@@ -10,4 +10,6 @@ export interface IUserQuestionService {
     getQuestionBySlug(slug:string,userId:string):Promise<QuestionWithVotes>
     getSimilarQuestions(queryText: string): Promise<IQuestion[]>;
     getRelatedQuestion(slug:string):Promise<IQuestion[]>;
+     reactToQuestion(questionId: string, userId: string, type: 'upvote' | 'devote'): Promise<void>;
+    removeQuestionReaction(questionId: string, userId: string): Promise<void>;
 }

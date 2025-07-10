@@ -204,9 +204,8 @@ const handleDisconnect = async () => {
                             XP
                           </div>
                         </div>
-                        {/* Coins isn't in the User interface */}
                         <div>
-                          <div className="text-xl">0</div>
+                          <div className="text-xl">{userData.coin_balance}</div>
                           <div className="flex items-center text-yellow-500">
                             <Coins className="w-5 h-5 mr-1" />
                             Coins

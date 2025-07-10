@@ -7,19 +7,23 @@ import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { s3 } from '../../config/s3Client';
 import cloudinary from '../../config/cloudinary';
 import { Readable } from 'stream';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import slugify from 'slugify';
 import { cosineSimilarity, generateEmbedding } from '../../utils/generateEmbedding';
 import IReactionRepository from '../../core/interfaces/repositories/IReactionRepository';
 import { QuestionWithVotes } from '../../core/types/question';
 import logger from '../../utils/logger';
+import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
+import { IAnswerRepository } from '../../core/interfaces/repositories/IAnswerRepository';
 
 @injectable()
 export class UserQuestionService implements IUserQuestionService{
   private s3Client = s3;
   constructor(
     @inject(TYPES.QuestionRepository) private questionRepo: IQuestionRepository,
-    @inject(TYPES.ReactionRepository) private reactionRepo: IReactionRepository,  
+    @inject(TYPES.ReactionRepository) private reactionRepo: IReactionRepository,
+    @inject(TYPES.UserRepository) private userRepo:IUserRepository,
+    @inject(TYPES.AnswerRepository) private answerRepo :IAnswerRepository,
   ) {}
 
   async checkTitleAvailablity(title:string) : Promise<boolean>{
@@ -62,6 +66,18 @@ export class UserQuestionService implements IUserQuestionService{
     const convertedTags = data.tags.map((tag) => new Types.ObjectId(tag));
     const slug = slugify(data.title, { lower: true, strict: true });
     const embedding = await generateEmbedding(`${data.title} ${data.problemDetails}`);
+    const user = await this.userRepo.findById(data.createdBy);
+
+    if (data.isBounty && data.bountyCoins ) {
+      if(!user?.coin_balance || user.coin_balance < data.bountyCoins) {
+        throw new Error("Insufficient balance");
+      }else{
+        await this.userRepo.incrementCoin(user._id as string , -data.bountyCoins)
+        await this.userRepo.incrementXp(user._id as string ,10)
+      }
+    }
+    await this.userRepo.incrementXp(user?._id as string,5)
+    
     await this.questionRepo.create({
       title: data.title,
       slug,
@@ -74,6 +90,7 @@ export class UserQuestionService implements IUserQuestionService{
       tags: convertedTags,
       embedding,
     });
+    return;
   }
 
   async listQuestionsByType(type: string,page: number,limit: number, tagId?:string): Promise<[IQuestion[],number]> {
@@ -90,7 +107,11 @@ export class UserQuestionService implements IUserQuestionService{
     }
     const totalVotes = await this.reactionRepo.getVoteScore(question._id.toString(),'question')
     const userReaction = await this.reactionRepo.UserReaction(userId,question._id.toString(),'question')
-    return {question,totalVotes,userReaction};
+    const correctAnswer = await this.answerRepo.findOne({
+      question_id: question._id,
+      quality: 'correct',
+    });
+    return {question,totalVotes,userReaction,correctAnswer: correctAnswer ?? undefined,};
   }
 
   async getSimilarQuestions(queryText: string): Promise<IQuestion[]> {
@@ -128,6 +149,35 @@ export class UserQuestionService implements IUserQuestionService{
     .sort((a, b) => b.score - a.score)
     .slice(0, 10)
     .map((s) => s.question);
+  }
+
+  async reactToQuestion(questionId: string, userId: string, type: 'upvote' | 'devote'): Promise<void> {
+    if (!mongoose.Types.ObjectId.isValid(questionId)) throw new Error("Invalid question ID");
+    const existingReaction = await this.reactionRepo.findOne({
+      entity_id: questionId,
+      user_id: userId,
+      entity_type: 'question',
+    });
+
+    if (existingReaction) {
+      if (existingReaction.type === type) return;
+      await this.reactionRepo.update((existingReaction._id as  mongoose.Types.ObjectId).toString(), { type });
+    } else {
+      await this.reactionRepo.create({
+        entity_id: new mongoose.Types.ObjectId(questionId),
+        user_id: new mongoose.Types.ObjectId(userId),
+        entity_type: 'question',
+        type,
+      });
+    }
+  }
+
+  async removeQuestionReaction(questionId: string, userId: string): Promise<void> {
+    await this.reactionRepo.deleteOne({
+      entity_id: new mongoose.Types.ObjectId(questionId),
+      user_id: new mongoose.Types.ObjectId(userId),
+      entity_type: 'question',
+    });
   }
 
 }

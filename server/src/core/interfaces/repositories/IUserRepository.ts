@@ -1,7 +1,8 @@
 import { IUser } from '../../../models/User';
+import { BaseRepository } from '../../../repositories/BaseRepository';
 import { SafeUser } from '../../types/SafeUser';
 
-export interface IUserRepository {
+export interface IUserRepository extends BaseRepository<IUser>{
   createUser(user: IUser): Promise<IUser>;
   createGoogleUser(user:Partial<IUser>):Promise<IUser>;
   findUserByEmail(email: string): Promise<IUser| null>;

@@ -14,12 +14,12 @@ export const baseQuestionFormSchema = z.object({
     "Only PDF, TXT, DOC, or DOCX files are allowed"
   ).optional().nullable() ,
   isBounty: z.boolean(),
-  bountyCoins: z.number().min(0).default(0),
+  bountyCoins: z.number().min(11).default(0),
 });
 
 export const questionFormSchema = baseQuestionFormSchema.refine(
   (data) => !data.isBounty || data.bountyCoins >= 10,
-  { message: "Bounty must be at least 10 coins when enabled", path: ["bountyCoins"] }
+  { message: "Bounty must be greater than 10 coins when enabled", path: ["bountyCoins"] }
 );
 
 export type QuestionFormData = z.infer<typeof questionFormSchema>;

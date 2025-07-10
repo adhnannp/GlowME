@@ -7,4 +7,6 @@ export interface IUserQuestionController {
     getOneBySlug(req:Request,res:Response) : Promise<void>;
     findSimilarQuetions(req:Request,res:Response):Promise<void>;
     relatedQuestions(req:Request,res:Response):Promise<void>;
+    reactToQuestion(req: Request, res: Response): Promise<void>;
+    removeQuestionReaction(req: Request, res: Response): Promise<void>;
 }

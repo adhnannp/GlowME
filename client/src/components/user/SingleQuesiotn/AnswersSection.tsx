@@ -1,164 +1,194 @@
-import { useState } from 'react';
-import { ArrowUp, ArrowDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import MDEditor from '@uiw/react-md-editor';
-import '@uiw/react-md-editor/markdown-editor.css';
-
-interface Answer {
-  id: string;
-  content: string;
-  votes: number;
-  isAccepted: boolean;
-  author: {
-    username: string;
-    xp: number;
-  };
-}
+import { useState, useEffect } from 'react';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { AnswerList } from './AnswerList';
+import { AnswerForm } from './AnswerForm';
+import QualityDialog from './QualityDialog';
+import { Answer, createAnswer, fetchAnswersByQuestion, reactToAnswer, removeAnswerReaction, canUserAnswer, updateAnswerQuality } from '@/services/user/user.answer.service';
+import { toast } from 'react-hot-toast';
+import { UserWithBadge } from '@/interfaces/auth.interface';
+import { RootState } from '@/store/store';
+import { useSelector } from 'react-redux';
 
 interface AnswersSectionProps {
   questionId: string;
+  createdBy: UserWithBadge;
 }
 
-export default function AnswersSection({ questionId }: AnswersSectionProps) {
-  const [votes, setVotes] = useState({ answer1: 4, answer2: 1 });
+export default function AnswersSection({ questionId, createdBy }: AnswersSectionProps) {
+  const [answers, setAnswers] = useState<Answer[]>([]);
   const [yourAnswer, setYourAnswer] = useState('');
+  const [canAnswer, setCanAnswer] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalAnswers, setTotalAnswers] = useState(0);
+  const [showQualityDialog, setShowQualityDialog] = useState(false);
+  const [selectedAnswerId, setSelectedAnswerId] = useState<string | null>(null);
+  const [selectedQuality, setSelectedQuality] = useState<'good' | 'correct' | null>(null);
+  const authUser = useSelector((state: RootState) => state.auth.user);
 
-  const handleVote = (answerId: string, direction: 'up' | 'down') => {
-    setVotes((prev) => ({
-      ...prev,
-      [answerId]: direction === 'up' ? prev[answerId as keyof typeof prev] + 1 : prev[answerId as keyof typeof prev] - 1,
-    }));
+  const answersPerPage = 5;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const canAnswerResponse = await canUserAnswer(questionId);
+        setCanAnswer(canAnswerResponse.canAnswer);
+        const answersResponse = await fetchAnswersByQuestion(questionId, page, answersPerPage);
+        setAnswers(answersResponse.answers);
+        setTotalAnswers(answersResponse.total);
+      } catch (error) {
+        toast.error('Failed to load answers');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [questionId, page]);
+
+  const handleVote = async (answerId: string, direction: 'up' | 'down') => {
+    try {
+      const currentAnswer = answers.find((ans) => ans._id === answerId);
+      const reactionType = direction === 'up' ? 'upvote' : 'devote';
+
+      if (currentAnswer?.userReaction === reactionType) {
+        await removeAnswerReaction(answerId);
+        setAnswers((prev) =>
+          prev.map((ans) =>
+            ans._id === answerId
+              ? {
+                  ...ans,
+                  voteScore: ans.voteScore + (direction === 'up' ? -1 : 1),
+                  userReaction: undefined,
+                }
+              : ans
+          )
+        );
+      } else {
+        await reactToAnswer(answerId, { type: reactionType });
+        setAnswers((prev) =>
+          prev.map((ans) =>
+            ans._id === answerId
+              ? {
+                  ...ans,
+                  voteScore:
+                    ans.voteScore +
+                    (direction === 'up' ? 1 : -1) +
+                    (ans.userReaction === 'upvote' ? -1 : ans.userReaction === 'devote' ? 1 : 0),
+                  userReaction: reactionType,
+                }
+              : ans
+          )
+        );
+      }
+      toast.success('Vote recorded successfully');
+    } catch (error) {
+      toast.error('Failed to record vote');
+    }
   };
 
-  const answers: Answer[] = [
-    {
-      id: 'answer1',
-      content: `**As you've marked out**, \`final\` - no other class can extend \`final\`.
-
-**As you've marked again**, \`non-sealed\` - any class can extend \`sealed\`.
-
-When marking a class as \`sealed\` - all directly extending classes the ones after the \`permits\` - keyword have to be marked either as \`final\` - \`sealed\` - or \`non-sealed\`.
-
-Marking a class that extends a \`sealed\` - class as \`sealed\` - opens the same effect as 1. Only classes specified after the \`permits\` - clause are allowed to extend it.
-
-Marking a class that extends a \`sealed\` - class as \`final\` - stops the inheritance hierarchy. The extending class is open sealed by being extended by unknown subclasses itself.
-
-Marking a class that extends a \`sealed\` - class as \`non-sealed\` - without any control - classes. Hence that specifying nothing after \`permits\` - is not possible, so \`sealed\` - cannot replace \`final\`.
-
-### Example Code
-
-\`\`\`java
-public final class Cat implements Animal {
-    @Override
-    public void makeSound() {
-        System.out.println("Meow");
+  const handleSubmitAnswer = async () => {
+    if (!yourAnswer.trim() || yourAnswer.trim().length < 10) return;
+    setLoading(true);
+    try {
+      const response = await createAnswer({
+        question_id: questionId,
+        answer: yourAnswer,
+      });
+      const rawAnswer = response.answer;
+      const enrichedAnswer: Answer = {
+        _id: rawAnswer._id,
+        answer: rawAnswer.answer,
+        quality: rawAnswer.quality ?? 'ordinary',
+        user: authUser!,
+        voteScore: 0,
+        totalReactions: 0,
+        userReaction: undefined,
+        replyCount: 0,
+      };
+      setAnswers((prev) => [...prev, enrichedAnswer]);
+      setTotalAnswers((prev) => prev + 1);
+      setYourAnswer('');
+      setCanAnswer(false);
+      toast.success('Answer posted successfully');
+    } catch (error) {
+      toast.error((error as Error).message);
+    } finally {
+      setLoading(false);
     }
-}
-\`\`\``,
-      votes: votes.answer1,
-      isAccepted: true,
-      author: { username: 'Adham P', xp: 3000 },
-    },
-    {
-      id: 'answer2',
-      content: `**Final and non-sealed classes have some differences:**
+  };
 
-- **Final class**: you can't inherit this class, it's impossible to extend this class to other class as the other hand.
-- **non-sealed class**: it's possible to inherit this class from others.
+  const handleOpenQualityDialog = (answerId: string, newQuality: 'good' | 'correct') => {
+    setSelectedAnswerId(answerId);
+    setSelectedQuality(newQuality);
+    setShowQualityDialog(true);
+  };
 
-For example, this sealed interface which interface may permitted for Cat & Duck class. Note that Cat & Duck must be final, non-sealed, or sealed class.
-`,
-      votes: votes.answer2,
-      isAccepted: false,
-      author: { username: 'Adham P', xp: 3000 },
-    },
-  ];
+  const handleUpdateQuality = async () => {
+    if (!selectedAnswerId || !selectedQuality) return;
+    try {
+      await updateAnswerQuality(selectedAnswerId, { quality: selectedQuality });
+      toast.success('Answer quality updated');
+      setAnswers((prev) =>
+        prev.map((ans) =>
+          ans._id === selectedAnswerId ? { ...ans, quality: selectedQuality } : ans
+        )
+      );
+      setShowQualityDialog(false);
+      setSelectedAnswerId(null);
+      setSelectedQuality(null);
+    } catch (error) {
+      console.error('Error updating quality:', error);
+      toast.error((error as Error).message || 'Failed to update quality');
+    }
+  };
+
+  const handlePrevious = () => {
+    if (page > 1) setPage((prev) => prev - 1);
+  };
+
+  const handleNext = () => {
+    if (page < Math.ceil(totalAnswers / answersPerPage)) setPage((prev) => prev + 1);
+  };
 
   return (
-    <div className="border-t pt-6">
-      <h2 className="text-xl font-semibold mb-4">{answers.length} Answers</h2>
-      {answers.map((answer) => (
-        <div key={answer.id} className="flex gap-4 mb-8 pb-8 border-b">
-          <div className="flex flex-col items-center space-y-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleVote(answer.id, 'up')}
-              className="p-1 hover:bg-gray-100"
-            >
-              <ArrowUp className="w-6 h-6" />
-            </Button>
-            <span className="text-xl font-semibold">{answer.votes}</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleVote(answer.id, 'down')}
-              className="p-1 hover:bg-gray-100"
-            >
-              <ArrowDown className="w-6 h-6" />
-            </Button>
-            {answer.isAccepted && (
-              <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                <span className="text-white text-xs">✓</span>
-              </div>
-            )}
-          </div>
-          <div className="flex-1">
-            <div className="prose max-w-none" data-color-mode="light">
-              <MDEditor.Markdown source={answer.content} style={{ whiteSpace: 'pre-wrap' }} />
-            </div>
-            <div className="flex items-center justify-between mt-4">
-              <div className="flex space-x-4">
-                <Button variant="ghost" size="sm">
-                  Share
-                </Button>
-                <Button variant="ghost" size="sm">
-                  Edit
-                </Button>
-                <Button variant="ghost" size="sm">
-                  Follow
-                </Button>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Avatar className="w-6 h-6">
-                  <AvatarFallback className="bg-blue-500 text-white text-xs">
-                    {answer.author.username.slice(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="text-sm">
-                  <div className="font-medium">{answer.author.username}</div>
-                  <div className="text-gray-500">XP {answer.author.xp}</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      ))}
+    <TooltipProvider>
       <div className="border-t pt-6">
-        <h3 className="text-lg font-semibold mb-4">Your Answer</h3>
-        <div className="mb-4" data-color-mode="light">
-          <MDEditor
-            value={yourAnswer}
-            onChange={(val:string) => setYourAnswer(val || '')}
-            preview="edit"
-            hideToolbar={false}
-            visibleDragBar={false}
-            textareaProps={{
-              placeholder:
-                'Write your answer in Markdown...\n\nYou can use:\n- **bold** and *italic* text\n- `code` blocks\n- Lists and tables\n- Links and images',
-              style: { fontSize: 14, lineHeight: 1.6, minHeight: 200 },
-            }}
+        <AnswerList
+          answers={answers}
+          totalAnswers={totalAnswers}
+          page={page}
+          answersPerPage={answersPerPage}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+          onVote={handleVote}
+          onOpenQualityDialog={handleOpenQualityDialog}
+          loading={loading}
+          createdBy={createdBy}
+        />
+        {canAnswer && (
+          <AnswerForm
+            yourAnswer={yourAnswer}
+            setYourAnswer={setYourAnswer}
+            onSubmit={handleSubmitAnswer}
+            loading={loading}
           />
-        </div>
-        <div className="flex items-center justify-between">
-          <Button className="bg-black hover:bg-gray-700 text-white" disabled={!yourAnswer.trim()}>
-            Post Your Answer
-          </Button>
-          <div className="flex items-center space-x-4 text-sm text-gray-500">
-          </div>
-        </div>
+        )}
+        <QualityDialog
+          open={showQualityDialog}
+          onOpenChange={(open) => {
+            setShowQualityDialog(open);
+            if (!open) {
+              setSelectedAnswerId(null);
+              setSelectedQuality(null);
+            }
+          }}
+          selectedQuality={selectedQuality}
+          onConfirm={handleUpdateQuality}
+          loading={loading}
+        />
       </div>
-    </div>
+    </TooltipProvider>
   );
 }

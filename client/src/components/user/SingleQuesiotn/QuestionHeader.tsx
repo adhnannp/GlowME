@@ -1,14 +1,16 @@
 import { Button } from '@/components/ui/button';
 import { Question } from '@/interfaces/user.questions.interface';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Coins } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { IAnswer } from '@/interfaces/user.answer.interface';
 
 interface QuestionHeaderProps {
   question: Question;
+  correctAnswer:IAnswer | null;
 }
 
-export default function QuestionHeader({ question }: QuestionHeaderProps) {
+export default function QuestionHeader({ question,correctAnswer }: QuestionHeaderProps) {
   const navigate = useNavigate(); 
 
   return (
@@ -63,6 +65,16 @@ export default function QuestionHeader({ question }: QuestionHeaderProps) {
             </Tooltip>
           </TooltipProvider>
         )}
+
+        { !!question.bounty_coin && question.bounty_coin > 0 && (
+          <div className="flex items-center space-x-1 text-yellow-600 font-medium ml-4">
+            <Coins className="w-4 h-4" />
+            <span>
+              {correctAnswer ? 'Bounty Claimed' : `Bounty: ${question.bounty_coin}`}
+            </span>
+          </div>
+        )}
+        
       </div>
       <hr className="border-t border-gray-200" />
     </div>

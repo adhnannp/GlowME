@@ -5,4 +5,6 @@ export interface IBaseRepository<T extends Document> {
     findById(id: string): Promise<T | null>;
     findAll(filter?: FilterQuery<T>): Promise<T[]>;
     update(id: string, data: UpdateQuery<T>): Promise<T | null>;
+    findOne(filter: FilterQuery<T>): Promise<T | null>;
+    deleteOne(filter: FilterQuery<T>): Promise<void>;
 }

@@ -14,6 +14,7 @@ import IUserCoinPlanController from '../core/interfaces/controllers/user/IUser.C
 import { IUserTagController } from '../core/interfaces/controllers/user/IUser.Tag.Controller';
 import { IUserQuestionController } from '../core/interfaces/controllers/user/IUser.Question.Controller';
 import IUserNotificationController from '../core/interfaces/controllers/user/IUser.Notification.Controller';
+import { IUserAnswerController } from '../core/interfaces/controllers/user/IUser.Answer.Controller';
 
 const router = express.Router();
 
@@ -29,6 +30,7 @@ const coinPlanController = container.get<IUserCoinPlanController>(TYPES.UserCoin
 const tagController = container.get<IUserTagController>(TYPES.UserTagController);
 const questionController = container.get<IUserQuestionController>(TYPES.UserQuestionController);
 const notificationController = container.get<IUserNotificationController>(TYPES.UserNotificationController);
+const answerController = container.get<IUserAnswerController>(TYPES.UserAnswerController);
 
 router.post('/register', authController.register.bind(authController));
 router.post('/resend-otp', authController.resendOTP.bind(authController));
@@ -77,6 +79,8 @@ router.get('/questions/get-all',userAuthMiddleware.handle.bind(userAuthMiddlewar
 router.get('/questions/get-one/:slug',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.getOneBySlug.bind(questionController));
 router.post('/questions/find-similar',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.findSimilarQuetions.bind(questionController));
 router.get('/questions/get-related/:id',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.relatedQuestions.bind(questionController));
+router.post('/questions/react/:questionId',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.reactToQuestion.bind(questionController));
+router.delete('/questions/react/:questionId',userAuthMiddleware.handle.bind(userAuthMiddleware),questionController.removeQuestionReaction.bind(questionController));
 
 router.get('/notification/has-unread',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.hasUnreadNotification.bind(notificationController));
 router.get('/notification/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),notificationController.getAllNotification.bind(notificationController));
@@ -84,5 +88,12 @@ router.patch('/notification/mark-all-read',userAuthMiddleware.handle.bind(userAu
 
 router.get('/tag/get-top',userAuthMiddleware.handle.bind(userAuthMiddleware),tagController.getTopTags.bind(tagController));
 router.get('/tag/search-tags',userAuthMiddleware.handle.bind(userAuthMiddleware),tagController.searchTag.bind(tagController));
+
+router.post('/answer/add',userAuthMiddleware.handle.bind(userAuthMiddleware),answerController.createAnswer.bind(answerController));
+router.get('/answer/can-answer/:questionId',userAuthMiddleware.handle.bind(userAuthMiddleware),answerController.canUserAnswer.bind(answerController));
+router.get('/answer/list/:questionId',userAuthMiddleware.handle.bind(userAuthMiddleware),answerController.getAnswersByQuestion.bind(answerController));
+router.post('/answer/react/:answerId',userAuthMiddleware.handle.bind(userAuthMiddleware),answerController.reactToAnswer.bind(answerController));
+router.delete('/answer/react/:answerId',userAuthMiddleware.handle.bind(userAuthMiddleware),answerController.removeAnswerReaction.bind(answerController));
+router.patch('/answer/update-quality/:answerId',userAuthMiddleware.handle.bind(userAuthMiddleware),answerController.updateAnswerQuality.bind(answerController));
 
 export default router;

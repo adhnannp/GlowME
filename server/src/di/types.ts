@@ -10,6 +10,7 @@ export const TYPES = {
     QuestionRepository: Symbol.for('QuestionRepository'),
     TagRepository: Symbol.for('TagRepository'),
     ReactionRepository: Symbol.for('ReactionRepository'),
+    AnswerRepository: Symbol.for('AnswerRepository'),
 
     // Services
     AuthService: Symbol.for('AuthService'),
@@ -29,6 +30,7 @@ export const TYPES = {
     AdminTagService: Symbol.for('AdminTagService'),
     UserQuestionService: Symbol.for('UserQuestionService'),
     UserNotificationService: Symbol.for('UserNotificatonService'),
+    UserAnswerService: Symbol.for('UserAnswerService'),
 
     // Controllers
     AuthController: Symbol.for('AuthController'),
@@ -48,6 +50,7 @@ export const TYPES = {
     UserQuestionController: Symbol.for('UserQuestionController'),
     UserSocketController: Symbol.for('UserSocketController'),
     UserNotificationController: Symbol.for('userNotificationController'),
+    UserAnswerController: Symbol.for('UserAnswerController'),
     
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),

@@ -5,9 +5,15 @@ import { SafeUser } from '../core/types/SafeUser';
 import bcrypt from 'bcrypt';
 import { passwordSchema, usernameSchema } from '../validators/userDataValidation';
 import { FilterQuery } from 'mongoose';
+import { BaseRepository } from './BaseRepository';
 
 @injectable()
-export class UserRepository implements IUserRepository {
+export class UserRepository extends BaseRepository<IUser> implements IUserRepository {
+  
+  constructor() {
+    super(UserModel);
+  }
+
   async createUser(user: IUser): Promise<IUser> {
     const newUser = new UserModel(user);
     return await newUser.save();

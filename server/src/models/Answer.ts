@@ -1,6 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-export type AnswerQuality = 'good' | 'correct' | 'bad' | 'ordinary';
+export type AnswerQuality = 'good' | 'correct' | 'ordinary';
 
 export interface IAnswer extends Document {
   question_id: string | mongoose.Types.ObjectId;
@@ -17,7 +17,7 @@ const answerSchema = new Schema<IAnswer>({
   answer: { type: String, required: true },
   quality: {
     type: String,
-    enum: ['good', 'correct', 'bad', 'ordinary'],
+    enum: ['good', 'correct', 'ordinary'],
     default: 'ordinary'
   },
 }, {

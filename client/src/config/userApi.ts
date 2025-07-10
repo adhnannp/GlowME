@@ -15,9 +15,15 @@ export const USER_API = {
     FETCH_QUESTIONS: '/questions/get-all',
     FETCH_ONE_BY_SLUG:'/questions/get-one',
     RELATED_QUESTIONS:'/questions/get-related',
+    REACT_TO_QUESTION:'/questions/react',
     HAS_UNREAD_NOTIFICATION: '/notification/has-unread',
     MARK_ALL_AS_READ: '/notification/mark-all-read',
     FETCH_NOTIFICATION: '/notification/get-all',
     SEARCH_TAGS: '/tag/search-tags',
-    GET_TOP_TAGS:'/tag/get-top'
+    GET_TOP_TAGS:'/tag/get-top',
+    ADD_ANSWER: '/answer/add',
+    CAN_USER_ANSWER: '/answer/can-answer',
+    LIST_ANSWER: '/answer/list',
+    ANSWER_REACT: '/answer/react',
+    ANSWER_UPDATE_QUALITY: '/answer/update-quality',
 }

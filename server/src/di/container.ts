@@ -100,6 +100,15 @@ import { IUserAnswerService } from '../core/interfaces/services/user/IUser.Answe
 import { UserAnswerService } from '../services/userService/user.answer.service';
 import { IUserAnswerController } from '../core/interfaces/controllers/user/IUser.Answer.Controller';
 import { UserAnswerController } from '../controllers/userController/user.answer.controller';
+import { IOrderRepository } from '../core/interfaces/repositories/IOrderRepository';
+import { OrderRepository } from '../repositories/OrderRepository';
+import { IAddressRepository } from '../core/interfaces/repositories/IAddressRepository';
+import { AddressRepository } from '../repositories/AddressRepository';
+import { RewardRepository } from '../repositories/RewardRepository';
+import { IAdminRewardService } from '../core/interfaces/services/admin/IAdmin.Reward.Service';
+import { AdminRewardService } from '../services/adminService/admin.reward.service';
+import { IAdminRewardController } from '../core/interfaces/controllers/admin/IAdmin.Reward.Controller';
+import { AdminRewardController } from '../controllers/adminController/admin.reward.controller';
 
 const container = new Container();
 
@@ -115,6 +124,9 @@ container.bind<IQuestionRepository>(TYPES.QuestionRepository).to(QuestionReposit
 container.bind<ITagRepository>(TYPES.TagRepository).to(TagRepository);
 container.bind<IReactionRepository>(TYPES.ReactionRepository).to(ReactionRepository);
 container.bind<IAnswerRepository>(TYPES.AnswerRepository).to(AnswerRepository);
+container.bind<IOrderRepository>(TYPES.OrderRepository).to(OrderRepository);
+container.bind<IAddressRepository>(TYPES.AddressRepository).to(AddressRepository);
+container.bind<RewardRepository>(TYPES.RewardRepository).to(RewardRepository);
 
 // Services
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService);
@@ -135,6 +147,7 @@ container.bind<IAdminTagService>(TYPES.AdminTagService).to(AdminTagService);
 container.bind<IUserQuestionService>(TYPES.UserQuestionService).to(UserQuestionService);
 container.bind<IUserNotificationService>(TYPES.UserNotificationService).to(UserNotificationService);
 container.bind<IUserAnswerService>(TYPES.UserAnswerService).to(UserAnswerService);
+container.bind<IAdminRewardService>(TYPES.AdminRewardService).to(AdminRewardService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -155,7 +168,7 @@ container.bind<IAdminTagController>(TYPES.AdminTagController).to(AdminTagControl
 container.bind<IUserSocketController>(TYPES.UserSocketController).to(UserSocketController).inSingletonScope();
 container.bind<IUserNotificationController>(TYPES.UserNotificationController).to(UserNotificationController);
 container.bind<IUserAnswerController>(TYPES.UserAnswerController).to(UserAnswerController);
-
+container.bind<IAdminRewardController>(TYPES.AdminRewardController).to(AdminRewardController)
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

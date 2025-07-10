@@ -11,6 +11,9 @@ export const TYPES = {
     TagRepository: Symbol.for('TagRepository'),
     ReactionRepository: Symbol.for('ReactionRepository'),
     AnswerRepository: Symbol.for('AnswerRepository'),
+    RewardRepository: Symbol.for('RewardRepository'),
+    AddressRepository: Symbol.for('AddressRepository'),
+    OrderRepository: Symbol.for('OrderRepository'),
 
     // Services
     AuthService: Symbol.for('AuthService'),
@@ -31,6 +34,7 @@ export const TYPES = {
     UserQuestionService: Symbol.for('UserQuestionService'),
     UserNotificationService: Symbol.for('UserNotificatonService'),
     UserAnswerService: Symbol.for('UserAnswerService'),
+    AdminRewardService: Symbol.for('AdminRewardService'),
 
     // Controllers
     AuthController: Symbol.for('AuthController'),
@@ -51,7 +55,8 @@ export const TYPES = {
     UserSocketController: Symbol.for('UserSocketController'),
     UserNotificationController: Symbol.for('userNotificationController'),
     UserAnswerController: Symbol.for('UserAnswerController'),
-    
+    AdminRewardController: Symbol.for('AdminRewardController'),
+
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),
     AdminAuthMiddleware: Symbol.for('AdminAuthMiddleware'),

@@ -6,10 +6,11 @@ import { IAdminController } from '../core/interfaces/controllers/admin/IAdminCon
 import { IAdminAuthMiddleware } from '../core/interfaces/middlewares/IAdminAuthMiddleware';
 import { IUsersController } from '../core/interfaces/controllers/admin/IUsersController';
 import { IAdminBadgeController } from '../core/interfaces/controllers/admin/IAdmin.Badge.Controller';
-import { badgeUpload } from '../config/multerConfig';
+import { badgeUpload, reward_Picture } from '../config/multerConfig';
 import IAdminCoinPlanController from '../core/interfaces/controllers/admin/IAdmin.CoinPlan.Controller';
 import IAdminReportController from '../core/interfaces/controllers/admin/IAdmin.report.Controller';
 import { IAdminTagController } from '../core/interfaces/controllers/admin/IAdmin.Tag.Controller';
+import { IAdminRewardController } from '../core/interfaces/controllers/admin/IAdmin.Reward.Controller';
 const router = express.Router();
 
 const adminAuthMiddleware = container.get<IAdminAuthMiddleware>(TYPES.AdminAuthMiddleware);
@@ -20,6 +21,7 @@ const badgeController = container.get<IAdminBadgeController>(TYPES.AdminBadgeCon
 const coinPlanController = container.get<IAdminCoinPlanController>(TYPES.AdminCoinPlanController);
 const reportController = container.get<IAdminReportController>(TYPES.AdminReportController);
 const tagController = container.get<IAdminTagController>(TYPES.AdminTagController);
+const rewardController = container.get<IAdminRewardController>(TYPES.AdminRewardController);
 
 router.post('/login', authController.loginAdmin.bind(authController));
 router.post('/refresh-token', authController.refreshToken.bind(authController));
@@ -53,5 +55,12 @@ router.post('/tags',adminAuthMiddleware.handle.bind(adminAuthMiddleware),tagCont
 router.patch('/tags/:id',adminAuthMiddleware.handle.bind(adminAuthMiddleware),tagController.editTagName.bind(tagController));
 router.patch('/tags/list/:id',adminAuthMiddleware.handle.bind(adminAuthMiddleware),tagController.listTag.bind(tagController));
 router.patch('/tags/unlist/:id',adminAuthMiddleware.handle.bind(adminAuthMiddleware),tagController.unlistTag.bind(tagController));
+
+router.post('/reward/add',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reward_Picture.single('image'),rewardController.createReward.bind(rewardController));
+router.patch('/reward/edit/:rewardId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),reward_Picture.single('image'),rewardController.updateReward.bind(rewardController));
+router.patch('/reward/list/:rewardId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),rewardController.listReward.bind(rewardController));
+router.patch('/reward/unlist/:rewardId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),rewardController.unlistReward.bind(rewardController));
+router.get('/reward/get-all',adminAuthMiddleware.handle.bind(adminAuthMiddleware),rewardController.getAllRewards.bind(rewardController));
+router.get('/reward/get-one/:rewardId',adminAuthMiddleware.handle.bind(adminAuthMiddleware),rewardController.getRewardById.bind(rewardController));
 
 export default router;

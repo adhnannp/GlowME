@@ -4,8 +4,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft, Camera } from "lucide-react"
+import { useParams } from "react-router-dom"
 
-export default function OrderDetailPage({ params }: { params: { orderId: string } }) {
+export default function OrderDetailPage() {
+  const {rewardID} = useParams()
+  console.log(rewardID)
   const handleBack = () => {
     window.location.href = "/orders"
   }
@@ -13,6 +16,7 @@ export default function OrderDetailPage({ params }: { params: { orderId: string 
   return (
       <div className="flex h-screen bg-[#FFF8F0]">
         <Sidebar/>
+        <div className="flex-1 flex flex-col">
           <header className="bg-[#FFF8F0] border-b p-4 flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <Button variant="ghost" size="icon" onClick={handleBack}>
@@ -177,6 +181,7 @@ export default function OrderDetailPage({ params }: { params: { orderId: string 
               </div>
             </div>
           </main>
+        </div>
       </div>
   )
 }

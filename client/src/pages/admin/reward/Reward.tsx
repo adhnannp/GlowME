@@ -117,6 +117,7 @@ export default function RewardDashboard() {
   return (
     <div className="flex h-screen bg-[#FFF8F0]">
       <Sidebar />
+      <div className="flex-1 flex flex-col">
         <header className="bg-[#FFF8F0] border-b p-4 flex items-center justify-between">
           <h1 className="text-xl font-semibold">Reward Management</h1>
           <div className="flex items-center space-x-4">
@@ -176,6 +177,7 @@ export default function RewardDashboard() {
             />
           </div>
         </main>
+      </div>
     </div>
   );
 }

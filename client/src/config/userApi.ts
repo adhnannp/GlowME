@@ -26,4 +26,5 @@ export const USER_API = {
     LIST_ANSWER: '/answer/list',
     ANSWER_REACT: '/answer/react',
     ANSWER_UPDATE_QUALITY: '/answer/update-quality',
+    FETCH_REWARD: '/reward/get-all',
 }

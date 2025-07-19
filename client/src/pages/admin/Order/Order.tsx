@@ -105,6 +105,7 @@ export default function OrdersPage() {
   return (
       <div className="flex h-screen bg-[#FFF8F0]">
         <Sidebar />
+        <div className="flex-1 flex flex-col">
           <header className="bg-[#FFF8F0] border-b p-4 flex items-center justify-between">
             <h1 className="text-xl font-semibold">Order Management</h1>
             <div className="flex items-center space-x-4">
@@ -157,6 +158,7 @@ export default function OrdersPage() {
               </div>
             </div>
           </main>
+        </div>
       </div>
   )
 }

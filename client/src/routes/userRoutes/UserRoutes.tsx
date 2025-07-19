@@ -1,4 +1,4 @@
-import { Routes, Route, /*useLocation*/ } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Login from "@/pages/user/auth/Login";
 import Register from "@/pages/user/auth/Register";
 import Otp from "@/pages/user/auth/Otp";
@@ -17,6 +17,7 @@ import PaymentCancelledPage from "@/pages/user/payment/PaymentCancelled";
 import AskQuestionPage from "@/pages/user/askQuestion/AskQuestion";
 import LandingPage from "@/pages/user/landingPage/LandingPage";
 import SingleQuestionPage from "@/pages/user/singleQuestion/singleQuestion";
+import RewardPage from "@/pages/user/Reward/Reward";
 
 const UserRoutes: React.FC = () => {
 
@@ -34,6 +35,7 @@ const UserRoutes: React.FC = () => {
         <Route path="/payment/success" element={<PaymentSuccessPage/>} />
         <Route path="/payment/cancel" element={<PaymentCancelledPage/>} />
         <Route path="/ask-question" element={<AskQuestionPage/>} />
+        <Route path="/redeem" element={<RewardPage/>} />
       </Route>
 
       <Route element={<PublicRoute />}>

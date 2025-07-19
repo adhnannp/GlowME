@@ -41,7 +41,7 @@ export default function GCoinPage() {
 
         <main className="flex-1 overflow-y-auto p-4">
           <div className="max-w-6xl mx-auto">
-            <HeroSection />
+            <HeroSection currentPage='gcoin'/>
             <RegularCoinsSection />
             <RedeemCodeSection
               redeemCode={redeemCode}

@@ -15,6 +15,7 @@ import { IUserTagController } from '../core/interfaces/controllers/user/IUser.Ta
 import { IUserQuestionController } from '../core/interfaces/controllers/user/IUser.Question.Controller';
 import IUserNotificationController from '../core/interfaces/controllers/user/IUser.Notification.Controller';
 import { IUserAnswerController } from '../core/interfaces/controllers/user/IUser.Answer.Controller';
+import IUserRewardController from '../core/interfaces/controllers/user/IUser.Reward.Controller';
 
 const router = express.Router();
 
@@ -31,6 +32,7 @@ const tagController = container.get<IUserTagController>(TYPES.UserTagController)
 const questionController = container.get<IUserQuestionController>(TYPES.UserQuestionController);
 const notificationController = container.get<IUserNotificationController>(TYPES.UserNotificationController);
 const answerController = container.get<IUserAnswerController>(TYPES.UserAnswerController);
+const rewardController = container.get<IUserRewardController>(TYPES.UserRewardController);
 
 router.post('/register', authController.register.bind(authController));
 router.post('/resend-otp', authController.resendOTP.bind(authController));
@@ -96,4 +98,6 @@ router.post('/answer/react/:answerId',userAuthMiddleware.handle.bind(userAuthMid
 router.delete('/answer/react/:answerId',userAuthMiddleware.handle.bind(userAuthMiddleware),answerController.removeAnswerReaction.bind(answerController));
 router.patch('/answer/update-quality/:answerId',userAuthMiddleware.handle.bind(userAuthMiddleware),answerController.updateAnswerQuality.bind(answerController));
 
-export default router;
+router.get('/reward/get-all',userAuthMiddleware.handle.bind(userAuthMiddleware),rewardController.getAll.bind(rewardController));
+
+export default router; 

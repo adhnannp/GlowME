@@ -109,6 +109,10 @@ import { IAdminRewardService } from '../core/interfaces/services/admin/IAdmin.Re
 import { AdminRewardService } from '../services/adminService/admin.reward.service';
 import { IAdminRewardController } from '../core/interfaces/controllers/admin/IAdmin.Reward.Controller';
 import { AdminRewardController } from '../controllers/adminController/admin.reward.controller';
+import { IUserRewardService } from '../core/interfaces/services/user/IUser.Reward.Service';
+import { UserRewardService } from '../services/userService/user.reward.service';
+import { UserRewardController } from '../controllers/userController/user.reward.controller';
+import IUserRewardController from '../core/interfaces/controllers/user/IUser.Reward.Controller';
 
 const container = new Container();
 
@@ -148,6 +152,7 @@ container.bind<IUserQuestionService>(TYPES.UserQuestionService).to(UserQuestionS
 container.bind<IUserNotificationService>(TYPES.UserNotificationService).to(UserNotificationService);
 container.bind<IUserAnswerService>(TYPES.UserAnswerService).to(UserAnswerService);
 container.bind<IAdminRewardService>(TYPES.AdminRewardService).to(AdminRewardService);
+container.bind<IUserRewardService>(TYPES.UserRewardService).to(UserRewardService)
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -168,7 +173,8 @@ container.bind<IAdminTagController>(TYPES.AdminTagController).to(AdminTagControl
 container.bind<IUserSocketController>(TYPES.UserSocketController).to(UserSocketController).inSingletonScope();
 container.bind<IUserNotificationController>(TYPES.UserNotificationController).to(UserNotificationController);
 container.bind<IUserAnswerController>(TYPES.UserAnswerController).to(UserAnswerController);
-container.bind<IAdminRewardController>(TYPES.AdminRewardController).to(AdminRewardController)
+container.bind<IAdminRewardController>(TYPES.AdminRewardController).to(AdminRewardController);
+container.bind<IUserRewardController>(TYPES.UserRewardController).to(UserRewardController)
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

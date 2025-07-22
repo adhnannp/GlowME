@@ -113,6 +113,8 @@ import { IUserRewardService } from '../core/interfaces/services/user/IUser.Rewar
 import { UserRewardService } from '../services/userService/user.reward.service';
 import { UserRewardController } from '../controllers/userController/user.reward.controller';
 import IUserRewardController from '../core/interfaces/controllers/user/IUser.Reward.Controller';
+import { IUserAddressService } from '../core/interfaces/services/user/IUser.Address.Service';
+import { UserAddressService } from '../services/userService/user.address.service';
 
 const container = new Container();
 
@@ -152,7 +154,8 @@ container.bind<IUserQuestionService>(TYPES.UserQuestionService).to(UserQuestionS
 container.bind<IUserNotificationService>(TYPES.UserNotificationService).to(UserNotificationService);
 container.bind<IUserAnswerService>(TYPES.UserAnswerService).to(UserAnswerService);
 container.bind<IAdminRewardService>(TYPES.AdminRewardService).to(AdminRewardService);
-container.bind<IUserRewardService>(TYPES.UserRewardService).to(UserRewardService)
+container.bind<IUserRewardService>(TYPES.UserRewardService).to(UserRewardService);
+container.bind<IUserAddressService>(TYPES.UserAddressService).to(UserAddressService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);

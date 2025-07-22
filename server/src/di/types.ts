@@ -36,6 +36,7 @@ export const TYPES = {
     UserAnswerService: Symbol.for('UserAnswerService'),
     AdminRewardService: Symbol.for('AdminRewardService'),
     UserRewardService: Symbol.for('UserRewardService'),
+    UserAddressService: Symbol.for('UserAddressService'),
 
     // Controllers
     AuthController: Symbol.for('AuthController'),
@@ -58,6 +59,7 @@ export const TYPES = {
     UserAnswerController: Symbol.for('UserAnswerController'),
     AdminRewardController: Symbol.for('AdminRewardController'),
     UserRewardController: Symbol.for('UserRewardController'),
+    UserAddressController: Symbol.for('UserAddressController'),
 
     //middleware
     UserAuthMiddleware: Symbol.for('UserAuthMiddleware'),

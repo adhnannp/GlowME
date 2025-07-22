@@ -14,7 +14,7 @@ export interface IOrder extends Document {
   user_id: Types.ObjectId;
   reward_id: Types.ObjectId;
   address: IRawAddress;
-  status?: 'pending' | 'shipped' | 'delivered' | 'canceled' | 'returned';
+  status?: 'pending' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
   created_at?: Date;
   edited_at?: Date;
 }

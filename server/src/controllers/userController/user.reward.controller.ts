@@ -13,25 +13,31 @@ export class UserRewardController implements IUserRewardController{
     ) {}
 
     async getAll(req:Request,res:Response): Promise<void> {
-        try {
-            const rewards = await this.rewardService.getAllRewards();
-            res.status(STATUS_CODES.OK).json({rewards, message:MESSAGES.REWARD_FETCHED});
-            return;
-        } catch (error) {
-            res.status(STATUS_CODES.BAD_REQUEST).json({message:(error as Error).message});
-            return;
-        }
+        const rewards = await this.rewardService.getAllRewards();
+        res.status(STATUS_CODES.OK).json({rewards, message:MESSAGES.REWARD_FETCHED});
+        return;
     }
 
     async getOne(req:Request,res:Response): Promise<void> {
-        try {
-            const rewardId = req.params.id
-            const reward = await this.rewardService.findOneById(rewardId);
-            res.status(STATUS_CODES.OK).json({reward, message:MESSAGES.REWARD_FETCHED});
-            return;
-        } catch (error) {
-            res.status(STATUS_CODES.BAD_REQUEST).json({message:(error as Error).message});
+        const rewardId = req.params.id
+        const reward = await this.rewardService.findOneById(rewardId);
+        res.status(STATUS_CODES.OK).json({reward, message:MESSAGES.REWARD_FETCHED});
+        return;
+    }
+
+    async buyOneReward(req:Request,res:Response):Promise<void>{
+        const {rewardId,addressId} = req.body;
+        const userId = req.userId;
+        if(!rewardId || addressId){
+            res.status(STATUS_CODES.BAD_REQUEST).json({message:MESSAGES.INVALID_CREDENTIALS});
             return;
         }
+        if(!userId){
+            res.status(STATUS_CODES.UNAUTHORIZED).json({message:MESSAGES.USER_NOT_AUTHENTICATED});
+            return;
+        }
+        const newOrder = this.rewardService.buyOne(rewardId,addressId,userId);
+        res.status(STATUS_CODES.OK).json({newOrder, message:MESSAGES.ORDER_CREATED});
+        return;
     }
 }

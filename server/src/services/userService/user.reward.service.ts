@@ -8,6 +8,8 @@ import { IOrderRepository } from '../../core/interfaces/repositories/IOrderRepos
 import { IUserRepository } from '../../core/interfaces/repositories/IUserRepository';
 import { IOrder } from '../../models/Order';
 import { Types } from 'mongoose';
+import { HttpError } from '../../utils/HttpError';
+import { STATUS_CODES } from '../../utils/HTTPStatusCode';
 
 @injectable()
 export class UserRewardService implements IUserRewardService {
@@ -19,20 +21,32 @@ export class UserRewardService implements IUserRewardService {
     ) {}
 
     async findOneById(id: string): Promise<IReward | null> {
-        return this.rewardRepo.findById(id);
+        return await this.rewardRepo.findOne({_id:id,isListed:true});
     }
 
     async getAllRewards(): Promise<IReward[]> {
-        return this.rewardRepo.findAll({isListed:true});
+        return await this.rewardRepo.findAll({isListed:true});
     }
 
     async buyOne(rewardId:string,addressId:string,userId:string):Promise<IOrder>{
         const reward = await this.findOneById(rewardId);
-        if(!reward) throw new Error('reward cannot be found');
+        if(!reward){
+            throw new HttpError(STATUS_CODES.BAD_REQUEST,'reward cannot be found');
+        } 
         const address = await this.addressRepo.findById(addressId);
-        if(!address) throw new Error('Address cannot be found');
+        if(!address){
+            throw new HttpError(STATUS_CODES.BAD_REQUEST,'Address cannot be found');
+        } 
         const user = await this.userRepo.findById(userId);
-        if(!user) throw new Error('user cannot be found');
+        if(!user) {
+            throw new HttpError(STATUS_CODES.BAD_REQUEST,'user cannot be found');
+        }
+        if( user.coin_balance && user.coin_balance < reward.coin){
+            throw new HttpError(STATUS_CODES.BAD_REQUEST,'Insufficient Coin Balanance');
+        }
+        if( user.xp && user.xp < 100){
+            throw new HttpError(STATUS_CODES.BAD_REQUEST,'XP must be greater than 100');
+        }
         const addressDetails = {
             name: address.name,
             phone: address.phone,

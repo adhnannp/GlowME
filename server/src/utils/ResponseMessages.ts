@@ -160,4 +160,10 @@ export const MESSAGES = {
     REWARD_UNLISTED: 'Reward unlisted successfully',
     REWARD_FETCHED: 'Reward fetched successfully',
 
+    ORDER_CREATED: 'Order created successfully',
+
+    ADDRESS_CREATED: 'Address Created Successfully',
+    ADDRESS_UPDATED: 'Address updated Successfully',
+    ADDRESS_ID_REQUIRED: 'Address Id Required',
+
 };

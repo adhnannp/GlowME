@@ -1,4 +1,15 @@
 import { Schema, model, Document, Types } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
+
+export type OrderStatus =
+  | 'pending'
+  | 'packed'
+  | 'shipped'
+  | 'delivered'
+  | 'canceled'
+  | 'return_requested'
+  | 'return_rejected'
+  | 'returned';
 
 interface IRawAddress {
   name: string;
@@ -11,10 +22,11 @@ interface IRawAddress {
 }
 
 export interface IOrder extends Document {
+  orderId?: string;
   user_id: Types.ObjectId;
   reward_id: Types.ObjectId;
   address: IRawAddress;
-  status?: 'pending' | 'shipped' | 'delivered' | 'cancelled' | 'returned';
+  status?: OrderStatus
   created_at?: Date;
   edited_at?: Date;
 }
@@ -24,7 +36,7 @@ const RawAddressSchema = new Schema<IRawAddress>(
     name: { type: String, required: true },
     phone: { type: String, required: true },
     pincode: { type: String, required: true },
-    landmark: { type: String, required:false},
+    landmark: { type: String, required: false },
     state: { type: String, required: false },
     country: { type: String, required: true },
     address: { type: String, required: true },
@@ -34,12 +46,22 @@ const RawAddressSchema = new Schema<IRawAddress>(
 
 const OrderSchema = new Schema<IOrder>(
   {
+    orderId: { type: String, required: false, unique: true },
     user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     reward_id: { type: Schema.Types.ObjectId, ref: 'Reward', required: true },
     address: { type: RawAddressSchema, required: true },
     status: {
       type: String,
-      enum: ['pending', 'shipped', 'delivered', 'canceled', 'returned'],
+      enum: [
+        'pending',
+        'packed',
+        'shipped',
+        'delivered',
+        'canceled',
+        'return_requested',
+        'return_rejected',
+        'returned',
+      ],
       default: 'pending',
     },
   },
@@ -47,5 +69,13 @@ const OrderSchema = new Schema<IOrder>(
     timestamps: { createdAt: 'created_at', updatedAt: 'edited_at' }
   }
 );
+
+
+OrderSchema.pre<IOrder>('save', function (next) {
+  if (!this.orderId) {
+    this.orderId = `ORD-${uuidv4()}`;
+  }
+  next();
+});
 
 export const Order = model<IOrder>('Order', OrderSchema);

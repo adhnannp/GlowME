@@ -115,6 +115,12 @@ import { UserRewardController } from '../controllers/userController/user.reward.
 import IUserRewardController from '../core/interfaces/controllers/user/IUser.Reward.Controller';
 import { IUserAddressService } from '../core/interfaces/services/user/IUser.Address.Service';
 import { UserAddressService } from '../services/userService/user.address.service';
+import IUserAddressController from '../core/interfaces/controllers/user/IUser.Address.Controller';
+import { UserAddressController } from '../controllers/userController/user.address.controller';
+import { IUserOrderService } from '../core/interfaces/services/user/IUser.Order.Service';
+import { UserOrderService } from '../services/userService/user.order.service';
+import IUserOrderController from '../core/interfaces/controllers/user/IUser.Order.Controller';
+import { UserOrderController } from '../controllers/userController/user.order.controller';
 
 const container = new Container();
 
@@ -156,6 +162,7 @@ container.bind<IUserAnswerService>(TYPES.UserAnswerService).to(UserAnswerService
 container.bind<IAdminRewardService>(TYPES.AdminRewardService).to(AdminRewardService);
 container.bind<IUserRewardService>(TYPES.UserRewardService).to(UserRewardService);
 container.bind<IUserAddressService>(TYPES.UserAddressService).to(UserAddressService);
+container.bind<IUserOrderService>(TYPES.UserOrderService).to(UserOrderService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -178,6 +185,8 @@ container.bind<IUserNotificationController>(TYPES.UserNotificationController).to
 container.bind<IUserAnswerController>(TYPES.UserAnswerController).to(UserAnswerController);
 container.bind<IAdminRewardController>(TYPES.AdminRewardController).to(AdminRewardController);
 container.bind<IUserRewardController>(TYPES.UserRewardController).to(UserRewardController)
+container.bind<IUserAddressController>(TYPES.UserAddressController).to(UserAddressController);
+container.bind<IUserOrderController>(TYPES.UserOrderController).to(UserOrderController);
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

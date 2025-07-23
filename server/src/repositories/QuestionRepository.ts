@@ -4,7 +4,6 @@ import { QuestionModel } from '../models/Question';
 import { IQuestion } from '../models/Question';
 import { BaseRepository } from './BaseRepository';
 import mongoose, { RootFilterQuery, Types } from 'mongoose';
-import { Filter } from "mongodb";
 
 @injectable()
 export class QuestionRepository extends BaseRepository<IQuestion> implements IQuestionRepository{

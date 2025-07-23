@@ -10,6 +10,9 @@ const rewardController = container_reward.get<IUserRewardController>(TYPES_rewar
 const userAuthMiddleware_reward = container_reward.get<IUserAuthMiddleware_reward>(TYPES_reward.UserAuthMiddleware);
 const auth_reward = userAuthMiddleware_reward.handle.bind(userAuthMiddleware_reward);
 
-rewardRouter.get('/reward/get-all', auth_reward, rewardController.getAll.bind(rewardController));
+rewardRouter.get('/reward/get-one', auth_reward, rewardController.getOne.bind(rewardController));
+rewardRouter.route('/reward')
+    .get(auth_reward, rewardController.getAll.bind(rewardController))
+    .post(auth_reward, rewardController.buyOneReward.bind(rewardController));
 
 export default rewardRouter;

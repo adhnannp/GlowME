@@ -6,10 +6,7 @@ export type OrderStatus =
   | 'packed'
   | 'shipped'
   | 'delivered'
-  | 'canceled'
-  | 'return_requested'
-  | 'return_rejected'
-  | 'returned';
+  | 'canceled';
 
 interface IRawAddress {
   name: string;
@@ -25,6 +22,7 @@ export interface IOrder extends Document {
   orderId?: string;
   user_id: Types.ObjectId;
   reward_id: Types.ObjectId;
+  paid_coin: number;
   address: IRawAddress;
   status?: OrderStatus
   created_at?: Date;
@@ -49,6 +47,7 @@ const OrderSchema = new Schema<IOrder>(
     orderId: { type: String, required: false, unique: true },
     user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
     reward_id: { type: Schema.Types.ObjectId, ref: 'Reward', required: true },
+    paid_coin: { type:Number , required:true },
     address: { type: RawAddressSchema, required: true },
     status: {
       type: String,
@@ -58,9 +57,6 @@ const OrderSchema = new Schema<IOrder>(
         'shipped',
         'delivered',
         'canceled',
-        'return_requested',
-        'return_rejected',
-        'returned',
       ],
       default: 'pending',
     },

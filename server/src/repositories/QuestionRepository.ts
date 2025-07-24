@@ -11,8 +11,10 @@ export class QuestionRepository extends BaseRepository<IQuestion> implements IQu
         super(QuestionModel);
     }
 
-    async getQuestionByTitle(title:string): Promise<IQuestion | null>{
-        return await QuestionModel.findOne({title});
+    async getQuestionByTitle(title: string): Promise<IQuestion | null> {
+      return await QuestionModel.findOne({
+        title: { $regex: new RegExp(`^${title}$`, 'i') }
+      });
     }
 
     async getQuestionBySlug(slug:string):Promise<IQuestion | null >{

@@ -1,6 +1,11 @@
 // src/components/ReportUserModal.tsx
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
 import api from "@/utils/axios";
@@ -16,13 +21,23 @@ interface ReportUserModalProps {
 const ReportUserModal = ({ open, onClose, userId }: ReportUserModalProps) => {
   const [reportReason, setReportReason] = useState<string>("");
   const [loading, setLoading] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
-  const handleReportSubmit = async () => {
+  const handleClose = () => {
+    setReportReason("");
+    setConfirmOpen(false);
+    onClose();
+  };
+
+  const handleInitialReportClick = () => {
     if (!reportReason) {
       toast.error("Please select a report reason");
       return;
     }
+    setConfirmOpen(true);
+  };
 
+  const handleReportSubmit = async () => {
     setLoading(true);
     try {
       await api.post("/report", {
@@ -32,71 +47,89 @@ const ReportUserModal = ({ open, onClose, userId }: ReportUserModalProps) => {
       toast.success("User reported successfully");
       handleClose();
     } catch (error) {
-      const err = handleApiError(error as AxiosError | Error, 'Failed to report user');
+      const err = handleApiError(error as AxiosError | Error, "Failed to report user");
       toast.error(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleClose = () => {
-    setReportReason("");
-    onClose();
-  };
-
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Report User</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          <p>Are you sure you want to report this user?</p>
+    <>
+      {/* Main Report Modal */}
+      <Dialog open={open} onOpenChange={handleClose}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Report User</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>Why are you reporting this user?</p>
 
-          {/* Radio buttons for report reasons */}
-          <div className="space-y-2">
-            {[
-              "Harassment",
-              "Sexual Abuse",
-              "Content Violation",
-              "Spam",
-              "Impersonation",
-              "Other",
-            ].map((reason) => (
-              <label key={reason} className="flex items-center">
-                <input
-                  type="radio"
-                  name="reportReason"
-                  value={reason}
-                  checked={reportReason === reason}
-                  onChange={(e) => setReportReason(e.target.value)}
-                  className="mr-2"
-                  disabled={loading}
-                />
-                {reason}
-              </label>
-            ))}
-          </div>
+            {/* Report reason radio buttons */}
+            <div className="space-y-2">
+              {[
+                "Harassment",
+                "Sexual Abuse",
+                "Content Violation",
+                "Spam",
+                "Impersonation",
+              ].map((reason) => (
+                <label key={reason} className="flex items-center">
+                  <input
+                    type="radio"
+                    name="reportReason"
+                    value={reason}
+                    checked={reportReason === reason}
+                    onChange={(e) => setReportReason(e.target.value)}
+                    className="mr-2"
+                    disabled={loading}
+                  />
+                  {reason}
+                </label>
+              ))}
+            </div>
 
-          <div className="flex justify-end space-x-2">
-            <Button
-              variant="outline"
-              onClick={handleClose}
-              disabled={loading}
-            >
-              Cancel
-            </Button>
-            <Button
-              className="bg-red-500 hover:bg-red-600 disabled:bg-red-300"
-              onClick={handleReportSubmit}
-              disabled={!reportReason || loading}
-            >
-              {loading ? "Reporting..." : "Report"}
-            </Button>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={handleClose} disabled={loading}>
+                Cancel
+              </Button>
+              <Button
+                className="bg-red-500 hover:bg-red-600 disabled:bg-red-300"
+                onClick={handleInitialReportClick}
+                disabled={!reportReason || loading}
+              >
+                Report
+              </Button>
+            </div>
           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Confirm Report</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>Are you sure you want to report this user for <strong>{reportReason}</strong>?</p>
+
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setConfirmOpen(false)} disabled={loading}>
+                Cancel
+              </Button>
+              <Button
+                className="bg-red-500 hover:bg-red-600 disabled:bg-red-300"
+                onClick={handleReportSubmit}
+                disabled={loading}
+              >
+                {loading ? "Reporting..." : "Yes, Report"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

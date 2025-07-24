@@ -10,6 +10,7 @@ import notificationRoutes from './userRoute/user.notification.route';
 import tagRoutes from './userRoute/user.tag.route';
 import answerRoutes from './userRoute/user.answer.route';
 import rewardRoutes from './userRoute/user.reward.route';
+import orderRoutes from './userRoute/user.order.route';
 
 const router_root = Router_root();
 
@@ -23,5 +24,6 @@ router_root.use(notificationRoutes);
 router_root.use(tagRoutes);
 router_root.use(answerRoutes);
 router_root.use(rewardRoutes);
+router_root.use(orderRoutes);
 
 export default router_root;

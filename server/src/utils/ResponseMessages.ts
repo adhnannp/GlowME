@@ -38,6 +38,7 @@ export const MESSAGES = {
     NO_USERS_FOUND: 'No users found',
     USER_NOT_AUTHENTICATED: 'User not authenticated',
     INVALID_PAGE_NUMBER: 'Invalid page number',
+    INVALID_PAGE_LIMIT: 'Invalid page limit',
     USER_FETCHED: 'user fetched successsfully',
     USERS_FETCHED:'users fetched successsfully',
     LOGIN_FAILED: 'Login Failed',
@@ -161,6 +162,11 @@ export const MESSAGES = {
     REWARD_FETCHED: 'Reward fetched successfully',
 
     ORDER_CREATED: 'Order created successfully',
+    USER_ORDER_FETCHED: 'User order fetched successfully',
+    ADMIN_ORDER_FETCHED: 'Successfully Fetched all orders',
+    ORDER_FETCHED: 'Order fetched successfully',
+    ORDER_CANCELED: 'Order canceled successfully',
+    ORDER_STATUS_UPDATED: 'Order status updated successfully',
 
     ADDRESS_CREATED: 'Address Created Successfully',
     ADDRESS_UPDATED: 'Address updated Successfully',

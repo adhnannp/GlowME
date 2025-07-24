@@ -121,6 +121,10 @@ import { IUserOrderService } from '../core/interfaces/services/user/IUser.Order.
 import { UserOrderService } from '../services/userService/user.order.service';
 import IUserOrderController from '../core/interfaces/controllers/user/IUser.Order.Controller';
 import { UserOrderController } from '../controllers/userController/user.order.controller';
+import { IAdminOrderService } from '../core/interfaces/services/admin/IAdmin.Order.Service';
+import { AmdinOrderService } from '../services/adminService/admin.order.service';
+import { IAdminOrderController } from '../core/interfaces/controllers/admin/IAdmin.Order.Controller';
+import { AdminOrderController } from '../controllers/adminController/admin.order.controller';
 
 const container = new Container();
 
@@ -163,6 +167,7 @@ container.bind<IAdminRewardService>(TYPES.AdminRewardService).to(AdminRewardServ
 container.bind<IUserRewardService>(TYPES.UserRewardService).to(UserRewardService);
 container.bind<IUserAddressService>(TYPES.UserAddressService).to(UserAddressService);
 container.bind<IUserOrderService>(TYPES.UserOrderService).to(UserOrderService);
+container.bind<IAdminOrderService>(TYPES.AdminOrderService).to(AmdinOrderService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -187,6 +192,7 @@ container.bind<IAdminRewardController>(TYPES.AdminRewardController).to(AdminRewa
 container.bind<IUserRewardController>(TYPES.UserRewardController).to(UserRewardController)
 container.bind<IUserAddressController>(TYPES.UserAddressController).to(UserAddressController);
 container.bind<IUserOrderController>(TYPES.UserOrderController).to(UserOrderController);
+container.bind<IAdminOrderController>(TYPES.AdminOrderController).to(AdminOrderController);
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

@@ -7,6 +7,7 @@ import coinRoutes from './adminRoute/admin.coinPlan.route';
 import reportRoutes from './adminRoute/admin.report.route';
 import tagRoutes from './adminRoute/admin.tag.route';
 import rewardRoutes from './adminRoute/admin.reward.route';
+import adminOrderRoutes from './adminRoute/admin.order.route';
 
 const router_root = Router_root();
 
@@ -17,5 +18,6 @@ router_root.use(coinRoutes);
 router_root.use(reportRoutes);
 router_root.use(tagRoutes);
 router_root.use(rewardRoutes);
+router_root.use(adminOrderRoutes);
 
 export default router_root;

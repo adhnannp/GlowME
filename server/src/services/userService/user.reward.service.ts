@@ -47,6 +47,7 @@ export class UserRewardService implements IUserRewardService {
         if( user.xp && user.xp < 100){
             throw new HttpError(STATUS_CODES.BAD_REQUEST,'XP must be greater than 100');
         }
+        await this.userRepo.incrementCoin(user._id as string,-reward.coin)
         const addressDetails = {
             name: address.name,
             phone: address.phone,
@@ -60,6 +61,7 @@ export class UserRewardService implements IUserRewardService {
             user_id:user._id as Types.ObjectId,
             reward_id: reward._id as Types.ObjectId,
             address: addressDetails,
+            paid_coin:reward.coin,
         }
         const order = await this.orderRepo.create(orderDetails)
         return order;

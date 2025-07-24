@@ -28,10 +28,7 @@ export class UserQuestionService implements IUserQuestionService{
 
   async checkTitleAvailablity(title:string) : Promise<boolean>{
     const question = await this.questionRepo.getQuestionByTitle(title);
-    if(!question){
-        return true;
-    }
-    return false;
+    return !question
   }
 
   async uploadToCloudinary(file: Express.Multer.File): Promise<string> {

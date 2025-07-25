@@ -3,6 +3,7 @@ import container from '../../di/container';
 import { TYPES } from '../../di/types';
 import { IUserAuthMiddleware } from '../../core/interfaces/middlewares/IUserAuthMiddleware';
 import IUserAddressController from '../../core/interfaces/controllers/user/IUser.Address.Controller';
+import asyncHandler from 'express-async-handler';
 
 const addressRouter = Router_address();
 
@@ -11,8 +12,8 @@ const userAuthMiddleware_address = container.get<IUserAuthMiddleware>(TYPES.User
 const auth_address = userAuthMiddleware_address.handle.bind(userAuthMiddleware_address);
 
 addressRouter.route('/address')
-    .get(auth_address, addressController.getAll.bind(addressController))
-    .post(auth_address, addressController.create.bind(addressController))
-    .put(auth_address, addressController.update.bind(addressController));
+    .get(auth_address, asyncHandler(addressController.getAll.bind(addressController)))
+    .post(auth_address, asyncHandler(addressController.create.bind(addressController)))
+    .put(auth_address, asyncHandler(addressController.update.bind(addressController)));
 
 export default addressRouter;

@@ -7,6 +7,7 @@ import { setRefreshTokens } from '../../utils/setRefreshToken';
 import dotenv from 'dotenv';
 import { STATUS_CODES } from '../../utils/HTTPStatusCode';
 import { MESSAGES } from '../../utils/ResponseMessages';
+import logger from '../../utils/logger';
 
 dotenv.config();
 
@@ -55,6 +56,7 @@ export class GoogleAuthController implements IGoogleAuthController {
       `);      
     } catch (err) {
       const error = err as Error;
+      logger.error(error)
       next(error.message);
     }
   }

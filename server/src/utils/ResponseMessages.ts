@@ -171,5 +171,6 @@ export const MESSAGES = {
     ADDRESS_CREATED: 'Address Created Successfully',
     ADDRESS_UPDATED: 'Address updated Successfully',
     ADDRESS_ID_REQUIRED: 'Address Id Required',
+    ADDRESS_FETCHED: 'Address Fetched successfully',
 
 };

@@ -26,5 +26,11 @@ export const USER_API = {
     LIST_ANSWER: '/answer/list',
     ANSWER_REACT: '/answer/react',
     ANSWER_UPDATE_QUALITY: '/answer/update-quality',
-    FETCH_REWARD: '/reward/get-all',
+    FETCH_REWARD: '/reward',
+    FETCH_ONE_REWARD: '/reward/get-one',
+    BUY_REWARD: '/reward',
+    FETCH_ORDERS: '/order/get-all',
+    FETCH_ORDER_BY_ID: '/order/:orderId',
+    CANCEL_ORDER: '/order/:orderId',
+    ADDRESS: '/address',
 }

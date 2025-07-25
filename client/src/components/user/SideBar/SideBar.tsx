@@ -209,7 +209,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarExpanded, activePage, setSideb
                 GCoin
               </Link>
               <Link
-                to="/view-order"
+                to="/order"
                 className="flex items-center px-4 py-2 text-sm text-black hover:bg-gray-100"
                 onClick={() => setShowMoreMenu(false)}
               >

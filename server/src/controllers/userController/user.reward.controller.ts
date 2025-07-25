@@ -19,8 +19,9 @@ export class UserRewardController implements IUserRewardController{
     }
 
     async getOne(req:Request,res:Response): Promise<void> {
-        const rewardId = req.params.id
-        const reward = await this.rewardService.findOneById(rewardId);
+        const rewardId = req.query.id
+        const reward = await this.rewardService.findOneById(rewardId as string);
+        console.log(reward);
         res.status(STATUS_CODES.OK).json({reward, message:MESSAGES.REWARD_FETCHED});
         return;
     }
@@ -28,7 +29,7 @@ export class UserRewardController implements IUserRewardController{
     async buyOneReward(req:Request,res:Response):Promise<void>{
         const {rewardId,addressId} = req.body;
         const userId = req.userId;
-        if(!rewardId || addressId){
+        if(!rewardId || !addressId){
             res.status(STATUS_CODES.BAD_REQUEST).json({message:MESSAGES.INVALID_CREDENTIALS});
             return;
         }
@@ -36,7 +37,7 @@ export class UserRewardController implements IUserRewardController{
             res.status(STATUS_CODES.UNAUTHORIZED).json({message:MESSAGES.USER_NOT_AUTHENTICATED});
             return;
         }
-        const newOrder = this.rewardService.buyOne(rewardId,addressId,userId);
+        const newOrder = await this.rewardService.buyOne(rewardId,addressId,userId);
         res.status(STATUS_CODES.OK).json({newOrder, message:MESSAGES.ORDER_CREATED});
         return;
     }

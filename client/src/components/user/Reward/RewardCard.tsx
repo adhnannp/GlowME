@@ -1,4 +1,5 @@
 import { Coins, Gift } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface CoinCardProps {
   name: string;
@@ -8,9 +9,9 @@ interface CoinCardProps {
 }
 
 export default function RewardCard({ id, name, image, coins }: CoinCardProps) {
-
+  const navigate = useNavigate();
   const handleBuyClick = async () => {
-      console.log(id)
+      navigate(`/redeem/${id}`)
   };
 
   return (

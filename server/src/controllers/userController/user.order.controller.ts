@@ -29,7 +29,7 @@ export class UserOrderController implements IUserOrderController{
             return;
         }
         const orders = await this.orderService.getUserOrders(userId, page, limit);
-        res.status(STATUS_CODES.OK).json({orders,message:MESSAGES.USER_ORDER_FETCHED});
+        res.status(STATUS_CODES.OK).json({...orders,message:MESSAGES.USER_ORDER_FETCHED});
     }
 
     async getOne(req: Request, res: Response): Promise<void> {

@@ -19,7 +19,7 @@ export class UserAddressController implements IUserAddressController {
       return;
     }
     const address = await this.addressService.getAllAddress(userId);
-    res.status(STATUS_CODES.OK).json({ address, message: MESSAGES.REWARD_FETCHED });
+    res.status(STATUS_CODES.OK).json({ address, message: MESSAGES.ADDRESS_FETCHED });
   }
 
   async create(req: Request, res: Response): Promise<void> {
@@ -35,12 +35,12 @@ export class UserAddressController implements IUserAddressController {
 
 
   async update(req: Request, res: Response): Promise<void> {
-    const { id } = req.params;
+    const { id } = req.query;
     if (!id) {
       res.status(STATUS_CODES.BAD_REQUEST).json({ message: MESSAGES.ADDRESS_ID_REQUIRED });
       return;
     }
-    const address = await this.addressService.updateAddress(id, req.body);
+    const address = await this.addressService.updateAddress(id.toString(), req.body);
     res.status(STATUS_CODES.OK).json({ address, message: MESSAGES.ADDRESS_UPDATED });
   }
   

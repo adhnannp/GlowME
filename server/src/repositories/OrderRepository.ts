@@ -40,7 +40,7 @@ export class OrderRepository extends BaseRepository<IOrder> implements IOrderRep
   }
 
   async getOneOrder(orderId: string): Promise<IOrder | null> {
-    return Order.findOne({ orderId }).exec();
+    return Order.findOne({ orderId }).populate('reward_id').exec();
   }
 
   async updateStatus(orderId: string, status: OrderStatus): Promise<IOrder | null> {

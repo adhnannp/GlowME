@@ -24,7 +24,7 @@ export class AdminOrderController implements IAdminOrderController {
             return;
         }
         const result = await this.orderService.getAllOrders(page, limit);
-        res.status(STATUS_CODES.OK).json({orders:result,message:MESSAGES.ADMIN_ORDER_FETCHED});
+        res.status(STATUS_CODES.OK).json({...result,message:MESSAGES.ADMIN_ORDER_FETCHED});
     }
 
     async changeStatus(req: Request, res: Response): Promise<void> {

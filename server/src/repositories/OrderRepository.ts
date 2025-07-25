@@ -43,6 +43,18 @@ export class OrderRepository extends BaseRepository<IOrder> implements IOrderRep
     return Order.findOne({ orderId }).populate('reward_id').exec();
   }
 
+  async getAdminOneOrder(orderId: string): Promise<IOrder | null> {
+    return Order.findOne({ orderId })
+      .populate({
+        path: 'reward_id',
+      })
+      .populate({
+        path: 'user_id',
+        select: '-password',
+      })
+      .exec();
+  }
+
   async updateStatus(orderId: string, status: OrderStatus): Promise<IOrder | null> {
     return await Order.findOneAndUpdate({ orderId }, { status }, { new: true }).exec();
   }

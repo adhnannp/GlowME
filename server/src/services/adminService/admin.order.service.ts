@@ -13,7 +13,7 @@ export class AmdinOrderService implements IAdminOrderService{
     ){}
 
     async getOnebyId(id:string): Promise<IOrder | null>{
-        return await this.orderRepo.findById(id);
+        return await this.orderRepo.getAdminOneOrder(id);
     }
 
     async getAllOrders(page:number = 1, limit:number = 10):Promise<{ orders: IOrder[]; total: number; page: number; limit: number }> {

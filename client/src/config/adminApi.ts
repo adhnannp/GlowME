@@ -21,4 +21,6 @@ export const ADMIN_API = {
     REWARD_UNLIST: '/admin/reward/unlist',
     REWARD_GET_ALL: '/admin/reward/get-all',
     REWARD_GET_ONE: '/admin/reward/get-one',
+    GET_ORDERS: "/admin/order",
+    GET_ORDER: "/admin/order",
 }

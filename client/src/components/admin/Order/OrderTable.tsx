@@ -1,23 +1,19 @@
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Coins } from "lucide-react";
 
 interface Order {
-  id: string
-  user: {
-    name: string
-    email: string
-    avatar?: string
-  }
-  orderId: string
-  product: string
-  orderedDate: string
-  status: "pending" | "delivered" | "returned" | "shipped"
+  id: string;
+  orderId: string;
+  productImage?: string;
+  orderedDate: string;
+  coins:number
+  status: "pending" | "delivered" | "returned" | "shipped";
 }
 
 interface OrdersTableProps {
-  orders: Order[]
-  onViewOrder: (orderId: string) => void
+  orders: Order[];
+  onViewOrder: (orderId: string) => void;
 }
 
 const statusColors = {
@@ -25,7 +21,7 @@ const statusColors = {
   delivered: "bg-green-100 text-green-800",
   returned: "bg-red-100 text-red-800",
   shipped: "bg-blue-100 text-blue-800",
-}
+};
 
 export function OrdersTable({ orders, onViewOrder }: OrdersTableProps) {
   return (
@@ -33,12 +29,9 @@ export function OrdersTable({ orders, onViewOrder }: OrdersTableProps) {
       <table className="w-full">
         <thead className="bg-gray-50">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Ordered Date
-            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Coins</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ordered Date</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
           </tr>
@@ -46,20 +39,13 @@ export function OrdersTable({ orders, onViewOrder }: OrdersTableProps) {
         <tbody className="bg-white divide-y divide-gray-200">
           {orders.map((order) => (
             <tr key={order.id} className="hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{order.orderId}</td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="flex items-center">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={order.user.avatar || "/placeholder.svg"} />
-                    <AvatarFallback>{order.user.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">{order.user.name}</div>
-                    <div className="text-sm text-gray-500">{order.user.email}</div>
-                  </div>
+                <div className="flex items-center text-sm text-gray-900">
+                  <Coins className="h-4 w-4 text-yellow-500 mr-1" />
+                  {order.coins ?? 0}
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{order.orderId}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{order.product}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.orderedDate}</td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <Badge className={statusColors[order.status]}>
@@ -79,5 +65,5 @@ export function OrdersTable({ orders, onViewOrder }: OrdersTableProps) {
         </tbody>
       </table>
     </div>
-  )
+  );
 }

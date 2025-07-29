@@ -4,12 +4,12 @@ import { IOrderWithProduct } from "@/interfaces/user.order.interface";
 import IOrder from "@/interfaces/user.order.interface";
 import OrderTable from "./orderTable";
 import AddressModal from "./addressModal";
-import ProductModal from "./productModal"; // ✅ import
+import ProductModal from "./productModal";
 
 export default function OrdersSection() {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<IOrder | null>(null);
-  const [selectedProductOrder, setSelectedProductOrder] = useState<IOrderWithProduct | null>(null); // ✅ new state
+  const [selectedProductOrder, setSelectedProductOrder] = useState<IOrderWithProduct | null>(null);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [total, setTotal] = useState(0);

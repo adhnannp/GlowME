@@ -2,19 +2,8 @@ import api from "@/utils/axios";
 import { ADMIN_API } from "@/config/adminApi";
 import { AxiosError } from "axios";
 import { handleApiError } from "@/utils/errorHandling";
-import { User } from "@/interfaces/auth.interface";
-import { Reward } from "@/components/admin/Reward/RewardTable";
 import IOrder from "@/interfaces/user.order.interface";
 
-export interface Order {
-  _id: string;
-  orderId: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  user_id:User
-  reward_id:Reward
-}
 
 export interface PaginatedOrders {
   orders: IOrder[];
@@ -40,7 +29,7 @@ export const fetchOrders = async (
   }
 };
 
-export const fetchOneOrder = async (orderId: string): Promise<Order> => {
+export const fetchOneOrder = async (orderId: string): Promise<IOrder> => {
   try {
     const response = await api.get(`${ADMIN_API.GET_ORDER}/${orderId}`);
     return response.data.order;

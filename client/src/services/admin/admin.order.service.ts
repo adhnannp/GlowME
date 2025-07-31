@@ -2,7 +2,7 @@ import api from "@/utils/axios";
 import { ADMIN_API } from "@/config/adminApi";
 import { AxiosError } from "axios";
 import { handleApiError } from "@/utils/errorHandling";
-import IOrder from "@/interfaces/user.order.interface";
+import IOrder, { IOrderFull } from "@/interfaces/user.order.interface";
 
 
 export interface PaginatedOrders {
@@ -29,7 +29,7 @@ export const fetchOrders = async (
   }
 };
 
-export const fetchOneOrder = async (orderId: string): Promise<IOrder> => {
+export const fetchOneOrder = async (orderId: string): Promise<IOrderFull> => {
   try {
     const response = await api.get(`${ADMIN_API.GET_ORDER}/${orderId}`);
     return response.data.order;

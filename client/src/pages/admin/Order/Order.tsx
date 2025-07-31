@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, RefreshCcw } from "lucide-react";
 import { OrdersTable } from "@/components/admin/Order/OrderTable";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -27,34 +27,34 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadOrders = async () => {
-      setLoading(true);
-      try {
-        const response: PaginatedOrders = await fetchOrders(currentPage, itemsPerPage);
-        const mappedOrders: TableOrder[] = response.orders.map((order: ApiOrder) => ({
-          id: order._id,
-          orderId: order.orderId,
-          coins:order.paid_coin,
-          orderedDate: new Date(order.created_at).toLocaleDateString("en-US", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          }),
-          status: order.status as "pending" | "delivered" | "returned" | "shipped",
-        }));
-        setOrders(mappedOrders);
-        setTotalPages(Math.ceil(response.total / response.limit));
-        setTotalItems(response.total);
-        setCurrentPage(response.page);
-      } catch (err) {
-        setError("Failed to load orders");
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const loadOrders = async () => {
+    setLoading(true);
+    try {
+      const response: PaginatedOrders = await fetchOrders(currentPage, itemsPerPage);
+      const mappedOrders: TableOrder[] = response.orders.map((order: ApiOrder) => ({
+        id: order._id,
+        orderId: order.orderId,
+        coins:order.paid_coin,
+        orderedDate: new Date(order.created_at).toLocaleDateString("en-US", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        }),
+        status: order.status as "pending" | "delivered" | "returned" | "shipped",
+      }));
+      setOrders(mappedOrders);
+      setTotalPages(Math.ceil(response.total / response.limit));
+      setTotalItems(response.total);
+      setCurrentPage(response.page);
+    } catch (err) {
+      setError("Failed to load orders");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     loadOrders();
   }, [currentPage, filter, itemsPerPage]);
 
@@ -62,6 +62,11 @@ export default function OrdersPage() {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  const handleRefresh = () => {
+    setFilter("ALL");
+    loadOrders();
   };
 
   const handleViewOrder = (orderId: string) => {
@@ -89,21 +94,27 @@ export default function OrdersPage() {
                   All the orders which are placed by different customers are showing below with order no.
                 </p>
               </div>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="text-orange-500 border-orange-500 bg-transparent">
-                    {filter} <ChevronDown className="ml-2 h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem onClick={() => setFilter("ALL")}>ALL</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setFilter("PENDING")}>PENDING</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setFilter("DELIVERED")}>DELIVERED</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setFilter("SHIPPED")}>SHIPPED</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setFilter("RETURNED")}>RETURNED</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="flex gap-2 items-center">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="text-orange-500 border-orange-500 bg-transparent">
+                      {filter} <ChevronDown className="ml-2 h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem onClick={() => setFilter("ALL")}>ALL</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilter("PENDING")}>PENDING</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilter("DELIVERED")}>DELIVERED</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilter("SHIPPED")}>SHIPPED</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setFilter("CANCELED")}>CANCELED</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <Button variant="outline" className="text-orange-500 border-orange-500 bg-transparent" onClick={handleRefresh}>
+                  <RefreshCcw/>Refresh
+                </Button>
+              </div>
             </div>
+
             <div className="rounded-lg border overflow-hidden">
               {loading ? (
                 <div className="p-6 text-center">Loading...</div>

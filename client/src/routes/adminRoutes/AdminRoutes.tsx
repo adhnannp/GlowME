@@ -29,7 +29,7 @@ const AdminRoutes:React.FC = () => {
         <Route path="/tags" element={<TagDashboard />} />
         <Route path="/rewards" element={<RewardDashboard />} />
         <Route path="/orders" element={<OrdersPage />} />
-        <Route path="/orders/:rewardID" element={<OrderDetailPage />} />
+        <Route path="/orders/:OrderId" element={<OrderDetailPage />} />
 
       </Route>
     </Routes>

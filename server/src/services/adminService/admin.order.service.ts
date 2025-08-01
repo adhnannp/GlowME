@@ -21,7 +21,7 @@ export class AmdinOrderService implements IAdminOrderService{
     }
 
     async changeStatus(orderId: string, newStatus: OrderStatus): Promise<IOrder | null> {
-        const order = await this.orderRepo.findById(orderId);
+        const order = await this.orderRepo.findOne({orderId});
         if (!order) {
             throw new HttpError(STATUS_CODES.BAD_REQUEST, 'Order not found');
         }

@@ -15,11 +15,12 @@ export interface PaginatedOrders {
 
 export const fetchOrders = async (
   page = 1,
-  limit = 10
+  limit = 10,
+  filter:string
 ): Promise<PaginatedOrders> => {
   try {
     const response = await api.get(ADMIN_API.GET_ORDERS, {
-      params: { page, limit },
+      params: { page, limit, filter },
     });
     return response.data;
   } catch (err) {

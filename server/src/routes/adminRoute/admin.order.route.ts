@@ -3,6 +3,7 @@ import container from '../../di/container';
 import { TYPES } from '../../di/types';
 import { IAdminOrderController } from '../../core/interfaces/controllers/admin/IAdmin.Order.Controller';
 import { IAdminAuthMiddleware } from '../../core/interfaces/middlewares/IAdminAuthMiddleware';
+import expressAsyncHandler from 'express-async-handler';
 
 const adminOrderRoutes = Router_adminOrder();
 
@@ -12,11 +13,11 @@ const authAdmin = adminAuthMiddleware.handle.bind(adminAuthMiddleware);
 
 adminOrderRoutes
   .route('/order')
-  .get(authAdmin, adminOrderController.getAll.bind(adminOrderController))
+  .get(authAdmin, expressAsyncHandler(adminOrderController.getAll.bind(adminOrderController)))
 
 adminOrderRoutes
   .route('/order/:orderId')
-  .patch(authAdmin, adminOrderController.changeStatus.bind(adminOrderController))
-  .get(authAdmin, adminOrderController.getOne.bind(adminOrderController))
+  .patch(authAdmin, expressAsyncHandler(adminOrderController.changeStatus.bind(adminOrderController)))
+  .get(authAdmin, expressAsyncHandler(adminOrderController.getOne.bind(adminOrderController)))
 
 export default adminOrderRoutes;

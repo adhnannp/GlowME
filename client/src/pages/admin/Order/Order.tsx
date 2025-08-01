@@ -7,19 +7,11 @@ import Sidebar from "@/components/admin/SideBar/Sidebar";
 import UserHeader from "@/components/admin/users/UserHeader";
 import Pagination from "@/components/admin/users/Pagination";
 import { fetchOrders, PaginatedOrders } from "@/services/admin/admin.order.service";
-import ApiOrder from "@/interfaces/user.order.interface";
-
-interface TableOrder {
-  id: string;
-  orderId: string;
-  orderedDate: string;
-  coins:number;
-  status: "pending" | "delivered" | "returned" | "shipped";
-}
+import IOrder from "@/interfaces/user.order.interface";
 
 export default function OrdersPage() {
   const [filter, setFilter] = useState("ALL");
-  const [orders, setOrders] = useState<TableOrder[]>([]);
+  const [orders, setOrders] = useState<IOrder[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
@@ -30,18 +22,8 @@ export default function OrdersPage() {
   const loadOrders = async () => {
     setLoading(true);
     try {
-      const response: PaginatedOrders = await fetchOrders(currentPage, itemsPerPage);
-      const mappedOrders: TableOrder[] = response.orders.map((order: ApiOrder) => ({
-        id: order._id,
-        orderId: order.orderId,
-        coins:order.paid_coin,
-        orderedDate: new Date(order.created_at).toLocaleDateString("en-US", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        }),
-        status: order.status as "pending" | "delivered" | "returned" | "shipped",
-      }));
+      const response: PaginatedOrders = await fetchOrders(currentPage, itemsPerPage,filter);
+      const mappedOrders = response.orders
       setOrders(mappedOrders);
       setTotalPages(Math.ceil(response.total / response.limit));
       setTotalItems(response.total);
@@ -65,15 +47,19 @@ export default function OrdersPage() {
   };
 
   const handleRefresh = () => {
-    setFilter("ALL");
+    setFilter("all");
     loadOrders();
   };
+
+  const handleFilterChange = (status: string) => {
+    setCurrentPage(1);
+    setFilter(status);
+  };
+
 
   const handleViewOrder = (orderId: string) => {
     window.location.href = `/admin/orders/${orderId}`;
   };
-
-  const filteredOrders = filter === "ALL" ? orders : orders.filter((order) => order.status.toUpperCase() === filter);
 
   return (
     <div className="flex h-screen bg-[#FFF8F0]">
@@ -98,15 +84,16 @@ export default function OrdersPage() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="text-orange-500 border-orange-500 bg-transparent">
-                      {filter} <ChevronDown className="ml-2 h-4 w-4" />
+                      {filter.toLocaleUpperCase()} <ChevronDown className="ml-2 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
-                    <DropdownMenuItem onClick={() => setFilter("ALL")}>ALL</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("PENDING")}>PENDING</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("DELIVERED")}>DELIVERED</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("SHIPPED")}>SHIPPED</DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setFilter("CANCELED")}>CANCELED</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleFilterChange("all")}>ALL</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleFilterChange("pending")}>PENDING</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleFilterChange("packed")}>PACKED</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleFilterChange("delivered")}>DELIVERED</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleFilterChange("shipped")}>SHIPPED</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleFilterChange("canceled")}>CANCELED</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <Button variant="outline" className="text-orange-500 border-orange-500 bg-transparent" onClick={handleRefresh}>
@@ -119,9 +106,9 @@ export default function OrdersPage() {
               {loading ? (
                 <div className="p-6 text-center">Loading...</div>
               ) : error ? (
-                <div className="p-6 text-center text-red-500">{error}</div>
+                <div className="p-6 text-center text-red-500">No Order Found</div>
               ) : (
-                <OrdersTable orders={filteredOrders} onViewOrder={handleViewOrder} />
+                <OrdersTable orders={orders} setOrders={setOrders} onViewOrder={handleViewOrder} />
               )}
             </div>
             <Pagination

@@ -11,6 +11,8 @@ export interface IRawAddress {
   address: string;
 }
 
+export type OrderStatus = "pending" | "delivered" | "canceled" | "shipped" | 'packed' ;
+
 export default interface IOrder {
   _id:string;
   orderId: string;
@@ -18,7 +20,7 @@ export default interface IOrder {
   reward_id: string;
   paid_coin: number;
   address: IRawAddress;
-  status: string;
+  status: OrderStatus;
   created_at: Date;
   edited_at: Date;
 }
@@ -42,7 +44,7 @@ export interface IOrderFull{
   reward_id: Reward;
   paid_coin: number;
   address: IRawAddress;
-  status: string;
+  status: OrderStatus;
   created_at: Date;
   edited_at: Date;
 }

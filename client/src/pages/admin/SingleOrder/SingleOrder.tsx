@@ -58,6 +58,7 @@ export default function OrderDetailPage() {
       return {
         received: "N/A",
         pending: "N/A",
+        packed: "N/A",
         shipped: "N/A",
         delivered: "N/A",
         canceled: "N/A",
@@ -77,7 +78,8 @@ export default function OrderDetailPage() {
       };
     }
     const pending = new Date(received.getTime() + 24 * 60 * 60 * 1000);
-    const shipped = new Date(pending.getTime() + 2 * 24 * 60 * 60 * 1000);
+    const packed = new Date(pending.getTime() + 3 * 60 * 60 * 1000);
+    const shipped = new Date(packed.getTime() + 2 * 24 * 60 * 60 * 1000);
     const delivered = new Date(shipped.getTime() + 1 * 24 * 60 * 60 * 1000);
     return {
       received: formatDate(received),
@@ -88,6 +90,12 @@ export default function OrderDetailPage() {
         status === "delivered"
           ? formatDate(pending)
           : "N/A",
+      packed:
+        status === "packed" ||
+        status === "shipped" ||
+        status === "delivered"
+          ? formatDate(packed)
+          : "N/A",    
       shipped:
         status === "shipped" || status === "delivered"
           ? formatDate(shipped)
@@ -205,7 +213,7 @@ export default function OrderDetailPage() {
                         className={`w-4 h-4 rounded-full mb-2 ${
                           timeline.pending !== "N/A"
                             ? "bg-white"
-                            : "bg-gray-300"
+                            : "border"
                         }`}
                       ></div>
                       <div className="text-center">
@@ -225,6 +233,34 @@ export default function OrderDetailPage() {
                     </div>
                     <div
                       className={`flex-1 h-0.5 mx-4 ${
+                        timeline.packed !== "N/A" ? "bg-white" : "bg-gray-300"
+                      }`}
+                    ></div>
+                    <div className="flex flex-col items-center">
+                      <div
+                        className={`w-4 h-4 rounded-full mb-2 ${
+                          timeline.packed !== "N/A"
+                            ? "bg-white"
+                            : "border"
+                        }`}
+                      ></div>
+                      <div className="text-center">
+                        <div
+                          className={`font-medium ${
+                            timeline.packed !== "N/A"
+                              ? "text-white"
+                              : "text-gray-300"
+                          }`}
+                        >
+                          Packed
+                        </div>
+                        <div className="text-sm opacity-90">
+                          {timeline.packed}
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      className={`flex-1 h-0.5 mx-4 ${
                         timeline.shipped !== "N/A" ? "bg-white" : "bg-gray-300"
                       }`}
                     ></div>
@@ -233,7 +269,7 @@ export default function OrderDetailPage() {
                         className={`w-4 h-4 rounded-full mb-2 ${
                           timeline.shipped !== "N/A"
                             ? "bg-white"
-                            : "bg-gray-300"
+                            : "border"
                         }`}
                       ></div>
                       <div className="text-center">
@@ -263,7 +299,7 @@ export default function OrderDetailPage() {
                         className={`w-4 h-4 rounded-full mb-2 ${
                           timeline.delivered !== "N/A"
                             ? "bg-white"
-                            : "bg-gray-300"
+                            : "border"
                         }`}
                       ></div>
                       <div className="text-center">

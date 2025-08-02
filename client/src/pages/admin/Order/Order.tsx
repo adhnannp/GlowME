@@ -2,15 +2,22 @@ import { useState, useEffect } from "react";
 import { ChevronDown, RefreshCcw } from "lucide-react";
 import { OrdersTable } from "@/components/admin/Order/OrderTable";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import Sidebar from "@/components/admin/SideBar/Sidebar";
 import UserHeader from "@/components/admin/users/UserHeader";
 import Pagination from "@/components/admin/users/Pagination";
-import { fetchOrders, PaginatedOrders } from "@/services/admin/admin.order.service";
-import IOrder from "@/interfaces/user.order.interface";
+import { fetchOrders, PaginatedOrders, changeOrderStatus } from "@/services/admin/admin.order.service";
+import IOrder, { OrderStatus } from "@/interfaces/user.order.interface";
+import toast from "react-hot-toast";
+import SearchBar from "@/components/admin/users/SearchBar";
 
 export default function OrdersPage() {
-  const [filter, setFilter] = useState("ALL");
+  const [filter, setFilter] = useState<string>("all");
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -18,13 +25,13 @@ export default function OrdersPage() {
   const [itemsPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
 
   const loadOrders = async () => {
     setLoading(true);
     try {
-      const response: PaginatedOrders = await fetchOrders(currentPage, itemsPerPage,filter);
-      const mappedOrders = response.orders
-      setOrders(mappedOrders);
+      const response: PaginatedOrders = await fetchOrders(currentPage, itemsPerPage, filter);
+      setOrders(response.orders);
       setTotalPages(Math.ceil(response.total / response.limit));
       setTotalItems(response.total);
       setCurrentPage(response.page);
@@ -48,17 +55,38 @@ export default function OrdersPage() {
 
   const handleRefresh = () => {
     setFilter("all");
+    setCurrentPage(1);
     loadOrders();
   };
 
   const handleFilterChange = (status: string) => {
     setCurrentPage(1);
-    setFilter(status);
+    setFilter(status.toLowerCase());
   };
-
 
   const handleViewOrder = (orderId: string) => {
     window.location.href = `/admin/orders/${orderId}`;
+  };
+
+  const handleStatusChange = async (orderId: string, newStatus: OrderStatus) => {
+    setLoading(true);
+    try {
+      console.time("changeOrderStatus");
+      const updatedOrder = await changeOrderStatus(orderId, newStatus);
+      console.timeEnd("changeOrderStatus");
+      setOrders((prevOrders) => {
+        const index = prevOrders.findIndex((order) => order.orderId === orderId);
+        if (index === -1) return prevOrders;
+        const newOrders = [...prevOrders];
+        newOrders[index] = { ...newOrders[index], status: updatedOrder.status };
+        return newOrders;
+      });
+      toast.success(`Order status changed to ${updatedOrder.status.toUpperCase()}`);
+    } catch (error) {
+      toast.error((error as Error).message || "Failed to update status");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -68,6 +96,7 @@ export default function OrdersPage() {
         <header className="bg-[#FFF8F0] border-b p-4 flex items-center justify-between">
           <h1 className="text-xl font-semibold">Order Management</h1>
           <div className="flex items-center space-x-4">
+            <SearchBar value={searchTerm} onChange={setSearchTerm} />
             <UserHeader />
           </div>
         </header>
@@ -77,14 +106,14 @@ export default function OrdersPage() {
               <div>
                 <h2 className="text-xl font-semibold">Customer Orders</h2>
                 <p className="text-gray-500 text-sm mt-1">
-                  All the orders which are placed by different customers are showing below with order no.
+                  All the orders which are placed by different customers are shown below with order no.
                 </p>
               </div>
               <div className="flex gap-2 items-center">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" className="text-orange-500 border-orange-500 bg-transparent">
-                      {filter.toLocaleUpperCase()} <ChevronDown className="ml-2 h-4 w-4" />
+                      {filter.toUpperCase()} <ChevronDown className="ml-2 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
@@ -96,8 +125,12 @@ export default function OrdersPage() {
                     <DropdownMenuItem onClick={() => handleFilterChange("canceled")}>CANCELED</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Button variant="outline" className="text-orange-500 border-orange-500 bg-transparent" onClick={handleRefresh}>
-                  <RefreshCcw/>Refresh
+                <Button
+                  variant="outline"
+                  className="text-orange-500 border-orange-500 bg-transparent"
+                  onClick={handleRefresh}
+                >
+                  <RefreshCcw className="mr-2 h-4 w-4" /> Refresh
                 </Button>
               </div>
             </div>
@@ -108,7 +141,12 @@ export default function OrdersPage() {
               ) : error ? (
                 <div className="p-6 text-center text-red-500">No Order Found</div>
               ) : (
-                <OrdersTable orders={orders} setOrders={setOrders} onViewOrder={handleViewOrder} />
+                <OrdersTable
+                  orders={orders}
+                  onViewOrder={handleViewOrder}
+                  onStatusChange={handleStatusChange}
+                  loading={loading}
+                />
               )}
             </div>
             <Pagination

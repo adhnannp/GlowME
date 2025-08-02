@@ -38,6 +38,7 @@ export const MESSAGES = {
     NO_USERS_FOUND: 'No users found',
     USER_NOT_AUTHENTICATED: 'User not authenticated',
     INVALID_PAGE_NUMBER: 'Invalid page number',
+    INVALID_PAGE_LIMIT: 'Invalid page limit',
     USER_FETCHED: 'user fetched successsfully',
     USERS_FETCHED:'users fetched successsfully',
     LOGIN_FAILED: 'Login Failed',
@@ -148,5 +149,28 @@ export const MESSAGES = {
     REACTION_SAVED: 'User reaction saved',
     REACTION_REMOVED: 'User reaction removed',
     INVALID_QUALITY: 'Invalid answer qaulity',
-    QUALITY_UPDATED: 'Answer quality updated'
+    QUALITY_UPDATED: 'Answer quality updated',
+
+    REWARD_FIELD_REQUIRED: 'Reward field data missing',
+    COIN_NON_NEGATIVE: 'Coin must be non Negetive',
+    REWARD_CREATED: 'Reward created Successfully',
+    REWARD_ID_REQUIRED: 'Reward ID required',
+    VALID_COIN: 'Coin must be a valid Number',
+    REWARD_UPDATED: 'Reward Updated successfully',
+    REWARD_LISTED: 'Reward listed succcessfully',
+    REWARD_UNLISTED: 'Reward unlisted successfully',
+    REWARD_FETCHED: 'Reward fetched successfully',
+
+    ORDER_CREATED: 'Order created successfully',
+    USER_ORDER_FETCHED: 'User order fetched successfully',
+    ADMIN_ORDER_FETCHED: 'Successfully Fetched all orders',
+    ORDER_FETCHED: 'Order fetched successfully',
+    ORDER_CANCELED: 'Order canceled successfully',
+    ORDER_STATUS_UPDATED: 'Order status updated successfully',
+
+    ADDRESS_CREATED: 'Address Created Successfully',
+    ADDRESS_UPDATED: 'Address updated Successfully',
+    ADDRESS_ID_REQUIRED: 'Address Id Required',
+    ADDRESS_FETCHED: 'Address Fetched successfully',
+
 };

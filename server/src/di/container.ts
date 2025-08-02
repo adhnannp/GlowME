@@ -100,6 +100,31 @@ import { IUserAnswerService } from '../core/interfaces/services/user/IUser.Answe
 import { UserAnswerService } from '../services/userService/user.answer.service';
 import { IUserAnswerController } from '../core/interfaces/controllers/user/IUser.Answer.Controller';
 import { UserAnswerController } from '../controllers/userController/user.answer.controller';
+import { IOrderRepository } from '../core/interfaces/repositories/IOrderRepository';
+import { OrderRepository } from '../repositories/OrderRepository';
+import { IAddressRepository } from '../core/interfaces/repositories/IAddressRepository';
+import { AddressRepository } from '../repositories/AddressRepository';
+import { RewardRepository } from '../repositories/RewardRepository';
+import { IAdminRewardService } from '../core/interfaces/services/admin/IAdmin.Reward.Service';
+import { AdminRewardService } from '../services/adminService/admin.reward.service';
+import { IAdminRewardController } from '../core/interfaces/controllers/admin/IAdmin.Reward.Controller';
+import { AdminRewardController } from '../controllers/adminController/admin.reward.controller';
+import { IUserRewardService } from '../core/interfaces/services/user/IUser.Reward.Service';
+import { UserRewardService } from '../services/userService/user.reward.service';
+import { UserRewardController } from '../controllers/userController/user.reward.controller';
+import IUserRewardController from '../core/interfaces/controllers/user/IUser.Reward.Controller';
+import { IUserAddressService } from '../core/interfaces/services/user/IUser.Address.Service';
+import { UserAddressService } from '../services/userService/user.address.service';
+import IUserAddressController from '../core/interfaces/controllers/user/IUser.Address.Controller';
+import { UserAddressController } from '../controllers/userController/user.address.controller';
+import { IUserOrderService } from '../core/interfaces/services/user/IUser.Order.Service';
+import { UserOrderService } from '../services/userService/user.order.service';
+import IUserOrderController from '../core/interfaces/controllers/user/IUser.Order.Controller';
+import { UserOrderController } from '../controllers/userController/user.order.controller';
+import { IAdminOrderService } from '../core/interfaces/services/admin/IAdmin.Order.Service';
+import { AmdinOrderService } from '../services/adminService/admin.order.service';
+import { IAdminOrderController } from '../core/interfaces/controllers/admin/IAdmin.Order.Controller';
+import { AdminOrderController } from '../controllers/adminController/admin.order.controller';
 
 const container = new Container();
 
@@ -115,6 +140,9 @@ container.bind<IQuestionRepository>(TYPES.QuestionRepository).to(QuestionReposit
 container.bind<ITagRepository>(TYPES.TagRepository).to(TagRepository);
 container.bind<IReactionRepository>(TYPES.ReactionRepository).to(ReactionRepository);
 container.bind<IAnswerRepository>(TYPES.AnswerRepository).to(AnswerRepository);
+container.bind<IOrderRepository>(TYPES.OrderRepository).to(OrderRepository);
+container.bind<IAddressRepository>(TYPES.AddressRepository).to(AddressRepository);
+container.bind<RewardRepository>(TYPES.RewardRepository).to(RewardRepository);
 
 // Services
 container.bind<IAuthService>(TYPES.AuthService).to(AuthService);
@@ -135,6 +163,11 @@ container.bind<IAdminTagService>(TYPES.AdminTagService).to(AdminTagService);
 container.bind<IUserQuestionService>(TYPES.UserQuestionService).to(UserQuestionService);
 container.bind<IUserNotificationService>(TYPES.UserNotificationService).to(UserNotificationService);
 container.bind<IUserAnswerService>(TYPES.UserAnswerService).to(UserAnswerService);
+container.bind<IAdminRewardService>(TYPES.AdminRewardService).to(AdminRewardService);
+container.bind<IUserRewardService>(TYPES.UserRewardService).to(UserRewardService);
+container.bind<IUserAddressService>(TYPES.UserAddressService).to(UserAddressService);
+container.bind<IUserOrderService>(TYPES.UserOrderService).to(UserOrderService);
+container.bind<IAdminOrderService>(TYPES.AdminOrderService).to(AmdinOrderService);
 
 // Controllers
 container.bind<IAuthController>(TYPES.AuthController).to(AuthController);
@@ -155,7 +188,11 @@ container.bind<IAdminTagController>(TYPES.AdminTagController).to(AdminTagControl
 container.bind<IUserSocketController>(TYPES.UserSocketController).to(UserSocketController).inSingletonScope();
 container.bind<IUserNotificationController>(TYPES.UserNotificationController).to(UserNotificationController);
 container.bind<IUserAnswerController>(TYPES.UserAnswerController).to(UserAnswerController);
-
+container.bind<IAdminRewardController>(TYPES.AdminRewardController).to(AdminRewardController);
+container.bind<IUserRewardController>(TYPES.UserRewardController).to(UserRewardController)
+container.bind<IUserAddressController>(TYPES.UserAddressController).to(UserAddressController);
+container.bind<IUserOrderController>(TYPES.UserOrderController).to(UserOrderController);
+container.bind<IAdminOrderController>(TYPES.AdminOrderController).to(AdminOrderController);
 
 //mmiddleware
 container.bind<IUserAuthMiddleware>(TYPES.UserAuthMiddleware).to(UserAuthMiddleware);

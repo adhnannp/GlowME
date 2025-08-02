@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 import passport from './config/passport';
 import path from 'path';
 import { requestLogger } from './middleware/Logger.Middleware';
-import { errorLogger } from './middleware/Error.Middleware';
+import { errorHandler } from './middleware/Error.Middleware';
 import { MESSAGES } from './utils/ResponseMessages';
 import { STATUS_CODES } from './utils/HTTPStatusCode';
 
@@ -35,6 +35,6 @@ app.use((req, res) => {
 });
 
 
-app.use(errorLogger);
+app.use(errorHandler);
 
 export default app;

@@ -15,5 +15,12 @@ export const ADMIN_API = {
     EDIT_TAG: "/admin/tags",
     LIST_TAG: "/admin/tags/list",
     UNLIST_TAG: "/admin/tags/unlist",
-
+    REWARD_ADD: '/admin/reward/add',
+    REWARD_EDIT: '/admin/reward/edit',
+    REWARD_LIST: '/admin/reward/list',
+    REWARD_UNLIST: '/admin/reward/unlist',
+    REWARD_GET_ALL: '/admin/reward/get-all',
+    REWARD_GET_ONE: '/admin/reward/get-one',
+    GET_ORDERS: "/admin/order",
+    GET_ORDER: "/admin/order",
 }

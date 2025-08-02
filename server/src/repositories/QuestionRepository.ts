@@ -4,7 +4,6 @@ import { QuestionModel } from '../models/Question';
 import { IQuestion } from '../models/Question';
 import { BaseRepository } from './BaseRepository';
 import mongoose, { RootFilterQuery, Types } from 'mongoose';
-import { Filter } from "mongodb";
 
 @injectable()
 export class QuestionRepository extends BaseRepository<IQuestion> implements IQuestionRepository{
@@ -12,8 +11,10 @@ export class QuestionRepository extends BaseRepository<IQuestion> implements IQu
         super(QuestionModel);
     }
 
-    async getQuestionByTitle(title:string): Promise<IQuestion | null>{
-        return await QuestionModel.findOne({title});
+    async getQuestionByTitle(title: string): Promise<IQuestion | null> {
+      return await QuestionModel.findOne({
+        title: { $regex: new RegExp(`^${title}$`, 'i') }
+      });
     }
 
     async getQuestionBySlug(slug:string):Promise<IQuestion | null >{

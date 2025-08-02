@@ -9,6 +9,9 @@ import BadgeDashboard from "@/pages/admin/badges/Badges";
 import GCoinDashboard from "@/pages/admin/GCoin/GCoinDashboard";
 import CouponDashboard from "@/pages/admin/coupons/CouponDashboard";
 import TagDashboard from "@/pages/admin/tags/TagDashboard";
+import RewardDashboard from "@/pages/admin/reward/Reward";
+import OrdersPage from "@/pages/admin/Order/Order";
+import OrderDetailPage from "@/pages/admin/SingleOrder/SingleOrder";
 
 const AdminRoutes:React.FC = () => {
 
@@ -24,6 +27,10 @@ const AdminRoutes:React.FC = () => {
         <Route path="/coupons" element={<CouponDashboard />} />
         <Route path="/reports" element={<ReportsPage />} />
         <Route path="/tags" element={<TagDashboard />} />
+        <Route path="/rewards" element={<RewardDashboard />} />
+        <Route path="/orders" element={<OrdersPage />} />
+        <Route path="/orders/:OrderId" element={<OrderDetailPage />} />
+
       </Route>
     </Routes>
   );

@@ -156,7 +156,7 @@ export default function QuestionsPage() {
                 ) : (
                   <div className="text-center py-4">No questions found.</div>
                 )}
-                {hasMore && (
+                {hasMore && mappedQuestions.length > 0 && (
                   <div className="text-center py-4">
                     <Button variant="outline" className="w-full" onClick={handleLoadMore}>
                       Load More

@@ -5,12 +5,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import IOrder, { OrderStatus } from "@/interfaces/user.order.interface";
+import { IOrderFull, OrderStatus } from "@/interfaces/user.order.interface";
 import { memo, useRef } from "react";
 
 interface StatusDropdownProps {
-  order: IOrder;
-  onStatusClick: (order: IOrder, status: OrderStatus) => void;
+  order: IOrderFull;
+  onStatusClick: (order: IOrderFull, status: OrderStatus) => void;
 }
 
 export const statusColors: Record<OrderStatus, string> = {
